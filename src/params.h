@@ -5,7 +5,7 @@
 //  - Routines for reading and writing params.
 //
 //  - Reads from params.in
-//  
+//
 //  - Writes to params.dat
 //
 
@@ -34,7 +34,7 @@ void skip_label( FILE *in)
 // void read_params( struct lattice_struct *lattice)
 //##############################################################################
 //
-// R E A D   P A R A M S 
+// R E A D   P A R A M S
 //
 //  - Read the problem parameters from a file.
 //
@@ -92,7 +92,7 @@ void read_params( lattice_ptr lattice, const char *infile)
       "read_params() -- "
       "Unhandled case "
       "NUM_FLUID_COMPONENTS = %d .  "
-      "Exiting!\n", 
+      "Exiting!\n",
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
@@ -140,7 +140,7 @@ void read_params( lattice_ptr lattice, const char *infile)
     skip_label( in); fscanf( in, "%lf",&( lattice->param.uz_out)         );
     skip_label( in); fscanf( in, "%lf",&( lattice->param.big_V0)         );
     skip_label( in); fscanf( in, "%lf",   lattice->param.big_V0_solid+0  );
-    
+
   if( NUM_FLUID_COMPONENTS==2)
   {
     skip_label( in); fscanf( in, "%lf",   lattice->param.big_V0_solid+1  );
@@ -155,7 +155,7 @@ void read_params( lattice_ptr lattice, const char *infile)
       "read_params() -- "
       "Unhandled case "
       "NUM_FLUID_COMPONENTS = %d .  "
-      "Exiting!\n", 
+      "Exiting!\n",
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
@@ -229,7 +229,7 @@ void read_params( lattice_ptr lattice, const char *infile)
       "read_params() -- "
       "Unhandled case "
       "NUM_FLUID_COMPONENTS = %d .  "
-      "Exiting!\n", 
+      "Exiting!\n",
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
@@ -306,10 +306,10 @@ void read_params( lattice_ptr lattice, const char *infile)
   skip_label( in); fscanf( in, "%d", &( lattice->param.dump_force        )   );
   skip_label( in); fscanf( in, "%d", &( lattice->param.dump_vor          )   );
 
-  lattice->NumNodes = 
+  lattice->NumNodes =
     lattice->param.LX*lattice->param.LY*lattice->param.LZ;
 
-  lattice->NumTimeSteps = 
+  lattice->NumTimeSteps =
     lattice->param.NumFrames * lattice->param.FrameRate;
 
   for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
@@ -420,7 +420,7 @@ void read_params( lattice_ptr lattice, const char *infile)
   fclose(in);
 
 #if VERBOSITY_LEVEL >= 1
-  printf("%s %d >> read_params() -- Done reading file \"params.in\".\n", 
+  printf("%s %d >> read_params() -- Done reading file \"params.in\".\n",
       __FILE__,__LINE__);
 #endif /* VERBOSITY_LEVEL >= 1 */
 
@@ -429,7 +429,7 @@ void read_params( lattice_ptr lattice, const char *infile)
 // void dump_params( struct lattice_struct *lattice)
 //##############################################################################
 //
-// D U M P   P A R A M S 
+// D U M P   P A R A M S
 //
 //  - Output the problem parameters to a file.
 //
@@ -449,7 +449,7 @@ void dump_params( struct lattice_struct *lattice)
 
   if( !( o = fopen(filename,"w+")))
   {
-    printf("%s %d >> ERROR: fopen(\"%s\",\"w+\") = NULL.  Bye, bye!\n", 
+    printf("%s %d >> ERROR: fopen(\"%s\",\"w+\") = NULL.  Bye, bye!\n",
         __FILE__, __LINE__, filename);
     process_exit(1);
   }
@@ -491,7 +491,7 @@ void dump_params( struct lattice_struct *lattice)
       "read_params() -- "
       "Unhandled case "
       "NUM_FLUID_COMPONENTS = %d .  "
-      "Exiting!\n", 
+      "Exiting!\n",
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
@@ -516,7 +516,7 @@ void dump_params( struct lattice_struct *lattice)
       "read_params() -- "
       "Unhandled case "
       "NUM_FLUID_COMPONENTS = %d .  "
-      "Exiting!\n", 
+      "Exiting!\n",
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
@@ -570,7 +570,7 @@ void dump_params( struct lattice_struct *lattice)
       "read_params() -- "
       "Unhandled case "
       "NUM_FLUID_COMPONENTS = %d .  "
-      "Exiting!\n", 
+      "Exiting!\n",
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
@@ -592,7 +592,7 @@ void dump_params( struct lattice_struct *lattice)
       "read_params() -- "
       "Unhandled case "
       "NUM_FLUID_COMPONENTS = %d .  "
-      "Exiting!\n", 
+      "Exiting!\n",
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
@@ -666,7 +666,7 @@ void dump_params( struct lattice_struct *lattice)
       "read_params() -- "
       "Unhandled case "
       "NUM_FLUID_COMPONENTS = %d .  "
-      "Exiting!\n", 
+      "Exiting!\n",
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }

@@ -24,7 +24,7 @@
 // void construct_lattice( struct lattice_struct *lattice)
 //##############################################################################
 //
-// C O N S T R U C T   L A T T I C E 
+// C O N S T R U C T   L A T T I C E
 //
 //  - Construct lattice.
 //
@@ -32,11 +32,11 @@ void construct_lattice( lattice_ptr *lattice, int argc, char **argv)
 {
   // Variable declarations
   int    **matrix;
-  int    i, 
+  int    i,
          j;
   int    n;
   int    subs;
-  int    width, 
+  int    width,
          height;
   char   filename[1024];
   char   dirname[1024];
@@ -58,7 +58,7 @@ void construct_lattice( lattice_ptr *lattice, int argc, char **argv)
     sprintf( dirname, "in");
   }
   sprintf(filename, "./%s/%s", dirname, "params.in");
-  printf("%s %d %04d >> Reading params from file \"%s\"\n", 
+  printf("%s %d %04d >> Reading params from file \"%s\"\n",
     __FILE__, __LINE__, get_proc_id( *lattice), filename);
   read_params( *lattice, filename);
 
@@ -67,25 +67,25 @@ void construct_lattice( lattice_ptr *lattice, int argc, char **argv)
  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
  {
   // Allocate space for solids.
-  (*lattice)->solids[subs] = 
-    (struct solids_struct*)malloc( 
+  (*lattice)->solids[subs] =
+    (struct solids_struct*)malloc(
        (*lattice)->NumNodes*sizeof(struct solids_struct));
  }
 
   // Read solids from .raw file.
-  sprintf(filename, "./in/%dx%dx%d.raw", 
+  sprintf(filename, "./in/%dx%dx%d.raw",
       get_g_LX(*lattice),
       get_g_LY(*lattice),
       get_g_LZ(*lattice) );
-  printf("%s %d >> Reading solids from file \"%s\"\n", 
+  printf("%s %d >> Reading solids from file \"%s\"\n",
     __FILE__, __LINE__, filename);
   read_solids( *lattice, filename);
 
  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
  {
   // Allocate NumNodes particle distribution functions.
-  (*lattice)->pdf[subs] = 
-    ( struct pdf_struct*)malloc( 
+  (*lattice)->pdf[subs] =
+    ( struct pdf_struct*)malloc(
         (*lattice)->NumNodes*sizeof( struct pdf_struct));
   if( (*lattice)->pdf[subs] == NULL)
   {
@@ -99,8 +99,8 @@ void construct_lattice( lattice_ptr *lattice, int argc, char **argv)
   }
 
   // Allocate NumNodes macroscopic variables.
-  (*lattice)->macro_vars[subs] = 
-    ( struct macro_vars_struct*)malloc( 
+  (*lattice)->macro_vars[subs] =
+    ( struct macro_vars_struct*)malloc(
         (*lattice)->NumNodes*sizeof( struct macro_vars_struct));
   if( (*lattice)->macro_vars[subs]==NULL)
   {
@@ -115,8 +115,8 @@ void construct_lattice( lattice_ptr *lattice, int argc, char **argv)
 
 #if NON_LOCAL_FORCES
   // Allocate NumNodes elements for force.
-  (*lattice)->force[subs] = 
-    ( struct force_struct*)malloc( 
+  (*lattice)->force[subs] =
+    ( struct force_struct*)malloc(
         (*lattice)->NumNodes*sizeof( struct force_struct));
   if( (*lattice)->force[subs]==NULL)
   {
@@ -133,8 +133,8 @@ void construct_lattice( lattice_ptr *lattice, int argc, char **argv)
 
 #if STORE_UEQ
   // Allocate NumNodes elements for ueq.
-  (*lattice)->ueq = 
-    ( struct ueq_struct*)malloc( 
+  (*lattice)->ueq =
+    ( struct ueq_struct*)malloc(
         (*lattice)->NumNodes*sizeof( struct ueq_struct));
   if( (*lattice)->ueq==NULL)
   {
@@ -155,7 +155,7 @@ void construct_lattice( lattice_ptr *lattice, int argc, char **argv)
 // void init_problem( struct lattice_struct *lattice)
 //##############################################################################
 //
-// I N I T   P R O B L E M 
+// I N I T   P R O B L E M
 //
 //  - Initialize the problem on the lattice.
 //
@@ -171,7 +171,7 @@ void init_problem( struct lattice_struct *lattice)
   double *f, *feq, *ftemp, ftemp2[19];
   double *rho, *u_x, *u_y, *u_z;
 
-  double fcountone; 
+  double fcountone;
 
 #if STORE_UEQ
   double *ueq_x, *ueq_y, *ueq_z;
@@ -198,13 +198,13 @@ void init_problem( struct lattice_struct *lattice)
 #if PARALLEL
  if(lattice->param.initial_condition ==1)
  {
- 
+
  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
  {
 
   for( n=0; n<get_proc_id(lattice)* lattice->NumNodes; n++)
   {
- 
+
       if( (double)rand()/(double)RAND_MAX < lattice->param.cut)
               {
                 //Non to test RAND is not a real random;
@@ -213,7 +213,7 @@ void init_problem( struct lattice_struct *lattice)
 
  }
 
- }//it works !! Great!!, no problem now , it gives same results as PC version!! 
+ }//it works !! Great!!, no problem now , it gives same results as PC version!!
 #endif
 
 
@@ -246,24 +246,24 @@ void init_problem( struct lattice_struct *lattice)
     {
       switch( lattice->param.initial_condition)
       {
-		
+    
         case 0: // Uniform
         {
            switch( NUM_FLUID_COMPONENTS)
-	   { 
-		case 1:  
-		{
-		*rho = lattice->param.rho_A[subs];
+     {
+    case 1:
+    {
+    *rho = lattice->param.rho_A[subs];
                 break;
-		}
-		
-		case 2:  
-		{
-		*rho = lattice->param.rho_B[subs];
-		break;
-		}
-	   }
-		break;
+    }
+    
+    case 2:
+    {
+    *rho = lattice->param.rho_B[subs];
+    break;
+    }
+     }
+    break;
         }
 
         case 1: // Random
@@ -272,7 +272,7 @@ void init_problem( struct lattice_struct *lattice)
           {
             case 1:
             {
-              *rho = 
+              *rho =
                 lattice->param.rho_A[0] + 10.*(double)rand()/(double)RAND_MAX;
               break;
             }
@@ -306,15 +306,15 @@ void init_problem( struct lattice_struct *lattice)
         {
 #if PARALLEL
 #if 0
-		id1 =  (int)floor(lattice->param.z1/(double)(nk);
-		newz1 =  (int)(lattice->param.z1) % (nk); 
-		id2 =  (int)floor(lattice->param.z2/(double)(nk));
-		newz2 =  (int)(lattice->param.z2) % (nk);
-		if(id2>get_num_procs(lattice)) 
-		{
-			id2 = get_num_procs(lattice);
-			newz2 = nk ;
-		}
+    id1 =  (int)floor(lattice->param.z1/(double)(nk);
+    newz1 =  (int)(lattice->param.z1) % (nk);
+    id2 =  (int)floor(lattice->param.z2/(double)(nk));
+    newz2 =  (int)(lattice->param.z2) % (nk);
+    if(id2>get_num_procs(lattice))
+    {
+      id2 = get_num_procs(lattice);
+      newz2 = nk ;
+    }
 #endif
 #endif
           switch( NUM_FLUID_COMPONENTS)
@@ -323,18 +323,18 @@ void init_problem( struct lattice_struct *lattice)
             {
 #if PARALLEL
 #if 0
-	     if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
-	     if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
-	     if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
+       if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
+       if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
+       if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
 #endif
-#endif	     
+#endif  
              if( i > lattice->param.x1 && i < lattice->param.x2 &&
-                 j > lattice->param.y1 && j < lattice->param.y2 && 
+                 j > lattice->param.y1 && j < lattice->param.y2 &&
 #if PARALLEL
                  k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2 )
-//if 0		  k >=k1 && k<=k2 )
-#else		 
-		 k > lattice->param.z1 && k < lattice->param.z2  )
+//if 0      k >=k1 && k<=k2 )
+#else    
+     k > lattice->param.z1 && k < lattice->param.z2  )
 #endif
               {
                 *rho = lattice->param.rho_A[0];
@@ -349,19 +349,19 @@ void init_problem( struct lattice_struct *lattice)
             case 2:
             {
 #if PARALLEL
-#if 0		    
-	     if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
-	     if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
-	     if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
+#if 0    
+       if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
+       if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
+       if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
 #endif
 #endif
-	     if( i >= lattice->param.x1 && i <= lattice->param.x2 &&
-                 j >= lattice->param.y1 && j <= lattice->param.y2 && 
+       if( i >= lattice->param.x1 && i <= lattice->param.x2 &&
+                 j >= lattice->param.y1 && j <= lattice->param.y2 &&
 #if PARALLEL
-		k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2)
-//		  k >=k1 && k<=k2 )
-#else		 
-		 k > lattice->param.z1 && k < lattice->param.z2  )
+    k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2)
+//      k >=k1 && k<=k2 )
+#else    
+     k > lattice->param.z1 && k < lattice->param.z2  )
 #endif
               {
                 *rho = lattice->param.rho_A[subs];
@@ -393,7 +393,7 @@ void init_problem( struct lattice_struct *lattice)
             case 1:
             {
               if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
-		  (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+      (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
               {
                 *rho = lattice->param.rho_A[0];
               }
@@ -406,7 +406,7 @@ void init_problem( struct lattice_struct *lattice)
             case 2:
             {
               if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
-		  (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+      (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
               {
                 *rho = lattice->param.rho_A[subs];
               }
@@ -418,7 +418,7 @@ void init_problem( struct lattice_struct *lattice)
             }
             default:
             {
-              printf( 
+              printf(
                 "%s (%d) >> init_problem() -- Unhandled case  "
                 "NUM_FLUID_COMPONENTS = %d.  "
                 "Exiting!\n", __FILE__, __LINE__,
@@ -433,11 +433,11 @@ void init_problem( struct lattice_struct *lattice)
           switch( NUM_FLUID_COMPONENTS)
           {
             case 1:
-            {                       
-              
+            {
+
                 *rho = ((lattice->param.rho_out-lattice->param.rho_in)/nk)*k + lattice->param.rho_in;//lattice->param.rho_A[0];
-              
-              
+
+
               break;
             }
 
@@ -445,7 +445,7 @@ void init_problem( struct lattice_struct *lattice)
             {
               if( i > 20 && i < 32 &&
                   j > 10 && j < 22
-               && k >  8 && k < 18     
+               && k >  8 && k < 18
                   )
               {
                 *rho = lattice->param.rho_A[subs];
@@ -472,7 +472,7 @@ void init_problem( struct lattice_struct *lattice)
 
         default:
         {
-          printf( 
+          printf(
             "%s (%d) >> init_problem() -- Unhandled case  "
             "lattice->param.initial_condition = %d.  "
             "Exiting!\n", __FILE__, __LINE__,
@@ -496,13 +496,13 @@ void init_problem( struct lattice_struct *lattice)
     } /* if( ( 1 || !( solids->is_solid & BC_SOLID_NODE)) ) else */
 
 #if SPONGE
-	     if(// i >= lattice->param.x1 && i <= lattice->param.x2 &&
-                // j >= lattice->param.y1 && j <= lattice->param.y2 && 
+       if(// i >= lattice->param.x1 && i <= lattice->param.x2 &&
+                // j >= lattice->param.y1 && j <= lattice->param.y2 &&
 #if PARALLEL
-		k+ get_proc_id(lattice)*nk < lattice->param.z1 || k+ get_proc_id(lattice)*nk > lattice->param.z2)
-//		  k >=k1 && k<=k2 )
-#else		 
-		 k < lattice->param.z1 || k > lattice->param.z2  )
+    k+ get_proc_id(lattice)*nk < lattice->param.z1 || k+ get_proc_id(lattice)*nk > lattice->param.z2)
+//      k >=k1 && k<=k2 )
+#else    
+     k < lattice->param.z1 || k > lattice->param.z2  )
 #endif
               {
                 *rho = lattice->param.rho_A[subs];
@@ -510,9 +510,21 @@ void init_problem( struct lattice_struct *lattice)
 #endif
 
     // Set initial velocity.
+#if INITIALIZE_WITH_UX_IN
+    *u_x = lattice->param.ux_in;
+#else
     *u_x = 0.;
+#endif
+#if INITIALIZE_WITH_UY_IN
+    *u_y = lattice->param.uy_in;
+#else
     *u_y = 0.;
-    *u_z = 0.;//lattice->param.ux_in; //0.;
+#endif
+#if INITIALIZE_WITH_UZ_IN
+    *u_z = lattice->param.uz_in;
+#else
+    *u_z = 0.;
+#endif
 
 #if STORE_UEQ
     *ueq_x = 0.;
@@ -541,30 +553,30 @@ printf("%s %d >> After compute_feq!\n",__FILE__,__LINE__);
   {
 #if SAVE_MEMO
     compute_single_feq(  lattice, n, subs, &(lattice->pdf[subs][n].ftemp) );
-    
+
 #else
 
-      	  f = lattice->pdf[subs][n].f;
+          f = lattice->pdf[subs][n].f;
     feq = lattice->pdf[subs][n].feq;
     ftemp = lattice->pdf[subs][n].ftemp;
     is_solid = lattice->solids[subs][n].is_solid;
 //***********************************************************************************
       if(!lattice->time)
-	  {
-		  fcountone = is_solid;
-	  }
-	  else
-	  {
-		  fcountone = 0.;
-	  }
+    {
+      fcountone = is_solid;
+    }
+    else
+    {
+      fcountone = 0.;
+    }
 //***************************************************************p-edit*************
     if( /*ALLOW_INIT_ON_SOLID_NODES*/fcountone || !( is_solid))
     {
       // Copy feq to f.
       for( a=0; a<Q; a++)
       {
-		 // printf("feq = %d, is_solid = %d, ftemp = %d, f[ %d ] = %d \n", lattice->pdf[subs][n].feq,
-		 // lattice->solids[subs][n].is_solid,lattice->pdf[subs][n].ftemp, a, f[a]); //****Problem here?******************
+     // printf("feq = %d, is_solid = %d, ftemp = %d, f[ %d ] = %d \n", lattice->pdf[subs][n].feq,
+     // lattice->solids[subs][n].is_solid,lattice->pdf[subs][n].ftemp, a, f[a]); //****Problem here?******************
         f[a] = feq[a];
       }
 
@@ -582,13 +594,13 @@ printf("%s %d >> After compute_feq!\n",__FILE__,__LINE__);
       {
         f[a] = 0.;
       }
-          
+
       // ftemp
       for( a=0; a<Q; a++)
       {
         ftemp[a] = 0.;
       }
-   
+
     }
 #endif
   } /* for( n=0; n<lattice->NumNodes; n++) */
@@ -624,7 +636,7 @@ printf("%s %d >> After compute_feq!\n",__FILE__,__LINE__);
 // void destruct_lattice( struct lattice_struct *lattice)
 //##############################################################################
 //
-// D E S T R U C T   L A T T I C E 
+// D E S T R U C T   L A T T I C E
 //
 //  - Destruct lattice.
 //
@@ -704,7 +716,7 @@ void dump_north_pointing_pdfs(
     {
       // 0 1 2 3 4
       // O W E N S
-    
+
       // South
       n = 5*j*ni + 4;
       printf("\n ");
@@ -718,7 +730,7 @@ void dump_north_pointing_pdfs(
         n+=5;
       }
       printf("|");
-    
+
       // West/O/East
       n = 5*j*ni + 0;
       printf("\n ");
@@ -732,7 +744,7 @@ void dump_north_pointing_pdfs(
         n+=5;
       }
       printf("|");
-    
+
       // North
       n = 5*j*ni + 3;
       printf("\n ");
@@ -746,7 +758,7 @@ void dump_north_pointing_pdfs(
         n+=5;
       }
       printf("|");
-    
+
       printf("\n ");
       for( i=0; i<ni; i++)
       {
@@ -757,7 +769,7 @@ void dump_north_pointing_pdfs(
         printf("-");
       }
       printf("+");
-    
+
     } /* if( j=0; j<nj; j++) */
 
   } /* if( z_slice >= 0) */
@@ -786,7 +798,7 @@ void dump_north_pointing_pdfs(
       {
         // 0 1 2 3 4
         // O W E N S
-      
+
         // South
         n = 5*j*ni + 4;
         printf("\n ");
@@ -800,7 +812,7 @@ void dump_north_pointing_pdfs(
           n+=5;
         }
         printf("|");
-      
+
         // West/O/East
         n = 5*j*ni + 0;
         printf("\n ");
@@ -814,7 +826,7 @@ void dump_north_pointing_pdfs(
           n+=5;
         }
         printf("|");
-      
+
         // North
         n = 5*j*ni + 3;
         printf("\n ");
@@ -828,7 +840,7 @@ void dump_north_pointing_pdfs(
           n+=5;
         }
         printf("|");
-      
+
         printf("\n ");
         for( i=0; i<ni; i++)
         {
@@ -839,7 +851,7 @@ void dump_north_pointing_pdfs(
           printf("-");
         }
         printf("+");
-      
+
       } /* if( j=0; j<nj; j++) */
 
     }
@@ -897,7 +909,7 @@ void dump_south_pointing_pdfs(
     {
       // 0 1 2 3 4
       // O W E N S
-    
+
       // South
       n = 5*j*ni + 4;
       printf("\n ");
@@ -911,7 +923,7 @@ void dump_south_pointing_pdfs(
         n+=5;
       }
       printf("|");
-    
+
       // West/O/East
       n = 5*j*ni + 0;
       printf("\n ");
@@ -925,7 +937,7 @@ void dump_south_pointing_pdfs(
         n+=5;
       }
       printf("|");
-    
+
       // North
       n = 5*j*ni + 3;
       printf("\n ");
@@ -939,7 +951,7 @@ void dump_south_pointing_pdfs(
         n+=5;
       }
       printf("|");
-    
+
       printf("\n ");
       for( i=0; i<ni; i++)
       {
@@ -950,7 +962,7 @@ void dump_south_pointing_pdfs(
         printf("-");
       }
       printf("+");
-    
+
     } /* if( j=0; j<nj; j++) */
 
   } /* if( z_slice >= 0) */
@@ -979,7 +991,7 @@ void dump_south_pointing_pdfs(
       {
         // 0 1 2 3 4
         // O W E N S
-      
+
         // South
         n = 5*j*ni + 4;
         printf("\n ");
@@ -993,7 +1005,7 @@ void dump_south_pointing_pdfs(
           n+=5;
         }
         printf("|");
-      
+
         // West/O/East
         n = 5*j*ni + 0;
         printf("\n ");
@@ -1007,7 +1019,7 @@ void dump_south_pointing_pdfs(
           n+=5;
         }
         printf("|");
-      
+
         // North
         n = 5*j*ni + 3;
         printf("\n ");
@@ -1021,7 +1033,7 @@ void dump_south_pointing_pdfs(
           n+=5;
         }
         printf("|");
-      
+
         printf("\n ");
         for( i=0; i<ni; i++)
         {
@@ -1032,7 +1044,7 @@ void dump_south_pointing_pdfs(
           printf("-");
         }
         printf("+");
-      
+
       } /* if( j=0; j<nj; j++) */
 
     }
@@ -1110,18 +1122,18 @@ int get_sizeof_lattice( lattice_ptr lattice)
     + sizeof(struct param_struct)
 
     + lattice->NumNodes
-    * ( 
+    * (
         NUM_FLUID_COMPONENTS*sizeof(struct pdf_struct)
       + NUM_FLUID_COMPONENTS*sizeof(struct macro_vars_struct)
-      + NUM_FLUID_COMPONENTS*sizeof(struct solids_struct) 
+      + NUM_FLUID_COMPONENTS*sizeof(struct solids_struct)
 #if NON_LOCAL_FORCES
-      + NUM_FLUID_COMPONENTS*sizeof(struct force_struct) 
+      + NUM_FLUID_COMPONENTS*sizeof(struct force_struct)
 #endif /* NON_LOCAL_FORCES */
 #if STORE_UEQ
-      + sizeof(struct ueq_struct) 
+      + sizeof(struct ueq_struct)
 #endif /* STORE_UEQ */
 #if POROUS_MEDIA
-      + sizeof(struct ns_struct) 
+      + sizeof(struct ns_struct)
 #endif /* POROUS_MEDIA */
       );
 

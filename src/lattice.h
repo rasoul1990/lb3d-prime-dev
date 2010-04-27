@@ -187,7 +187,7 @@ typedef struct process_struct *process_ptr;
 // in "params.dat" do not match values in "params.in", the double versus
 // integer parameter type issue may be the reason.
 //
-// Here are some useful Unix/Linux command lines for processing this 
+// Here are some useful Unix/Linux command lines for processing this
 // documentation (the "params.txt" file):
 //
 //  >> grep Param params.txt
@@ -207,7 +207,7 @@ typedef struct process_struct *process_ptr;
 //     sed 's/[ ]*\/\/ //; s/[ ]*\/\/$//' > ./doc/params.txt
 //
 // If you are developing under Windows, I recommend Cygwin
-// 
+//
 //   http://www.cygwin.com
 //
 // or something comparable. The Unix/Linux command line is indispensable. See
@@ -227,13 +227,13 @@ struct param_struct
   // Type: int
   // Comments: LX is the number of lattice nodes in x-direction. LY is the
   // number of lattice nodes in y-direction. LZ is the number of lattice nodes
-  // in z-direction. 
+  // in z-direction.
   int    LX,
          LY,
          LZ;
 
   // Param: length_scale
-  // Type: int 
+  // Type: int
   // Comments: length_scale is a characteristic length. This is used for
   // computing Re.
   //
@@ -395,8 +395,8 @@ struct param_struct
   //
   double big_V0_solid[NUM_FLUID_COMPONENTS];
 
-  // Param: ns_flag; 
-  // Type: int ns_flag; 
+  // Param: ns_flag;
+  // Type: int ns_flag;
   // Comments: Flag for how to use the solid density parameter.
   // If ns_flag = 0, then initialize the domain uniformly with ns.
   // If ns_flag = 1, then read ns values from the ns<LX>x<LY>.bmp file.
@@ -404,13 +404,13 @@ struct param_struct
   // initialize the domain with ns where there are black pixels in the
   // ns<LX>x<LY>.bmp file and 0 otherwise.
   //
-  int    ns_flag; 
+  int    ns_flag;
 
-  // Param: ns; 
-  // Type: double ns; 
+  // Param: ns;
+  // Type: double ns;
   // Comments: Solid density parameter for porous media.
   //
-  double ns; 
+  double ns;
 
   // Param: ic_poisseuille;
   // Param: bc_poisseuille;

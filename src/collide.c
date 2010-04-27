@@ -36,7 +36,7 @@ void collide( lattice_ptr lattice)
 
     if( !is_solid)
     {
-        // C O L L I D E 
+        // C O L L I D E
 
         // f = ftemp - (1/tau[subs])( ftemp - feq)
         for( a=0; a<Q; a++)
@@ -55,36 +55,36 @@ void collide( lattice_ptr lattice)
 
     else // is_solid & BC_SOLID_NODE
     {
-      // B O U N C E B A C K 
+      // B O U N C E B A C K
         if( subs==0)
         {
           // Usual non-slip bounce-back condition.
           f = ftemp[ E];
-      	  ftemp[ E] = ftemp[ W];
+          ftemp[ E] = ftemp[ W];
           ftemp[ W] = f;
           f = ftemp[ N];
-      	  ftemp[ N] = ftemp[ S];
+          ftemp[ N] = ftemp[ S];
           ftemp[ S] = f;
           f = ftemp[ T];
-      	  ftemp[ T] = ftemp[ B];
+          ftemp[ T] = ftemp[ B];
           ftemp[ B] = f;
           f = ftemp[NW];
-      	  ftemp[NW] = ftemp[SE];
+          ftemp[NW] = ftemp[SE];
           ftemp[SE] = f;
           f = ftemp[NE];
-      	  ftemp[NE] = ftemp[SW];
+          ftemp[NE] = ftemp[SW];
           ftemp[SW] = f;
           f = ftemp[TW];
-      	  ftemp[TW] = ftemp[BE];
+          ftemp[TW] = ftemp[BE];
           ftemp[BE] = f;
           f = ftemp[TE];
-      	  ftemp[TE] = ftemp[BW];
+          ftemp[TE] = ftemp[BW];
           ftemp[BW] = f;
           f = ftemp[TN];
-      	  ftemp[TN] = ftemp[BS];
+          ftemp[TN] = ftemp[BS];
           ftemp[BS] = f;
           f = ftemp[TS];
-      	  ftemp[TS] = ftemp[BN];
+          ftemp[TS] = ftemp[BN];
           ftemp[BN] = f;
 
         } /* if( subs==0) */
@@ -92,35 +92,35 @@ void collide( lattice_ptr lattice)
 #if NUM_FLUID_COMPONENTS==2
         else // subs==1
         {
-		
+    
            // Usual non-slip bounce-back condition.
 
           f = ftemp[ E];
-      	  ftemp[ E] = ftemp[ W];
+          ftemp[ E] = ftemp[ W];
           ftemp[ W] = f;
           f = ftemp[ N];
-      	  ftemp[ N] = ftemp[ S];
+          ftemp[ N] = ftemp[ S];
           ftemp[ S] = f;
           f = ftemp[ T];
-      	  ftemp[ T] = ftemp[ B];
+          ftemp[ T] = ftemp[ B];
           ftemp[ B] = f;
           f = ftemp[NW];
-      	  ftemp[NW] = ftemp[SE];
+          ftemp[NW] = ftemp[SE];
           ftemp[SE] = f;
           f = ftemp[NE];
-      	  ftemp[NE] = ftemp[SW];
+          ftemp[NE] = ftemp[SW];
           ftemp[SW] = f;
           f = ftemp[TW];
-      	  ftemp[TW] = ftemp[BE];
+          ftemp[TW] = ftemp[BE];
           ftemp[BE] = f;
           f = ftemp[TE];
-      	  ftemp[TE] = ftemp[BW];
+          ftemp[TE] = ftemp[BW];
           ftemp[BW] = f;
           f = ftemp[TN];
-      	  ftemp[TN] = ftemp[BS];
+          ftemp[TN] = ftemp[BS];
           ftemp[BS] = f;
           f = ftemp[TS];
-      	  ftemp[TS] = ftemp[BN];
+          ftemp[TS] = ftemp[BN];
           ftemp[BN] = f;
 
         } /* if( subs==0) else*/
@@ -170,7 +170,7 @@ void collide( lattice_ptr lattice)
 
     if( !is_solid)
     {
-        // C O L L I D E 
+        // C O L L I D E
 
         // f = ftemp - (1/tau[subs])( ftemp - feq)
         for( a=0; a<Q; a++)
@@ -195,8 +195,8 @@ void collide( lattice_ptr lattice)
               "collide() -- Node %d (%d,%d), subs %d, "
               "has negative density %20.17f "
               "in direction %d "
-              "at timestep %d. Exiting!\n", 
-              n, n%lattice->param.LX, 
+              "at timestep %d. Exiting!\n",
+              n, n%lattice->param.LX,
                  n/lattice->param.LX,
                  subs,
                  f[a], a,
@@ -211,7 +211,7 @@ void collide( lattice_ptr lattice)
 
     else // is_solid & BC_SOLID_NODE
     {
-      // B O U N C E B A C K 
+      // B O U N C E B A C K
 
       if(   lattice->param.bc_slip_north
          && n >= lattice->NumNodes - lattice->param.LX)
@@ -248,25 +248,25 @@ void collide( lattice_ptr lattice)
           f[ S] = ftemp[ N];
           f[ T] = ftemp[ B];
           f[ B] = ftemp[ T];
-          f[NW] = ftemp[SE];   
-          f[NE] = ftemp[SW];   
-          f[SW] = ftemp[NE];   
-          f[SE] = ftemp[NW];   
-          f[TW] = ftemp[BE];   
-          f[TE] = ftemp[BW];   
-          f[BW] = ftemp[TE];   
-          f[BE] = ftemp[TW];   
-          f[TN] = ftemp[BS];   
-          f[TS] = ftemp[BN];   
-          f[BN] = ftemp[TS];   
-          f[BS] = ftemp[TN];   
+          f[NW] = ftemp[SE];
+          f[NE] = ftemp[SW];
+          f[SW] = ftemp[NE];
+          f[SE] = ftemp[NW];
+          f[TW] = ftemp[BE];
+          f[TE] = ftemp[BW];
+          f[BW] = ftemp[TE];
+          f[BE] = ftemp[TW];
+          f[TN] = ftemp[BS];
+          f[TS] = ftemp[BN];
+          f[BN] = ftemp[TS];
+          f[BS] = ftemp[TN];
 
         } /* if( subs==0) */
 
 #if NUM_FLUID_COMPONENTS==2
         else // subs==1
         {
-		
+    
 #if INAMURO_SIGMA_COMPONENT
           if( lattice->param.bc_sigma_slip)
           {
@@ -344,18 +344,18 @@ void collide( lattice_ptr lattice)
             f[ S] = ftemp[ N];
             f[ T] = ftemp[ B];
             f[ B] = ftemp[ T];
-            f[NW] = ftemp[SE];   
-            f[NE] = ftemp[SW];   
-            f[SW] = ftemp[NE];   
-            f[SE] = ftemp[NW];   
-            f[TW] = ftemp[BE];   
-            f[TE] = ftemp[BW];   
-            f[BW] = ftemp[TE];   
-            f[BE] = ftemp[TW];   
-            f[TN] = ftemp[BS];   
-            f[TS] = ftemp[BN];   
-            f[BN] = ftemp[TS];   
-            f[BS] = ftemp[TN];   
+            f[NW] = ftemp[SE];
+            f[NE] = ftemp[SW];
+            f[SW] = ftemp[NE];
+            f[SE] = ftemp[NW];
+            f[TW] = ftemp[BE];
+            f[TE] = ftemp[BW];
+            f[BW] = ftemp[TE];
+            f[BE] = ftemp[TW];
+            f[TN] = ftemp[BS];
+            f[TS] = ftemp[BN];
+            f[BN] = ftemp[TS];
+            f[BS] = ftemp[TN];
 
 #if INAMURO_SIGMA_COMPONENT
           } /* if( lattice->param.bc_sigma_slip) else */

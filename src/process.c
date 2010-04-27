@@ -70,7 +70,7 @@ void process_compute_local_params( lattice_ptr lattice)
     set_g_SZ( lattice,
               NumLayersOnRoot
             + NumLayersPerProc*(get_proc_id(lattice)-1) );
-    set_g_EZ( lattice, 
+    set_g_EZ( lattice,
               NumLayersOnRoot
             + NumLayersPerProc*(get_proc_id(lattice)-1)
             + NumLayersPerProc
@@ -155,7 +155,7 @@ void process_send_recv_begin( lattice_ptr lattice, const int subs)
       nj = get_LY( lattice);
   int mpierr;
 
-  // A C C U M U L A T E   P D F S   T O   S E N D 
+  // A C C U M U L A T E   P D F S   T O   S E N D
   //#########################################################################
   n = 0;
   k = get_LZ(lattice)-1;
@@ -168,29 +168,29 @@ void process_send_recv_begin( lattice_ptr lattice, const int subs)
       lattice->process.z_pos_pdf_to_send[n] =
         lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[ T];
       lattice->process.z_neg_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[ B];   
+        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[ B];
       n++;
       lattice->process.z_pos_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[TW];   
+        lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[TW];
       lattice->process.z_neg_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[BW];   
+        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[BW];
       n++;
       lattice->process.z_pos_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[TE];   
+        lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[TE];
       lattice->process.z_neg_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[BE];   
+        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[BE];
       n++;
       lattice->process.z_pos_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[TN];   
+        lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[TN];
       lattice->process.z_neg_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[BN];   
+        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[BN];
       n++;
       lattice->process.z_pos_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[TS];   
+        lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].f[TS];
       lattice->process.z_neg_pdf_to_send[n] =
-        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[BS];   
+        lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].f[BS];
       n++;
-#endif 
+#endif
     } /* if( i=0; i<ni; i++) */
   } /* if( j=0; j<nj; j++) */
 
@@ -239,14 +239,14 @@ void process_send_recv_begin( lattice_ptr lattice, const int subs)
       n++;
 
       k++;
-#endif 
+#endif
     } /* if( i=0; i<ni; i++) */
   } /* if( j=0; j<nj; j++) */
 #endif
 
   //process_dump_pdfs_to_send( lattice, "Before Send/Recv");
 
-     // S E N D   I N   P O S I T I V E   D I R E C T I O N 
+     // S E N D   I N   P O S I T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -278,7 +278,7 @@ void process_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        exit(1);
      }
-     // R E C V   F R O M   N E G A T I V E   D I R E C T I O N 
+     // R E C V   F R O M   N E G A T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -310,7 +310,7 @@ void process_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        exit(1);
      }
-     // S E N D   I N   N E G A T I V E   D I R E C T I O N 
+     // S E N D   I N   N E G A T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -342,7 +342,7 @@ void process_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        exit(1);
      }
-     // R E C V   F R O M   P O S I T I V E   D I R E C T I O N 
+     // R E C V   F R O M   P O S I T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -412,7 +412,7 @@ void process_send_recv_end( lattice_ptr lattice, const int subs)
   //dump_south_pointing_pdfs( lattice, subs, -1,
   //    "After Send/Recv, Before Stream", 2);
 
-  // S T R E A M   I N   T H E   B O U N D A R I E S 
+  // S T R E A M   I N   T H E   B O U N D A R I E S
   //###########################################################################
   n = 0;
   k = get_LZ(lattice)-1;
@@ -420,12 +420,12 @@ void process_send_recv_end( lattice_ptr lattice, const int subs)
   {
     jp = ( j<nj-1)?( j+1):( 0   );
     jn = ( j>0   )?( j-1):( nj-1);
-  
+
     for( i=0; i<ni; i++)
     {
       ip = ( i<ni-1)?( i+1):( 0   );
       in = ( i>0   )?( i-1):( ni-1);
-  
+
       lattice->pdf[subs][ XYZ2N( i , j , 0, ni, nj)].ftemp[ T] =
         lattice->process.z_pos_pdf_to_recv[n];
       lattice->pdf[subs][ XYZ2N( i , j , k, ni, nj)].ftemp[ B] =
@@ -576,7 +576,7 @@ void process_dump_pdfs( lattice_ptr lattice, char *comment_str, double *pdfs)
       {
         // 0 1 2 3 4
         // O W E N S
-      
+
         // South
         n = 5*j*ni + 4;
         printf("\n ");
@@ -590,7 +590,7 @@ void process_dump_pdfs( lattice_ptr lattice, char *comment_str, double *pdfs)
           n+=5;
         }
         printf("|");
-      
+
         // West/O/East
         n = 5*j*ni + 0;
         printf("\n ");
@@ -604,7 +604,7 @@ void process_dump_pdfs( lattice_ptr lattice, char *comment_str, double *pdfs)
           n+=5;
         }
         printf("|");
-      
+
         // North
         n = 5*j*ni + 3;
         printf("\n ");
@@ -618,7 +618,7 @@ void process_dump_pdfs( lattice_ptr lattice, char *comment_str, double *pdfs)
           n+=5;
         }
         printf("|");
-      
+
         printf("\n ");
         for( i=0; i<ni; i++)
         {
@@ -629,7 +629,7 @@ void process_dump_pdfs( lattice_ptr lattice, char *comment_str, double *pdfs)
           printf("-");
         }
         printf("+");
-      
+
       } /* if( j=0; j<nj; j++) */
     } /* if( p == get_proc_id(lattice)) */
   } /* for( p=0; p<get_num_procs( lattice); p++) */
@@ -661,7 +661,7 @@ void gather_north_pointing_pdfs(
         {
 #if SAVE_MEMO
 #else
-      	  north[n] = lattice->pdf[subs][ XYZ2N(i,j,k, ni, nj)].feq[ T]; n++;
+          north[n] = lattice->pdf[subs][ XYZ2N(i,j,k, ni, nj)].feq[ T]; n++;
           north[n] = lattice->pdf[subs][ XYZ2N(i,j,k, ni, nj)].feq[TW]; n++;
           north[n] = lattice->pdf[subs][ XYZ2N(i,j,k, ni, nj)].feq[TE]; n++;
           north[n] = lattice->pdf[subs][ XYZ2N(i,j,k, ni, nj)].feq[TN]; n++;
@@ -794,7 +794,7 @@ void process_reduce_double_sum( lattice_ptr lattice, double *arg_x)
   //        op     - reduce operation (handle)
   //        root   - rank of root process (integer)
   //        comm   - communicator (handle)
-  // 
+  //
   // OUTPUT PARAMETER
   //        rbuf   - address of receive buffer (choice, sig't only at root )
   //
@@ -838,7 +838,7 @@ void process_reduce_int_sum( lattice_ptr lattice, int *arg_n)
   //        op     - reduce operation (handle)
   //        root   - rank of root process (integer)
   //        comm   - communicator (handle)
-  // 
+  //
   // OUTPUT PARAMETER
   //        rbuf   - address of receive buffer (choice, sig't only at root )
   //
@@ -882,7 +882,7 @@ void process_reduce_double_max( lattice_ptr lattice, double *arg_x)
   //        op     - reduce operation (handle)
   //        root   - rank of root process (integer)
   //        comm   - communicator (handle)
-  // 
+  //
   // OUTPUT PARAMETER
   //        rbuf   - address of receive buffer (choice, sig't only at root )
   //
@@ -926,7 +926,7 @@ void process_reduce_double_min( lattice_ptr lattice, double *arg_x)
   //        op     - reduce operation (handle)
   //        root   - rank of root process (integer)
   //        comm   - communicator (handle)
-  // 
+  //
   // OUTPUT PARAMETER
   //        rbuf   - address of receive buffer (choice, sig't only at root )
   //

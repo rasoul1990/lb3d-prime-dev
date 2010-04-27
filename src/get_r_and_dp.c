@@ -16,9 +16,9 @@ double input_frame( lattice_ptr lattice, char *dirname);
 double get_radius_bubble( lattice_ptr lattice, double rho_cut);
 double get_radius_drop( lattice_ptr lattice, double rho_cut);
 double get_dp( lattice_ptr lattice);
-void read_dat( 
+void read_dat(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
        int     stride,
        char   *filename);
 
@@ -61,7 +61,7 @@ int main( int argc, char **argv)
   //printf( "  Drop:   radius = %f\n", get_radius_drop( lattice, 487.));
     printf( "  Bubble: radius = %f\n", get_radius_bubble( lattice, 356.6148 ));
     printf( "  Drop:   radius = %f\n", get_radius_drop(   lattice, 356.6148 ));
-    
+
     get_dp( lattice);
 
   } /* for( time=1; time<=lattice->NumTimeSteps; time++) */
@@ -107,9 +107,9 @@ double input_frame( lattice_ptr lattice, char *dirname)
   for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
 #if WRITE_MACRO_VAR_DAT_FILES
-    sprintf( filename, "./%s/rho_%dx%dx%d_frame%04d_subs%02d.dat", 
+    sprintf( filename, "./%s/rho_%dx%dx%d_frame%04d_subs%02d.dat",
         dirname, ni, nj, nk, frame, subs);
-    read_dat( 
+    read_dat(
       lattice,
       &(lattice->macro_vars[subs][0].rho),
       /*stride*/ 4,
@@ -124,27 +124,27 @@ double input_frame( lattice_ptr lattice, char *dirname)
 #if 0
 
 #if WRITE_MACRO_VAR_DAT_FILES
-    sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d.dat", 
+    sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d.dat",
         ni, nj, nk, frame, subs);
-    read_dat( 
+    read_dat(
       lattice,
       &(lattice->macro_vars[subs][0].u[0]),
       /*stride*/ 4,
       filename);
 #endif /* (WRITE_MACRO_VAR_DAT_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
-    sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d.dat", 
+    sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d.dat",
         ni, nj, nk, frame, subs);
-    read_dat( 
+    read_dat(
       lattice,
       &(lattice->macro_vars[subs][0].u[1]),
       /*stride*/ 4,
       filename);
 #endif /* (WRITE_MACRO_VAR_DAT_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
-    sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d.dat", 
+    sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d.dat",
         ni, nj, nk, frame, subs);
-    read_dat( 
+    read_dat(
       lattice,
       &(lattice->macro_vars[subs][0].u[2]),
       /*stride*/ 4,
@@ -157,7 +157,7 @@ double input_frame( lattice_ptr lattice, char *dirname)
     printf("%s %d >> min_u = [ %f %f %f], max_u = [ %f %f %f], ave_u = [ %f %f %f]\n",
       __FILE__,__LINE__,
     min_u[0], min_u[1], min_u[2],
-    max_u[0], max_u[1], max_u[2], 
+    max_u[0], max_u[1], max_u[2],
     ave_u[0], ave_u[1], ave_u[2] );
 #endif
 
@@ -166,7 +166,7 @@ double input_frame( lattice_ptr lattice, char *dirname)
     printf("%s %d >> slice_rho = [", __FILE__,__LINE__);
     for( i=0; i<ni; i++)
     {
-      printf(" %f ", 
+      printf(" %f ",
         lattice->macro_vars[subs][XYZ2N(i,njdiv2,nkdiv2,ni,nj)].rho);
     }
     printf("]\n");
@@ -198,7 +198,7 @@ double get_radius_bubble( lattice_ptr lattice, double rho_cut)
   return pow((3./4.)*(double)volume/3.141593,1./3.);
 
 } /* double get_radius_bubble( lattice_ptr lattice) */
- 
+
 // double get_radius_drop( lattice_ptr lattice, double rho_cut)
 //##############################################################################
 // Assumes sphereical region.
@@ -221,14 +221,14 @@ double get_radius_drop( lattice_ptr lattice, double rho_cut)
   return pow((3./4.)*(double)volume/3.141593,1./3.);
 
 } /* double get_radius_drop( lattice_ptr lattice) */
-    
+
 double get_dp( lattice_ptr lattice)
 {
 } /* double get_dp( lattice_ptr lattice) */
 
-void read_dat( 
+void read_dat(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
        int     stride,
        char   *filename)
 {
@@ -265,7 +265,7 @@ void read_dat(
     a[stride*n] = Xpix1[n];
   }
 
-  printf("%s %d >> write_dat() -- Read file \"%s\".\n", 
+  printf("%s %d >> write_dat() -- Read file \"%s\".\n",
       __FILE__, __LINE__, filename);
 
 } /* void write_dat( lattice_ptr lattice, double *a,  ... */

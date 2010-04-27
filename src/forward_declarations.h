@@ -48,33 +48,46 @@ void dump_node_info( struct lattice_struct *lattice);
 void dump_checkpoint( struct lattice_struct *lattice, int time, char *fn);
 void read_checkpoint( struct lattice_struct *lattice);
 void read_solids( lattice_ptr lattice, char *filename);
-void write_raw( 
+void write_raw(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
        int     stride,
-       double  a_max, 
-       double  a_min, 
+       double  a_max,
+       double  a_min,
        char   *filename);
-void write_dat( 
+void write_raw_u(
        lattice_ptr lattice,
-       double *a, 
+       double *ux,
+       double *uy,
+       double *uz,
        int     stride,
-       double  a_max, 
-       double  a_min, 
+       double  ux_max,
+       double  ux_min,
+       double  uy_max,
+       double  uy_min,
+       double  uz_max,
+       double  uz_min,
        char   *filename);
-void write_plt( 
+void write_dat(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
+       int     stride,
+       double  a_max,
+       double  a_min,
+       char   *filename);
+void write_plt(
+       lattice_ptr lattice,
+       double *a,
        double *b,
        char   *filename, char   *filename2);
-void write_plt_uvw( 
+void write_plt_uvw(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
        double *b,
        char   *filename);
-void write_plt_single( 
+void write_plt_single(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
        char   *filename);
 void stream( struct lattice_struct *lattice);
 void stream_save( struct lattice_struct *lattice);
@@ -91,8 +104,8 @@ void count_colormap( int *num_colors);
 void allocate_colormap( double ***colormap, int num_colors);
 void read_colormap( double **colormap, int num_colors);
 void deallocate_colormap( double ***colormap, int num_colors);
-void get_color( 
-       double **colormap, int num_colors, 
+void get_color(
+       double **colormap, int num_colors,
        double c, char *r, char *g, char *b);
 #if MANAGE_BODY_FORCE
 inline void manage_body_force( lattice_ptr lattice);
@@ -102,15 +115,15 @@ void sigma_stuff( lattice_ptr lattice);
 #endif /* INAMURO_SIGMA_COMPONENT && STORE_BTC */
 
 void bmp_read_header( FILE *in, struct bitmap_info_header *bmih);
-void bmp_read_entry( 
-  FILE *in, 
-  struct bitmap_info_header bmih, 
+void bmp_read_entry(
+  FILE *in,
+  struct bitmap_info_header bmih,
   char *r, char *g, char *b);
 
 void report_open( report_ptr report, char *name);
-void report_integer_entry( 
+void report_integer_entry(
        report_ptr report, char *label, int value, char *units);
-void report_ratio_entry( 
+void report_ratio_entry(
        report_ptr report, char *label, double num, double den, char *units);
 void report_entry( report_ptr report, char *entry_left, char *entry_right);
 void report_close( report_ptr report);

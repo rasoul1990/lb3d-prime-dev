@@ -28,7 +28,7 @@ int main( int argc, char **argv)
   init_problem( lattice);
 
   output_frame( lattice);
-  
+
   for( frames = 0, time=1; time<=lattice->NumTimeSteps; time++)
   {
     lattice->time = time;
@@ -41,7 +41,7 @@ int main( int argc, char **argv)
 
 #if SAVE_MEMO
 //feq was calculated in collide_save(lattice)
-#else    
+#else
     compute_feq( lattice);
 #endif
 

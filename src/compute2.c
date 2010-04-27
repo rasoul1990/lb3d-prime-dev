@@ -15,7 +15,7 @@
 // void compute_macro_vars( struct lattice_struct *lattice)
 //##############################################################################
 //
-// C O M P U T E   M A C R O   V A R S 
+// C O M P U T E   M A C R O   V A R S
 //
 //  - Compute macroscopic variables.
 
@@ -28,7 +28,7 @@ void rho_send_recv_begin( lattice_ptr lattice, const int subs)
       nj = get_LY( lattice);
   int mpierr;
 
-//rev Huang 
+//rev Huang
 //To send "rho" and "solid" to neighbour blocks
   n =0;
   k = get_LZ(lattice)-1;
@@ -47,12 +47,12 @@ void rho_send_recv_begin( lattice_ptr lattice, const int subs)
       lattice->process.z_neg_rho_to_send[n] =
         lattice->macro_vars[subs][ XYZ2N( i , j , 0, ni, nj)].rho;
       n++;
-#endif 
+#endif
     } /* if( i=0; i<ni; i++) */
   } /* if( j=0; j<nj; j++) */
   } //for  subs=0; subs<NUM_FLUID_COMPONENTS; subs++
 
-     // S E N D   I N   P O S I T I V E   D I R E C T I O N 
+     // S E N D   I N   P O S I T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -84,7 +84,7 @@ void rho_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        process_exit(1);
      }
-     // R E C V   F R O M   N E G A T I V E   D I R E C T I O N 
+     // R E C V   F R O M   N E G A T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -116,7 +116,7 @@ void rho_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        process_exit(1);
      }
-     // S E N D   I N   N E G A T I V E   D I R E C T I O N 
+     // S E N D   I N   N E G A T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -148,7 +148,7 @@ void rho_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        process_exit(1);
      }
-     // R E C V   F R O M   P O S I T I V E   D I R E C T I O N 
+     // R E C V   F R O M   P O S I T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -224,7 +224,7 @@ void solid_send_recv_begin( lattice_ptr lattice, const int subs)
       nj = get_LY( lattice);
   int mpierr;
 
-//rev Huang 
+//rev Huang
 //To send "rho" and "solid" to neighbour blocks
   n =0;
   k = get_LZ(lattice)-1;
@@ -240,12 +240,12 @@ void solid_send_recv_begin( lattice_ptr lattice, const int subs)
       lattice->process.z_neg_solid_to_send[n] =
         lattice->solids[subs][ XYZ2N( i , j , 0, ni, nj)].is_solid;
       n++;
-#endif 
+#endif
     } /* if( i=0; i<ni; i++) */
   } /* if( j=0; j<nj; j++) */
 
 
-     // SOLID S E N D   I N   P O S I T I V E   D I R E C T I O N 
+     // SOLID S E N D   I N   P O S I T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -277,7 +277,7 @@ void solid_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        process_exit(1);
      }
-     // SOLID R E C V   F R O M   N E G A T I V E   D I R E C T I O N 
+     // SOLID R E C V   F R O M   N E G A T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -309,7 +309,7 @@ void solid_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        process_exit(1);
      }
-     // SOLID S E N D   I N   N E G A T I V E   D I R E C T I O N 
+     // SOLID S E N D   I N   N E G A T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -341,7 +341,7 @@ void solid_send_recv_begin( lattice_ptr lattice, const int subs)
        process_finalize();
        process_exit(1);
      }
-     // SOLID R E C V   F R O M   P O S I T I V E   D I R E C T I O N 
+     // SOLID R E C V   F R O M   P O S I T I V E   D I R E C T I O N
      //#########################################################################
 #if VERBOSITY_LEVEL > 1
      printf( "%s %d %04d >> "
@@ -418,8 +418,8 @@ void compute_macro_vars( struct lattice_struct *lattice)
 {
   int a, n, k, i,j, ni, nj, nk;
 
-  double *rho[ NUM_FLUID_COMPONENTS], 
-         *u_x[ NUM_FLUID_COMPONENTS], 
+  double *rho[ NUM_FLUID_COMPONENTS],
+         *u_x[ NUM_FLUID_COMPONENTS],
          *u_y[ NUM_FLUID_COMPONENTS],
          *u_z[ NUM_FLUID_COMPONENTS];
 
@@ -444,14 +444,14 @@ void compute_macro_vars( struct lattice_struct *lattice)
 
   for(subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
-  
+
     for( n=0; n<lattice->NumNodes; n++)
     {
       rho[subs] = &( lattice->macro_vars[subs][n].rho);
       u_x[subs] = &( lattice->macro_vars[subs][n].u[0]);
       u_y[subs] = &( lattice->macro_vars[subs][n].u[1]);
       u_z[subs] = &( lattice->macro_vars[subs][n].u[2]);
-      
+
       ftemp     =   lattice->pdf[subs][n].ftemp;
       is_solid  = ( lattice->solids[subs][n].is_solid);
 
@@ -464,12 +464,12 @@ void compute_macro_vars( struct lattice_struct *lattice)
 
         for(a=0; a<Q; a++)
         {
-          (*rho[subs]) +=       (ftemp[a]);      
+          (*rho[subs]) +=       (ftemp[a]);
           (*u_x[subs]) += vx[a]*(ftemp[a]);
           (*u_y[subs]) += vy[a]*(ftemp[a]);
           (*u_z[subs]) += vz[a]*(ftemp[a]);
-        }  
-         
+        }
+
       } /*if(!(is_solid))*/
     } /*for( n=0; n<lattice->NumNodes; n++) */
   } /* for(subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
@@ -520,8 +520,8 @@ void compute_macro_vars( struct lattice_struct *lattice)
 #endif /* STORE_UEQ */
 
 
-      if( ux_sum != 0.) 
-      { 
+      if( ux_sum != 0.)
+      {
         if( *rho[0] != 0.) { *u_x[0] = *u_x[0] / *rho[0]; }
         else {             *u_x[0] = 0.; }
         if( *rho[1] != 0.) { *u_x[1] = *u_x[1] / *rho[1]; }
@@ -529,8 +529,8 @@ void compute_macro_vars( struct lattice_struct *lattice)
       }
       else { *u_x[0] = 0.; *u_x[1] = 0.; }
 
-      if( uy_sum != 0.) 
-      { 
+      if( uy_sum != 0.)
+      {
         if( *rho[0] != 0.) { *u_y[0] = *u_y[0] / *rho[0]; }
         else {             *u_y[0] = 0.; }
         if( *rho[1] != 0.) { *u_y[1] = *u_y[1] / *rho[1]; }
@@ -538,8 +538,8 @@ void compute_macro_vars( struct lattice_struct *lattice)
       }
       else { *u_y[0] = 0.; *u_y[1] = 0.; }
 
-      if( uz_sum != 0.) 
-      { 
+      if( uz_sum != 0.)
+      {
         if( *rho[0] != 0.) { *u_z[0] = *u_z[0] / *rho[0]; }
         else {             *u_z[0] = 0.; }
         if( *rho[1] != 0.) { *u_z[1] = *u_z[1] / *rho[1]; }
@@ -566,35 +566,35 @@ void compute_macro_vars( struct lattice_struct *lattice)
 
      if( !( is_solid) )
      {
-       if( *rho[0] != 0. && *u_x[0] != 0.) 
-       { 
+       if( *rho[0] != 0. && *u_x[0] != 0.)
+       {
          *u_x[0] = *u_x[0] / *rho[0];
        }
        else
        {
          *u_x[0] = 0.;
        }
-   
-       if( *rho[0] != 0. && *u_y[0] != 0.) 
-       { 
+
+       if( *rho[0] != 0. && *u_y[0] != 0.)
+       {
          *u_y[0] = *u_y[0] / *rho[0];
        }
        else
        {
          *u_y[0] = 0.;
        }
-   
-       if( *rho[0] != 0. && *u_z[0] != 0.) 
-       { 
+
+       if( *rho[0] != 0. && *u_z[0] != 0.)
+       {
          *u_z[0] = *u_z[0] / *rho[0];
        }
        else
        {
          *u_z[0] = 0.;
        }
-   
+
      } /* if( !( is_solid)) */
-   
+
    } /* for( n=0; n<lattice->NumNodes; n++) */
  }
  else
@@ -610,11 +610,11 @@ void compute_macro_vars( struct lattice_struct *lattice)
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 #if PARALLEL
 
-	rho_send_recv_begin(  lattice, 0);
-	rho_send_recv_end(  lattice, 0);
+  rho_send_recv_begin(  lattice, 0);
+  rho_send_recv_end(  lattice, 0);
 
-	solid_send_recv_begin(  lattice, 0);
-	solid_send_recv_end(  lattice, 0);
+  solid_send_recv_begin(  lattice, 0);
+  solid_send_recv_end(  lattice, 0);
 
 #endif
 //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -637,7 +637,7 @@ void compute_macro_vars( struct lattice_struct *lattice)
 
     default:
     {
-      printf("%s %d >> ERROR: Unhandled case %d\n", 
+      printf("%s %d >> ERROR: Unhandled case %d\n",
         __FILE__,__LINE__,
         NUM_FLUID_COMPONENTS);
       process_exit(1);
@@ -653,7 +653,7 @@ void compute_macro_vars( struct lattice_struct *lattice)
 // void compute_feq( struct lattice_struct *lattice)
 //##############################################################################
 //
-// C O M P U T E   F E Q 
+// C O M P U T E   F E Q
 //
 //  - Compute equilibrium distribution function, feq.
 //
@@ -669,7 +669,7 @@ void compute_feq( struct lattice_struct *lattice)
 
  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
- 
+
     for( n=0; n<lattice->NumNodes; n++)
     {
       feq       =    lattice->pdf[subs][n].feq;
@@ -688,7 +688,7 @@ void compute_single_feq( struct lattice_struct *lattice, int n, int subs, double
   double tau;
 
   double W0,   W1,   W2;
-  double ux,   uy,  uz, 
+  double ux,   uy,  uz,
          uxsq, uysq, uzsq, usq;
   double c; /*sound velocity*/
   double udotx;
@@ -700,7 +700,7 @@ void compute_single_feq( struct lattice_struct *lattice, int n, int subs, double
   double *ueq;
 #endif /* STORE_UEQ */
   int    is_solid;
- 
+
 
 
   /*Refers to Klaus Lglburger Thesis*/
@@ -712,8 +712,8 @@ void compute_single_feq( struct lattice_struct *lattice, int n, int subs, double
       rho       =    lattice->macro_vars[subs][n].rho;
       is_solid  =    lattice->solids[subs][n].is_solid;
 
-//      if( /*fcountone*/  1 || !(is_solid)) 
-      if( !(is_solid)) 
+//      if( /*fcountone*/  1 || !(is_solid))
+      if( !(is_solid))
 
       {
 #if STORE_UEQ
@@ -721,9 +721,9 @@ void compute_single_feq( struct lattice_struct *lattice, int n, int subs, double
       u_x       =    lattice->ueq[n].u[0];
       u_y       =    lattice->ueq[n].u[1];
       u_z       =    lattice->ueq[n].u[2];
-//	u_x       = *ueq;     *ueq++;
-//	u_y       = *ueq;     *ueq++;
-//	u_z       = *ueq;     *ueq++;
+//  u_x       = *ueq;     *ueq++;
+//  u_y       = *ueq;     *ueq++;
+//  u_z       = *ueq;     *ueq++;
 #else /* !( STORE_UEQ) */
       // Start with the individual component velocities.
       u_x       =    lattice->macro_vars[subs][n].u[0];
@@ -762,7 +762,7 @@ void compute_single_feq( struct lattice_struct *lattice, int n, int subs, double
           udotx = ((double)vx[a]*u_x+(double)vy[a]*u_y+(double)vz[a]*u_z);
           feq[a] = W1*rho*(1. + 3.*udotx + 4.5 *udotx*udotx - 1.5*usq);
         }
-        
+
         for( a=7; a<Q; a++)
         {
           udotx = ((double)vx[a]*u_x+(double)vy[a]*u_y+(double)vz[a]*u_z);
@@ -798,7 +798,7 @@ void compute_phase_force( lattice_ptr lattice, int subs)
          ip, jp, kp,
          ia, ja, ka;
 
-  int    n,  
+  int    n,
          ni, nj, nk;
 
 //printf("%s %d >> compute_phase_force() -- Hi!\n",
@@ -862,11 +862,11 @@ void compute_phase_force( lattice_ptr lattice, int subs)
       {
         n = XYZ2N( i, j, k, ni, nj);
         force = lattice->force[subs][n].force;
-    
+
         force[0] = 0.;
         force[1] = 0.;
         force[2] = 0.;
-    
+
         if( !( lattice->solids[subs][ n].is_solid ))
         {
           for( a=1; a<=6; a++)
@@ -874,12 +874,12 @@ void compute_phase_force( lattice_ptr lattice, int subs)
             ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
             ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
             ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
-            if( !( lattice->solids[subs][ 
-                  XYZ2N( ia, ja, ka, ni, nj)].is_solid )) 
+            if( !( lattice->solids[subs][
+                  XYZ2N( ia, ja, ka, ni, nj)].is_solid ))
             {
               force[0] += WM*vx[a]*psi[ ka][ ja][ ia];
-              force[1] += WM*vy[a]*psi[ ka][ ja][ ia]; 
-              force[2] += WM*vz[a]*psi[ ka][ ja][ ia]; 
+              force[1] += WM*vy[a]*psi[ ka][ ja][ ia];
+              force[2] += WM*vz[a]*psi[ ka][ ja][ ia];
             }
           }
 
@@ -888,28 +888,28 @@ void compute_phase_force( lattice_ptr lattice, int subs)
             ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
             ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
             ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
-            if( !( lattice->solids[subs][ 
-                  XYZ2N( ia, ja, ka, ni, nj)].is_solid )) 
+            if( !( lattice->solids[subs][
+                  XYZ2N( ia, ja, ka, ni, nj)].is_solid ))
             {
               force[0] += WD*vx[a]*psi[ ka][ ja][ ia];
-              force[1] += WD*vy[a]*psi[ ka][ ja][ ia]; 
-              force[2] += WD*vz[a]*psi[ ka][ ja][ ia]; 
+              force[1] += WD*vy[a]*psi[ ka][ ja][ ia];
+              force[2] += WD*vz[a]*psi[ ka][ ja][ ia];
             }
           }
-    
+
           force[0] = -lattice->param.big_V0*psi[k][j][i]*( force[0]);
           force[1] = -lattice->param.big_V0*psi[k][j][i]*( force[1]);
           force[2] = -lattice->param.big_V0*psi[k][j][i]*( force[2]);
-    
+
         } /* if( !( lattice->solids[subs][ j*ni+i].is_solid )) */
-    
+
         else
         {
             *( force  ) = 0.;
             *( force+1) = 0.;
             *( force+2) = 0.;
         }
-    
+
       } /* for( i=0; i<ni; i++) */
     } /* for( j=0; j<nj; j++) */
   } /* for( k=0; k<nk; k++) */
@@ -950,7 +950,7 @@ void compute_fluid_fluid_force( lattice_ptr lattice)
          ip, jp, kp,
          ia, ja, ka;
 
-  int    n, na, 
+  int    n, na,
          ni, nj, nk;
 
   ni = lattice->param.LX;
@@ -959,19 +959,19 @@ void compute_fluid_fluid_force( lattice_ptr lattice)
 
 #if PARALLEL
         id = get_proc_id(lattice);
-//	printf("%d\n",id);
+//  printf("%d\n",id);
 
-	{ k1 =0;   k2 = nk;}
-	if(id ==0 && (!lattice->param.AllBoundaryPeriodic))
-	{ k1 =3;   k2 = nk;}
-	if((id ==get_num_procs(lattice)-1) && (!lattice->param.AllBoundaryPeriodic))
-	{ k1 =0;   k2 = nk-2;}
-//	printf("k1=%d, k2=%d, #########\n", k1, k2);
+  { k1 =0;   k2 = nk;}
+  if(id ==0 && (!lattice->param.AllBoundaryPeriodic))
+  { k1 =3;   k2 = nk;}
+  if((id ==get_num_procs(lattice)-1) && (!lattice->param.AllBoundaryPeriodic))
+  { k1 =0;   k2 = nk-2;}
+//  printf("k1=%d, k2=%d, #########\n", k1, k2);
 #else
-	if(lattice->param.AllBoundaryPeriodic) 
-	{ k1 =0;   k2 = nk;}
-	else
-	{ k1 =3;   k2 = nk-2;}
+  if(lattice->param.AllBoundaryPeriodic)
+  { k1 =0;   k2 = nk;}
+  else
+  { k1 =3;   k2 = nk-2;}
 
 #endif
 
@@ -979,7 +979,7 @@ void compute_fluid_fluid_force( lattice_ptr lattice)
   for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
 // for fluid 1 injection into porous media filled with fluid 2, rev_Huang
-#if PARALLEL	
+#if PARALLEL  
 //     rho_send_recv_begin( lattice, subs);
 #endif
     for( k=k1; k<k2; k++)
@@ -990,120 +990,120 @@ void compute_fluid_fluid_force( lattice_ptr lattice)
         {
           n = XYZ2N( i, j, k, ni, nj);
           force[subs] = lattice->force[subs][n].force;
-      
+
           force[subs][0] = 0.;
           force[subs][1] = 0.;
           force[subs][2] = 0.;
-      
+
           if( !( lattice->solids[subs][ n].is_solid ))
           {
             for( a=1; a<=6; a++)
             {
               ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
               ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
-	      
+  
 #if PARALLEL
-	      if( k+vz[a]<nk &&  k+vz[a]>=0 )
-	      {
-	      ka = k+vz[a];
-	      na = XYZ2N( ia, ja, ka, ni, nj);
-              if( !( lattice->solids[subs][ na].is_solid )) 
+        if( k+vz[a]<nk &&  k+vz[a]>=0 )
+        {
+        ka = k+vz[a];
+        na = XYZ2N( ia, ja, ka, ni, nj);
+              if( !( lattice->solids[subs][ na].is_solid ))
                {
                 rho = lattice->macro_vars[subs][na].rho;
                 force[subs][0] += WM*vx[a]*rho;
-                force[subs][1] += WM*vy[a]*rho; 
-                force[subs][2] += WM*vz[a]*rho; 
+                force[subs][1] += WM*vy[a]*rho;
+                force[subs][2] += WM*vz[a]*rho;
                }
 
-	      }
-	      else if(k+vz[a]>=nk)
-	      {
-              if( !( lattice->process.z_neg_solid_to_recv[ja*ni+ia] )) 
+        }
+        else if(k+vz[a]>=nk)
+        {
+              if( !( lattice->process.z_neg_solid_to_recv[ja*ni+ia] ))
                {
                 rho = lattice->process.z_neg_rho_to_recv[subs*ni*nj +ja*ni+ia];
                 force[subs][0] += WM*vx[a]*rho;
-                force[subs][1] += WM*vy[a]*rho; 
-                force[subs][2] += WM*vz[a]*rho; 
+                force[subs][1] += WM*vy[a]*rho;
+                force[subs][2] += WM*vz[a]*rho;
 // lattice->process.z_neg_solid_to_recv[n];
-	       }
+         }
 
-	      }
-	      else
-	      {
-              if( !( lattice->process.z_pos_solid_to_recv[ja*ni+ia] )) 
+        }
+        else
+        {
+              if( !( lattice->process.z_pos_solid_to_recv[ja*ni+ia] ))
                {
                 rho = lattice->process.z_pos_rho_to_recv[subs*ni*nj +ja*ni+ia];
                 force[subs][0] += WM*vx[a]*rho;
-                force[subs][1] += WM*vy[a]*rho; 
-                force[subs][2] += WM*vz[a]*rho; 
-	       }
-	      }
+                force[subs][1] += WM*vy[a]*rho;
+                force[subs][2] += WM*vz[a]*rho;
+         }
+        }
 
 #else
-	      ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
-	      na = XYZ2N( ia, ja, ka, ni, nj);
-              if( !( lattice->solids[subs][ na].is_solid )) 
+        ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
+        na = XYZ2N( ia, ja, ka, ni, nj);
+              if( !( lattice->solids[subs][ na].is_solid ))
               {
                 rho = lattice->macro_vars[subs][na].rho;
                 force[subs][0] += WM*vx[a]*rho;
-                force[subs][1] += WM*vy[a]*rho; 
-                force[subs][2] += WM*vz[a]*rho; 
+                force[subs][1] += WM*vy[a]*rho;
+                force[subs][2] += WM*vz[a]*rho;
               }
 
-#endif	      
-	    }//a=0,... 6
-    
+#endif  
+      }//a=0,... 6
+
             for( a=7; a<Q; a++)
             {
               ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
               ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
 #if PARALLEL
-	      if( k+vz[a]<nk &&  k+vz[a]>=0 )
-	      {
-	      ka = k+vz[a];
-	      na = XYZ2N( ia, ja, ka, ni, nj);
-              if( !( lattice->solids[subs][ na].is_solid )) 
+        if( k+vz[a]<nk &&  k+vz[a]>=0 )
+        {
+        ka = k+vz[a];
+        na = XYZ2N( ia, ja, ka, ni, nj);
+              if( !( lattice->solids[subs][ na].is_solid ))
                {
                 rho = lattice->macro_vars[subs][na].rho;
                 force[subs][0] += WD*vx[a]*rho;
-                force[subs][1] += WD*vy[a]*rho; 
-                force[subs][2] += WD*vz[a]*rho; 
+                force[subs][1] += WD*vy[a]*rho;
+                force[subs][2] += WD*vz[a]*rho;
                }
 
-	      }
-	      else if(k+vz[a]>=nk)
-	      {
-              if( !( lattice->process.z_neg_solid_to_recv[ja*ni+ia] )) 
+        }
+        else if(k+vz[a]>=nk)
+        {
+              if( !( lattice->process.z_neg_solid_to_recv[ja*ni+ia] ))
                {
                 rho = lattice->process.z_neg_rho_to_recv[subs*ni*nj +ja*ni+ia];
                 force[subs][0] += WD*vx[a]*rho;
-                force[subs][1] += WD*vy[a]*rho; 
-                force[subs][2] += WD*vz[a]*rho; 
+                force[subs][1] += WD*vy[a]*rho;
+                force[subs][2] += WD*vz[a]*rho;
 // lattice->process.z_neg_solid_to_recv[n];
-	       }
+         }
 
-	      }
-	      else
-	      {
-              if( !( lattice->process.z_pos_solid_to_recv[ja*ni+ia] )) 
+        }
+        else
+        {
+              if( !( lattice->process.z_pos_solid_to_recv[ja*ni+ia] ))
                {
                 rho = lattice->process.z_pos_rho_to_recv[subs*ni*nj +ja*ni+ia];
                 force[subs][0] += WD*vx[a]*rho;
-                force[subs][1] += WD*vy[a]*rho; 
-                force[subs][2] += WD*vz[a]*rho; 
-	       }
-	      }
+                force[subs][1] += WD*vy[a]*rho;
+                force[subs][2] += WD*vz[a]*rho;
+         }
+        }
 
 
-#else	      
+#else  
               ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
               na = XYZ2N( ia, ja, ka, ni, nj);
-              if( !( lattice->solids[subs][ na].is_solid )) 
+              if( !( lattice->solids[subs][ na].is_solid ))
               {
                 rho = lattice->macro_vars[subs][na].rho;
                 force[subs][0] += WD*vx[a]*rho;
-                force[subs][1] += WD*vy[a]*rho; 
-                force[subs][2] += WD*vz[a]*rho; 
+                force[subs][1] += WD*vy[a]*rho;
+                force[subs][2] += WD*vz[a]*rho;
               }
 #endif
 
@@ -1168,7 +1168,7 @@ printf("%s %d >> %f %f, %f %f, %f %f\n",
     force[0][1],
     force[1][1],
     force[0][2],
-    force[1][2] 
+    force[1][2]
     );
             }
 #endif
@@ -1198,7 +1198,7 @@ void compute_single_fluid_solid_force( lattice_ptr lattice, int subs)
          ip, jp, kp,
          ia, ja, ka;
 
-  int    n,  
+  int    n,
          ni, nj, nk;
 
 //printf("%s %d >> compute_single_fluid_solid_force() -- Hi!\n",
@@ -1262,11 +1262,11 @@ void compute_single_fluid_solid_force( lattice_ptr lattice, int subs)
       {
         n = XYZ2N( i, j, k, ni, nj);
         sforce = lattice->force[subs][n].sforce;
-    
+
         sforce[0] = 0.;
         sforce[1] = 0.;
         sforce[2] = 0.;
-    
+
         if( !( lattice->solids[subs][ n].is_solid ))
         {
           for( a=1; a<=6; a++)
@@ -1274,12 +1274,12 @@ void compute_single_fluid_solid_force( lattice_ptr lattice, int subs)
             ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
             ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
             ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
-            if(  ( lattice->solids[subs][ 
-                  XYZ2N( ia, ja, ka, ni, nj)].is_solid )) 
+            if(  ( lattice->solids[subs][
+                  XYZ2N( ia, ja, ka, ni, nj)].is_solid ))
             {
               sforce[0] += WM*vx[a];
-              sforce[1] += WM*vy[a]; 
-              sforce[2] += WM*vz[a]; 
+              sforce[1] += WM*vy[a];
+              sforce[2] += WM*vz[a];
             }
           }
 
@@ -1288,31 +1288,31 @@ void compute_single_fluid_solid_force( lattice_ptr lattice, int subs)
             ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
             ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
             ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
-            if(  ( lattice->solids[subs][ 
-                  XYZ2N( ia, ja, ka, ni, nj)].is_solid )) 
+            if(  ( lattice->solids[subs][
+                  XYZ2N( ia, ja, ka, ni, nj)].is_solid ))
             {
               sforce[0] += WD*vx[a];
-              sforce[1] += WD*vy[a]; 
-              sforce[2] += WD*vz[a]; 
+              sforce[1] += WD*vy[a];
+              sforce[2] += WD*vz[a];
             }
           }
-    
-          sforce[0] = 
+
+          sforce[0] =
             -lattice->param.big_V0_solid[subs]*psi[k][j][i]*( sforce[0]);
-          sforce[1] = 
+          sforce[1] =
             -lattice->param.big_V0_solid[subs]*psi[k][j][i]*( sforce[1]);
-          sforce[2] = 
+          sforce[2] =
             -lattice->param.big_V0_solid[subs]*psi[k][j][i]*( sforce[2]);
-    
+
         } /* if( !( lattice->solids[subs][ j*ni+i].is_solid )) */
-    
+
         else
         {
             *( sforce  ) = 0.;
             *( sforce+1) = 0.;
             *( sforce+2) = 0.;
         }
-    
+
       } /* for( i=0; i<ni; i++) */
     } /* for( j=0; j<nj; j++) */
   } /* for( k=0; k<nk; k++) */
@@ -1350,7 +1350,7 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
          ip, jp, kp,
          ia, ja, ka;
 
-  int    n,  
+  int    n,
          ni, nj, nk, na;
 
   ni = lattice->param.LX;
@@ -1372,7 +1372,7 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
         sum_x = 0.;
         sum_y = 0.;
         sum_z = 0.;
-    
+
         if( !( lattice->solids[0][ n].is_solid ))
         {
           for( a=1; a<=6; a++)
@@ -1380,49 +1380,49 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
             ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
             ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
 #if PARALLEL
-	      if( k+vz[a]<nk &&  k+vz[a]>=0 )
-	      {
-	      ka = k+vz[a];
-	      na = XYZ2N( ia, ja, ka, ni, nj);
-              if( ( lattice->solids[0][ na].is_solid )) 
+        if( k+vz[a]<nk &&  k+vz[a]>=0 )
+        {
+        ka = k+vz[a];
+        na = XYZ2N( ia, ja, ka, ni, nj);
+              if( ( lattice->solids[0][ na].is_solid ))
                {
                 sum_x += WM*vx[a];
-                sum_y += WM*vy[a]; 
-                sum_z += WM*vz[a]; 
+                sum_y += WM*vy[a];
+                sum_z += WM*vz[a];
                }
 
-	      }
-	      else if(k+vz[a]>=nk)
-	      {
-              if( ( lattice->process.z_neg_solid_to_recv[ja*ni+ia] )) 
+        }
+        else if(k+vz[a]>=nk)
+        {
+              if( ( lattice->process.z_neg_solid_to_recv[ja*ni+ia] ))
                {
                 sum_x += WM*vx[a];
-                sum_y += WM*vy[a]; 
-                sum_z += WM*vz[a]; 
-	       }
+                sum_y += WM*vy[a];
+                sum_z += WM*vz[a];
+         }
 
-	      }
-	      else
-	      {
-              if( ( lattice->process.z_pos_solid_to_recv[ja*ni+ia] )) 
+        }
+        else
+        {
+              if( ( lattice->process.z_pos_solid_to_recv[ja*ni+ia] ))
                {
                 sum_x += WM*vx[a];
-                sum_y += WM*vy[a]; 
-                sum_z += WM*vz[a]; 
-	       }
-	      }
+                sum_y += WM*vy[a];
+                sum_z += WM*vz[a];
+         }
+        }
 
-#else	    
+#else  
             ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
-            if(  ( lattice->solids[0][ 
-                  XYZ2N( ia, ja, ka, ni, nj)].is_solid )) 
+            if(  ( lattice->solids[0][
+                  XYZ2N( ia, ja, ka, ni, nj)].is_solid ))
             {
               sum_x += WM*vx[a];
-              sum_y += WM*vy[a]; 
-              sum_z += WM*vz[a]; 
+              sum_y += WM*vy[a];
+              sum_z += WM*vz[a];
             }
 #endif
-	    
+  
           } // a = 0....6
 
           for( a=7; a<Q; a++)
@@ -1430,48 +1430,48 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
             ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
             ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
 #if PARALLEL
-	      if( k+vz[a]<nk &&  k+vz[a]>=0 )
-	      {
-	      ka = k+vz[a];
-	      na = XYZ2N( ia, ja, ka, ni, nj);
-              if( ( lattice->solids[0][ na].is_solid )) 
+        if( k+vz[a]<nk &&  k+vz[a]>=0 )
+        {
+        ka = k+vz[a];
+        na = XYZ2N( ia, ja, ka, ni, nj);
+              if( ( lattice->solids[0][ na].is_solid ))
                {
                 sum_x += WD*vx[a];
-                sum_y += WD*vy[a]; 
-                sum_z += WD*vz[a]; 
+                sum_y += WD*vy[a];
+                sum_z += WD*vz[a];
                }
 
-	      }
-	      else if(k+vz[a]>=nk)
-	      {
-              if( ( lattice->process.z_neg_solid_to_recv[ja*ni+ia] )) 
+        }
+        else if(k+vz[a]>=nk)
+        {
+              if( ( lattice->process.z_neg_solid_to_recv[ja*ni+ia] ))
                {
                 sum_x += WD*vx[a];
-                sum_y += WD*vy[a]; 
-                sum_z += WD*vz[a]; 
-	       }
+                sum_y += WD*vy[a];
+                sum_z += WD*vz[a];
+         }
 
-	      }
-	      else
-	      {
-              if( ( lattice->process.z_pos_solid_to_recv[ja*ni+ia] )) 
+        }
+        else
+        {
+              if( ( lattice->process.z_pos_solid_to_recv[ja*ni+ia] ))
                {
-	        sum_x += WD*vx[a];
-                sum_y += WD*vy[a]; 
-                sum_z += WD*vz[a]; 
-	       }
-	      }
+          sum_x += WD*vx[a];
+                sum_y += WD*vy[a];
+                sum_z += WD*vz[a];
+         }
+        }
 
-#else	    	    
+#else        
             ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
-            if(  ( lattice->solids[0][ 
-                  XYZ2N( ia, ja, ka, ni, nj)].is_solid )) 
+            if(  ( lattice->solids[0][
+                  XYZ2N( ia, ja, ka, ni, nj)].is_solid ))
             {
               sum_x += WD*vx[a];
-              sum_y += WD*vy[a]; 
-              sum_z += WD*vz[a]; 
+              sum_y += WD*vy[a];
+              sum_z += WD*vz[a];
             }
-#endif	    
+#endif  
           } //a = 7,....18
 
 #if 0
@@ -1490,14 +1490,14 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
           sforce[0][0] = -lattice->param.big_V0_solid[0]*( sum_x)  *lattice->param.rhow;
           sforce[0][1] = -lattice->param.big_V0_solid[0]*( sum_y)  *lattice->param.rhow;
           sforce[0][2] = -lattice->param.big_V0_solid[0]*( sum_z)  *lattice->param.rhow;
-    
+
 //          sforce[1][0] = -lattice->param.big_V0_solid[1]*( sum_x) *lattice->macro_vars[1][n].rho *lattice->param.rhow;
 //          sforce[1][1] = -lattice->param.big_V0_solid[1]*( sum_y) *lattice->macro_vars[1][n].rho *lattice->param.rhow;
 //          sforce[1][2] = -lattice->param.big_V0_solid[1]*( sum_z) *lattice->macro_vars[1][n].rho *lattice->param.rhow;
           sforce[1][0] = -lattice->param.big_V0_solid[1]*( sum_x)  *lattice->param.rhow;
           sforce[1][1] = -lattice->param.big_V0_solid[1]*( sum_y)  *lattice->param.rhow;
           sforce[1][2] = -lattice->param.big_V0_solid[1]*( sum_z)  *lattice->param.rhow;
-    
+
         } /* if( !( lattice->solids[0][ j*ni+i].is_solid )) */
 
         else
@@ -1505,7 +1505,7 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
           sforce[0][0] = 0.;
           sforce[0][1] = 0.;
           sforce[0][2] = 0.;
-      
+
           sforce[1][0] = 0.;
           sforce[1][1] = 0.;
           sforce[1][2] = 0.;
@@ -1555,7 +1555,7 @@ void compute_min_rho( lattice_ptr lattice, double *min_rho, int subs)
   {
     if( is_not_solid( lattice, n))
     {
-      rho = fabs( get_rho( lattice, subs, n)); 
+      rho = fabs( get_rho( lattice, subs, n));
       if( rho < *min_rho) { *min_rho = rho;}
     }
   }
@@ -1679,8 +1679,8 @@ void compute_ave_u( lattice_ptr lattice, double *ave_u, int subs)
   process_reduce_double_sum( lattice, ave_uz);
   process_reduce_int_sum( lattice, &nn);
 
-  if( nn != 0) 
-  { 
+  if( nn != 0)
+  {
     *ave_ux = (*ave_ux)/nn;
     *ave_uy = (*ave_uy)/nn;
     *ave_uz = (*ave_uz)/nn;
@@ -1771,15 +1771,15 @@ void compute_ave_ueq( lattice_ptr lattice, double *ave_u)
 #endif /* STORE_UEQ */
 
 #if 0
-//void compute_vorticity( 
+//void compute_vorticity(
 //       lattice_ptr lattice, int i, int j, int n, double *vor, int subs)
-void compute_vorticity( 
+void compute_vorticity(
        lattice_ptr lattice, int i, int j, int n, double *vor, int subs)
 {
   double duyx, duxy;
   int    nn[5]; // Indices of neighbors;
 
-  int    ni=lattice->param.LX, 
+  int    ni=lattice->param.LX,
          nj=lattice->param.LY;
 
   int    ip, in,
@@ -1820,10 +1820,10 @@ void compute_vorticity(
 //    "n=%d, (i,j)=(%d,%d), duyx=%f, "
 //    "nn1 = %d, nn3 = %d,"
 //    "solids1 = %d, solids3 = %d"
-//    "\n", 
-//    n, i, j, duyx, 
+//    "\n",
+//    n, i, j, duyx,
 //    nn[1], nn[3],
-//    lattice->solids[subs][nn[1]].is_solid, 
+//    lattice->solids[subs][nn[1]].is_solid,
 //    lattice->solids[subs][nn[3]].is_solid);
 
   // Derivative of ux wrt y.
@@ -1858,7 +1858,7 @@ void compute_vorticity(
 
 //void compute_max_vor(
 //       lattice_ptr lattice,double *max_vor_p,double *max_vor_n, int subs)
-void compute_max_vor( 
+void compute_max_vor(
        lattice_ptr lattice, double *max_vor_p, double *max_vor_n, int subs)
 {
   int n;
@@ -1898,7 +1898,7 @@ void compute_max_vor(
   } /* for( n=0; n<=lattice->NumNodes; n++) */
 
 #if 0 && VERBOSITY_LEVEL > 0
-  printf("compute_max_vor() -- nnz = %d.  nnz/NumNodes = %f\n", 
+  printf("compute_max_vor() -- nnz = %d.  nnz/NumNodes = %f\n",
     nnz, (double)nnz/(double)lattice->NumNodes);
 #endif /* 0 && VERBOSITY_LEVEL > 0 */
 
@@ -1906,7 +1906,7 @@ void compute_max_vor(
 
 //void compute_ave_vor(
 //       lattice_ptr lattice,double *ave_vor_p,double *ave_vor_n, int subs)
-void compute_ave_vor( 
+void compute_ave_vor(
        lattice_ptr lattice, double *ave_vor_p, double *ave_vor_n, int subs)
 {
   int n;
@@ -1955,7 +1955,7 @@ void compute_ave_vor(
   if( num_n > 0) { *ave_vor_n /= num_n;}
 
 #if 0 && VERBOSITY_LEVEL > 0
-  printf("compute_ave_vor() -- nnz = %d.  nnz/NumNodes = %f\n", 
+  printf("compute_ave_vor() -- nnz = %d.  nnz/NumNodes = %f\n",
     nnz, (double)nnz/(double)lattice->NumNodes);
 #endif /* VERBOSITY_LEVEL > 0 */
 

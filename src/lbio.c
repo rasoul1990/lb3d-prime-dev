@@ -14,8 +14,8 @@
 // Some compilers, e.g., VC++, don't have the usual round() function
 // in their math library.  Alternatively, ROUND can be defined as
 // ceil or floor or some other rounding function.  It is used in
-// the below routines for converting the real number valued of 
-// quantities at a lattice node into integer RGB values for writing 
+// the below routines for converting the real number valued of
+// quantities at a lattice node into integer RGB values for writing
 // to BMP files.
 #define ROUND floor
 
@@ -35,7 +35,7 @@ void output_frame( lattice_ptr lattice)
       printf("\n");
       printf( "========================================"
               "========================================\n");
-      printf("Begin file I/O at time = %d, frame = %d.\n", 
+      printf("Begin file I/O at time = %d, frame = %d.\n",
           lattice->time, lattice->time/lattice->param.FrameRate);
       printf("\n");
 #endif /* VERBOSITY_LEVEL > 0 */
@@ -97,7 +97,7 @@ void output_frame( lattice_ptr lattice)
 
 // void dump_frame_info( struct lattice_struct *lattice)
 //##############################################################################
-// 
+//
 // D U M P   F R A M E   I N F O
 //
 void dump_frame_summary( struct lattice_struct *lattice)
@@ -115,16 +115,16 @@ void dump_frame_summary( struct lattice_struct *lattice)
   {
     if( get_num_procs( lattice) > 1)
     {
-      sprintf( filename, "./out/frames%dx%dx%d_subs%02d_proc%04d.dat", 
-        get_g_LX( lattice), 
-        get_g_LY( lattice), 
+      sprintf( filename, "./out/frames%dx%dx%d_subs%02d_proc%04d.dat",
+        get_g_LX( lattice),
+        get_g_LY( lattice),
         get_g_LZ( lattice), subs, get_proc_id( lattice));
     }
     else
     {
-      sprintf( filename, "./out/frames%dx%dx%d_subs%02d.dat", 
-        get_g_LX( lattice), 
-        get_g_LY( lattice), 
+      sprintf( filename, "./out/frames%dx%dx%d_subs%02d.dat",
+        get_g_LX( lattice),
+        get_g_LY( lattice),
         get_g_LZ( lattice), subs );
     }
 
@@ -140,7 +140,7 @@ void dump_frame_summary( struct lattice_struct *lattice)
       {
         // Put a header on the file.
         fprintf( o, "\n");
-        fprintf( o, 
+        fprintf( o,
         "        time "
         "    min_u[x] "
         "    min_u[y] "
@@ -158,7 +158,7 @@ void dump_frame_summary( struct lattice_struct *lattice)
         "     max_rho "
         "     ave_rho "
         "     max/ave "
-        "\n");fprintf( o, 
+        "\n");fprintf( o,
         "------------ "
         "------------ "
         "------------ "
@@ -201,21 +201,21 @@ void dump_frame_summary( struct lattice_struct *lattice)
     u_y_ratio = ( ave_u[1] != 0.) ? ( max_u[1]/ave_u[1]):( 1.);
     u_z_ratio = ( ave_u[2] != 0.) ? ( max_u[2]/ave_u[2]):( 1.);
 
-    fprintf( o, 
+    fprintf( o,
       "%12d "
       "%12.7f %12.7f %12.7f "
       "%12.7f %12.7f %12.7f "
       "%12.7f %12.7f %12.7f "
       "%12.7f %12.7f %12.7f "
       "%12.7f %12.7f %12.7f "
-      "%12.7f\n", 
-      lattice->time, 
-      min_u[0], min_u[1], min_u[2], 
-      max_u[0], max_u[1], max_u[2], 
-      ave_u[0], ave_u[1], ave_u[2], 
-      (fabs(u_x_ratio)<=9999.)?(u_x_ratio):(1./0.), 
-      (fabs(u_y_ratio)<=9999.)?(u_y_ratio):(1./0.), 
-      (fabs(u_z_ratio)<=9999.)?(u_z_ratio):(1./0.), 
+      "%12.7f\n",
+      lattice->time,
+      min_u[0], min_u[1], min_u[2],
+      max_u[0], max_u[1], max_u[2],
+      ave_u[0], ave_u[1], ave_u[2],
+      (fabs(u_x_ratio)<=9999.)?(u_x_ratio):(1./0.),
+      (fabs(u_y_ratio)<=9999.)?(u_y_ratio):(1./0.),
+      (fabs(u_z_ratio)<=9999.)?(u_z_ratio):(1./0.),
       min_rho,
       max_rho,
       ave_rho,
@@ -225,13 +225,13 @@ void dump_frame_summary( struct lattice_struct *lattice)
 
 #if VERBOSITY_LEVEL > 0
     printf("%s %d %04d >> dump_frame_info() -- "
-      "Wrote/appended to file \"%s\"\n", 
+      "Wrote/appended to file \"%s\"\n",
       __FILE__, __LINE__, get_proc_id(lattice), filename);
 #endif /* VERBOSITY_LEVEL > 0 */
 
 #if VERBOSITY_LEVEL > 0
     printf("%s %d %04d >> dump_frame_info() -- "
-      "frame = %d/%d = %d\n", 
+      "frame = %d/%d = %d\n",
       __FILE__, __LINE__, get_proc_id(lattice),
       lattice->time,
       lattice->param.FrameRate,
@@ -244,8 +244,8 @@ void dump_frame_summary( struct lattice_struct *lattice)
 
 // void dump_macro_vars( struct lattice_struct *lattice)
 //##############################################################################
-// 
-// D U M P   M A C R O S C O P I C 
+//
+// D U M P   M A C R O S C O P I C
 //
 //  - Output the macro_vars variables to files.
 //
@@ -281,49 +281,49 @@ void dump_macro_vars( struct lattice_struct *lattice, int time)
     {
     printf("%s %d %04d >> "
       "min_rho = %20.17f, max_rho = %20.17f, ave_rho = %20.17f\n",
-      __FILE__,__LINE__, get_proc_id(lattice), 
+      __FILE__,__LINE__, get_proc_id(lattice),
       min_rho, max_rho, ave_rho);
    } /* if( is_on_root_proc( lattice)) */
 
 #if WRITE_MACRO_VAR_RAW_FILES
-    sprintf( filename, "./out/rho_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw", 
+    sprintf( filename, "./out/rho_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
         ni, nj, nk, frame, subs, get_proc_id( lattice));
-    write_raw( 
+    write_raw(
       lattice,
       &(lattice->macro_vars[subs][0].rho),
       /*stride*/ 4,
-      max_rho, 
-      /*min_rho*/0., 
+      max_rho,
+      /*min_rho*/0.,
       filename);
 #endif /* (WRITE_MACRO_VAR_RAW_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
-    sprintf( filename, "./out/rho_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat", 
+    sprintf( filename, "./out/rho_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat",
         ni, nj, nk, frame, subs, get_proc_id( lattice));
-    write_dat( 
+    write_dat(
       lattice,
       &(lattice->macro_vars[subs][0].rho),
       /*stride*/ 4,
-      max_rho, 
-      /*min_rho*/0., 
+      max_rho,
+      /*min_rho*/0.,
       filename);
 #endif /* (WRITE_MACRO_VAR_DAT_FILES) */
-    
+
     compute_max_u( lattice, max_u, subs);
     compute_min_u( lattice, min_u, subs);
     compute_ave_u( lattice, ave_u, subs);
 
-    
+
    if( is_on_root_proc( lattice))
    {
     printf("%s %d %04d >> "
       "min_u = [ %f %f %f], max_u = [ %f %f %f], ave_u = [ %f %f %f]\n",
       __FILE__,__LINE__, get_proc_id(lattice),
     min_u[0], min_u[1], min_u[2],
-    max_u[0], max_u[1], max_u[2], 
+    max_u[0], max_u[1], max_u[2],
     ave_u[0], ave_u[1], ave_u[2] );
    } /* if( is_on_root_proc( lattice)) */
 
- /* 
+ /*
    j_slice = (int)floor((double)nj/2.);
 
     k_slice = 0;
@@ -349,7 +349,7 @@ void dump_macro_vars( struct lattice_struct *lattice, int time)
       __FILE__,__LINE__, get_proc_id(lattice), k_slice+get_g_SZ(lattice));
     for( i=0; i<ni; i++)
     {
-      printf(" %f ", 
+      printf(" %f ",
         lattice->macro_vars[subs][XYZ2N(i,j_slice,k_slice,ni,nj)].u[2]);
     }
     printf("]\n");
@@ -359,7 +359,7 @@ void dump_macro_vars( struct lattice_struct *lattice, int time)
       __FILE__,__LINE__, get_proc_id(lattice), k_slice+get_g_SZ(lattice));
     for( i=0; i<ni; i++)
     {
-      printf(" %f ", 
+      printf(" %f ",
         lattice->macro_vars[subs][XYZ2N(i,j_slice,k_slice,ni,nj)].u[2]);
     }
     printf("]\n");
@@ -369,7 +369,7 @@ void dump_macro_vars( struct lattice_struct *lattice, int time)
       __FILE__,__LINE__, get_proc_id(lattice), k_slice+get_g_SZ(lattice));
     for( i=0; i<ni; i++)
     {
-      printf(" %f ", 
+      printf(" %f ",
         lattice->macro_vars[subs][XYZ2N(i,j_slice,k_slice,ni,nj)].u[2]);
     }
     printf("]\n");
@@ -381,84 +381,101 @@ void dump_macro_vars( struct lattice_struct *lattice, int time)
       __FILE__,__LINE__, get_proc_id(lattice), k_slice+get_g_SZ(lattice));
     for( i=0; i<ni; i++)
     {
-      printf(" %f ", 
+      printf(" %f ",
         lattice->macro_vars[subs][XYZ2N(i,j_slice,k_slice,ni,nj)].u[2]);
     }
     printf("]\n");
 */
 
 #if WRITE_MACRO_VAR_RAW_FILES
-//    sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw", 
+    sprintf( filename, "./out/u_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
+        ni, nj, nk, frame, subs, get_proc_id( lattice));
+    write_raw_u(
+      lattice,
+      &(lattice->macro_vars[subs][0].u[0]),
+      &(lattice->macro_vars[subs][0].u[1]),
+      &(lattice->macro_vars[subs][0].u[2]),
+      /*stride*/ 4,
+      max_u[0],
+      /*min_u[0]*/0.,
+      max_u[1],
+      /*min_u[1]*/0.,
+      max_u[2],
+      /*min_u[2]*/0.,
+      filename);
+#endif
+#if WRITE_MACRO_VAR_RAW_FILES
+//    sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
 //        ni, nj, nk, frame, subs, get_proc_id( lattice));
-//    write_raw( 
+//    write_raw(
 //      lattice,
 //      &(lattice->macro_vars[subs][0].u[0]),
 //      /*stride*/ 4,
-//      max_u[0], 
-//      /*min_u[0]*/0., 
+//      max_u[0],
+//      /*min_u[0]*/0.,
 //      filename);
 #endif /* (WRITE_MACRO_VAR_RAW_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
-    sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat", 
+    sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat",
         ni, nj, nk, frame, subs, get_proc_id( lattice));
-    write_dat( 
+    write_dat(
       lattice,
       &(lattice->macro_vars[subs][0].u[0]),
       /*stride*/ 4,
-      max_u[0], 
-      /*min_u[0]*/0., 
+      max_u[0],
+      /*min_u[0]*/0.,
       filename);
 #endif /* (WRITE_MACRO_VAR_DAT_FILES) */
 #if WRITE_MACRO_VAR_RAW_FILES
-//    sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw", 
+//    sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
 //        ni, nj, nk, frame, subs, get_proc_id( lattice));
-//    write_raw( 
+//    write_raw(
 //      lattice,
 //      &(lattice->macro_vars[subs][0].u[1]),
 //      /*stride*/ 4,
-//      max_u[1], 
-//      /*min_u[1]*/0., 
+//      max_u[1],
+//      /*min_u[1]*/0.,
 //      filename);
 #endif /* (WRITE_MACRO_VAR_RAW_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
-    sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat", 
+    sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat",
         ni, nj, nk, frame, subs, get_proc_id( lattice));
-    write_dat( 
+    write_dat(
       lattice,
       &(lattice->macro_vars[subs][0].u[1]),
       /*stride*/ 4,
-      max_u[1], 
-      /*min_u[1]*/0., 
+      max_u[1],
+      /*min_u[1]*/0.,
       filename);
 #endif /* (WRITE_MACRO_VAR_DAT_FILES) */
 #if WRITE_MACRO_VAR_RAW_FILES
-//    sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw", 
+//    sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
 //        ni, nj, nk, frame, subs, get_proc_id( lattice));
-//    write_raw( 
+//    write_raw(
 //      lattice,
 //      &(lattice->macro_vars[subs][0].u[2]),
 //      /*stride*/ 4,
-//      max_u[2], 
-//      /*min_u[2]*/0., 
+//      max_u[2],
+//      /*min_u[2]*/0.,
 //      filename);
 #endif /* (WRITE_MACRO_VAR_RAW_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
-    sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat", 
+    sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat",
         ni, nj, nk, frame, subs, get_proc_id( lattice));
-    write_dat( 
+    write_dat(
       lattice,
       &(lattice->macro_vars[subs][0].u[2]),
       /*stride*/ 4,
-      max_u[2], 
-      /*min_u[2]*/0., 
+      max_u[2],
+      /*min_u[2]*/0.,
       filename);
 #endif /* (WRITE_MACRO_VAR_DAT_FILES) */
 
 //------------------------------------------------------------------------------------------
 //
-//	Write Vmag files for post processing large domains that have memory issues
+//  Write Vmag files for post processing large domains that have memory issues
 //
-//	edit: peter
+//  edit: peter
 //
 #if WRITE_VMAG
 
@@ -469,37 +486,37 @@ double vmagmax=0, vmagmin=0;
 float vmag[ni*nj*nk];
 double vmagscale[ni*nj*nk];
 
-	for(eye=0; eye<(ni*nj*nk);eye++)
-	{
-		vx=lattice->macro_vars[subs][eye].u[0];
-		vxsq = vx*vx;
-		vy=lattice->macro_vars[subs][eye].u[1];
-		vysq = vy*vy;
-		vz=lattice->macro_vars[subs][eye].u[2];
-		vzsq = vz*vz;
-		mag = sqrt(vxsq+vysq+vzsq);
-		vmag[eye] = mag;
-		if(vmag[eye]>vmagmax)
-		{
-			vmagmax = vmag[eye];
-		}
-		if(vmag[eye]<vmagmin)
-		{
-			vmagmin = vmag[eye];
-		}
-	}
+  for(eye=0; eye<(ni*nj*nk);eye++)
+  {
+    vx=lattice->macro_vars[subs][eye].u[0];
+    vxsq = vx*vx;
+    vy=lattice->macro_vars[subs][eye].u[1];
+    vysq = vy*vy;
+    vz=lattice->macro_vars[subs][eye].u[2];
+    vzsq = vz*vz;
+    mag = sqrt(vxsq+vysq+vzsq);
+    vmag[eye] = mag;
+    if(vmag[eye]>vmagmax)
+    {
+      vmagmax = vmag[eye];
+    }
+    if(vmag[eye]<vmagmin)
+    {
+      vmagmin = vmag[eye];
+    }
+  }
 
 char *ffilename[1024];
 FILE *out;
-	sprintf( ffilename,"./out/vmag_proc%04d.txt", get_proc_id( lattice));
-	out = fopen( ffilename, "w");
-		for(eye=0; eye<(ni*nj*nk);eye++)
-		{
-			fprintf(out,"%f\n",vmag[eye]);
-		//	vmagscale[eye] = (255.*vmag[eye] / vmagmax);
-		//	printf("vmag [%d] = %1.10f,   vmagscale[%d] = %3.5f \n", eye, vmag[eye], eye, vmagscale[eye]);
-		}
-	fclose(out);
+  sprintf( ffilename,"./out/vmag_proc%04d.txt", get_proc_id( lattice));
+  out = fopen( ffilename, "w");
+    for(eye=0; eye<(ni*nj*nk);eye++)
+    {
+      fprintf(out,"%f\n",vmag[eye]);
+    //  vmagscale[eye] = (255.*vmag[eye] / vmagmax);
+    //  printf("vmag [%d] = %1.10f,   vmagscale[%d] = %3.5f \n", eye, vmag[eye], eye, vmagscale[eye]);
+    }
+  fclose(out);
 //printf("vmagmax = %f, vmagmin = %f \n", vmagmax, vmagmin);
 //printf("velocity [%d] = %1.10f, Squared = %1.10f \n", eye, lattice->macro_vars[subs][eye].u[0], (lattice->macro_vars[subs][eye].u[0]*lattice->macro_vars[subs][eye].u[0]));
 #endif /*WRITE_VMAG*/
@@ -508,17 +525,17 @@ FILE *out;
   } /* for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
 
 #if WRITE_PLOT_FILE
-    if(NUM_FLUID_COMPONENTS == 2) 
-    {  
-    sprintf( filename, "./out/plt_%dx%dx%d_frame%04d_proc%04d.dat", 
+    if(NUM_FLUID_COMPONENTS == 2)
+    {
+    sprintf( filename, "./out/plt_%dx%dx%d_frame%04d_proc%04d.dat",
         ni, nj, nk, frame, get_proc_id( lattice));
-    sprintf( filename2, "./out/R2_%dx%dx%d_frame%04d_proc%04d.dat", 
+    sprintf( filename2, "./out/R2_%dx%dx%d_frame%04d_proc%04d.dat",
         ni, nj, nk, frame, get_proc_id( lattice));
     printf("Huang tecplot 2 component\n");
-    write_plt( 
+    write_plt(
       lattice,
       &(lattice->macro_vars[0][0].rho),
-      &(lattice->macro_vars[1][0].rho),      
+      &(lattice->macro_vars[1][0].rho),
       filename, filename2);
 
     //get saturation
@@ -526,10 +543,10 @@ FILE *out;
 #if PARALLEL
   basek = get_g_SZ( lattice);
 #endif
-        sprintf( fn3, "./out/saturation_proc%04d.dat", 
+        sprintf( fn3, "./out/saturation_proc%04d.dat",
         get_proc_id( lattice));
   if(frame ==0)
-  {  
+  {
   if(  !( sat = fopen(fn3, "w+")))
    {
     printf(" %04d>> ERROR: "
@@ -539,9 +556,9 @@ FILE *out;
       fn3);
     process_exit(1);
    }
-  } 
+  }
   if(frame !=0)
-  {  
+  {
   if(  !( sat = fopen(fn3, "a+")))
    {
     printf(" %04d>> ERROR: "
@@ -551,7 +568,7 @@ FILE *out;
       fn3);
     process_exit(1);
    }
-  } 
+  }
   count =0;
   count1 =0;
   count2 =0;
@@ -560,10 +577,10 @@ FILE *out;
   {
 
      if( (N2Z(n,ni,nj,nk)+basek >lattice->param.z1 &&
-		N2Z(n,ni,nj,nk)+basek <lattice->param.z2 
-			     ) ) 
-     {     
-	     count++;
+    N2Z(n,ni,nj,nk)+basek <lattice->param.z2
+           ) )
+     {
+       count++;
       if ( lattice->macro_vars[0][n].rho> (lattice->param.rho_A[0]+lattice->param.rho_A[1])/2.) count1 ++;
       if ( lattice->solids[0][n].is_solid) count2++;
      }
@@ -571,28 +588,28 @@ FILE *out;
   fprintf( sat, " %7d, %7d, %7d, %7d\n",   count, count2, count-count2, count1  );
 
 
-    sprintf( filename, "./out/plt_%dx%dx%d_frame%04d_uvw.dat", 
+    sprintf( filename, "./out/plt_%dx%dx%d_frame%04d_uvw.dat",
         ni, nj, nk, frame, get_proc_id( lattice));
     printf("Huang tecplot 2 UVZ component\n");
-    write_plt_uvw( 
+    write_plt_uvw(
       lattice,
       &(lattice->macro_vars[0][0].rho),
-      &(lattice->macro_vars[1][0].rho),      
-      filename); 
+      &(lattice->macro_vars[1][0].rho),
+      filename);
  fclose(sat);
-    } 
+    }
 
     else
-    {  
-    sprintf( filename, "./out/plt_%dx%dx%d_frame%04d_proc%04d.dat", 
+    {
+    sprintf( filename, "./out/plt_%dx%dx%d_frame%04d_proc%04d.dat",
         ni, nj, nk, frame, get_proc_id( lattice));
     printf("Huang tecplot 1 component\n");
-    write_plt_single( 
+    write_plt_single(
       lattice,
       &(lattice->macro_vars[0][0].rho),
       filename);
     }
-#endif    
+#endif
 
 } /* void dump_macro_vars( struct lattice_struct *lattice, int time) */
 
@@ -620,7 +637,7 @@ void read_solids( lattice_ptr lattice, char *filename)
       __FILE__,__LINE__, get_proc_id(lattice), filename);
     process_exit(1);
   }
-  
+
   size = get_g_NumNodes( lattice)*sizeof(unsigned char);
   if( !( raw = (unsigned char *)malloc(size)))
   {
@@ -628,8 +645,8 @@ void read_solids( lattice_ptr lattice, char *filename)
         "ERROR: Can't malloc image buffer. (Exiting!)\n", __FILE__, __LINE__, get_proc_id(lattice));
     process_exit(1);
   }
- 
-  printf("%s %d %04d >> Reading %d bytes from file \"%s\".\n", 
+
+  printf("%s %d %04d >> Reading %d bytes from file \"%s\".\n",
       __FILE__, __LINE__, get_proc_id(lattice), size, filename);
 
   //size_read = read( fd, raw, size);
@@ -638,7 +655,7 @@ void read_solids( lattice_ptr lattice, char *filename)
   if( size_read != size)
   {
     printf("%s %d %04d >> read_solids() -- "
-        "ERROR: Can't read image data: read = %d. (Exiting!)\n", 
+        "ERROR: Can't read image data: read = %d. (Exiting!)\n",
           __FILE__, __LINE__, get_proc_id(lattice), size_read);
     process_exit(1);
   }
@@ -652,7 +669,7 @@ void read_solids( lattice_ptr lattice, char *filename)
     {
       lattice->solids[subs][n].is_solid = raw[g_n];
     }
-    //printf("%s %d %04d >> solids[%d] = %d.\n", 
+    //printf("%s %d %04d >> solids[%d] = %d.\n",
     //    __FILE__, __LINE__, get_proc_id(lattice), n, (int)lattice->solids[0][n].is_solid);
     g_n++;
   }
@@ -686,7 +703,7 @@ void read_solids( lattice_ptr lattice, char *filename)
             if( is_solid( lattice,
                           XYZ2N( i, j, k,
                                  get_LX( lattice),
-                                 get_LY( lattice)) ) ) 
+                                 get_LY( lattice)) ) )
             {
               printf("#");
             }
@@ -747,8 +764,8 @@ void read_solids( lattice_ptr lattice, char *filename)
     process_exit(1);
   }
  for (i =1 ; i<=7; i++)
- { 
-	 skip_label( in);
+ {
+   skip_label( in);
  }
 
   for(k =1; k<=lattice->param.LZ; k++)
@@ -757,7 +774,7 @@ void read_solids( lattice_ptr lattice, char *filename)
   {
   for(i =1; i<=lattice->param.LX; i++)
   {
- 	fscanf( in, "%d", &( raw[n])         );
+   fscanf( in, "%d", &( raw[n])         );
   }
   }
   }
@@ -770,7 +787,7 @@ void read_solids( lattice_ptr lattice, char *filename)
     {
       lattice->solids[subs][n].is_solid = raw[g_n]*255;
     }
-    //printf("%s %d %04d >> solids[%d] = %d.\n", 
+    //printf("%s %d %04d >> solids[%d] = %d.\n",
     //    __FILE__, __LINE__, get_proc_id(lattice), n, (int)lattice->solids[0][n].is_solid);
     g_n++;
   }
@@ -778,7 +795,7 @@ void read_solids( lattice_ptr lattice, char *filename)
   free(raw);
 
 #if 1
-  if( // Domain not too big. (Tweak to suit.) 
+  if( // Domain not too big. (Tweak to suit.)
       ( get_LX(lattice) <= 12
       &&
         get_LY(lattice) <= 12
@@ -804,7 +821,7 @@ void read_solids( lattice_ptr lattice, char *filename)
             if( is_solid( lattice,
                           XYZ2N( i, j, k,
                                  get_LX( lattice),
-                                 get_LY( lattice)) ) ) 
+                                 get_LY( lattice)) ) )
             {
               printf("#");
             }
@@ -826,12 +843,13 @@ void read_solids( lattice_ptr lattice, char *filename)
 #endif
 }
 */
-void write_raw( 
+
+void write_raw(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
        int     stride,
-       double  a_max, 
-       double  a_min, 
+       double  a_max,
+       double  a_min,
        char   *filename)
 {
   int size;
@@ -862,8 +880,8 @@ void write_raw(
     {
       Xpix1[n] = (unsigned char)0;
     }
-    //printf("%s %d %04d >> write_raw() -- Xpix1[%d] = 255*ROUND(%f) = %d.\n", 
-    //    __FILE__, __LINE__, get_proc_id(lattice), 
+    //printf("%s %d %04d >> write_raw() -- Xpix1[%d] = 255*ROUND(%f) = %d.\n",
+    //    __FILE__, __LINE__, get_proc_id(lattice),
     //  n, (a[stride*n]-a_min)/(a_max-a_min), (int)Xpix1[n]);
   }
 
@@ -876,17 +894,84 @@ void write_raw(
 
   fclose(infile);
 
-  printf("%s %d %04d >> write_raw() -- Wrote to file \"%s\".\n", 
+  printf("%s %d %04d >> write_raw() -- Wrote to file \"%s\".\n",
       __FILE__, __LINE__, get_proc_id(lattice), filename);
 } /* void write_raw( lattice_ptr lattice, double *a,  ... */
 
 
-/*void write_raw1( 
+void write_raw_u(
        lattice_ptr lattice,
-       double *a, 
+       double *ux,
+       double *uy,
+       double *uz,
        int     stride,
-       double  a_max, 
-       double  a_min, 
+       double  ux_max,
+       double  ux_min,
+       double  uy_max,
+       double  uy_min,
+       double  uz_max,
+       double  uz_min,
+       char   *filename)
+{
+  int size;
+  int n, ni, nj, nk;
+  unsigned char *Xpix1;
+  FILE *infile;
+  double a_max = sqrt( ux_max*ux_max + uy_max*uy_max + uz_max*uz_max);
+  double a_min = sqrt( ux_min*ux_min + uy_min*uy_min + uz_min*uz_min);
+  double a;
+
+  ni = lattice->param.LX;
+  nj = lattice->param.LY;
+  nk = lattice->param.LZ;
+
+  size = ni*nj*nk*sizeof(unsigned char);
+
+  if(!(Xpix1 = ( unsigned char*)malloc( size)))
+  {
+    printf("%s %d %04d >> ERROR: Can't malloc Xpix1. (Exiting!)\n",
+      __FILE__,__LINE__, get_proc_id(lattice));
+    process_exit(1);
+  }
+  for( n=0; n<ni*nj*nk; n++)
+  {
+    if( !lattice->solids[0][n].is_solid)
+    {
+//      Xpix1[n] = (unsigned char)ROUND(255.*(a[stride*n]-a_min)/(a_max-a_min));
+      a = sqrt( ux[stride*n]*ux[stride*n]
+              + uy[stride*n]*uy[stride*n]
+              + uz[stride*n]*uz[stride*n]);
+      Xpix1[n] = (unsigned char)ROUND(1.+254.*(a-a_min)/(a_max-a_min));
+    }
+    else
+    {
+      Xpix1[n] = (unsigned char)0;
+    }
+    //printf("%s %d %04d >> write_raw() -- Xpix1[%d] = 255*ROUND(%f) = %d.\n",
+    //    __FILE__, __LINE__, get_proc_id(lattice),
+    //  n, (a[stride*n]-a_min)/(a_max-a_min), (int)Xpix1[n]);
+  }
+
+  if (!(infile = fopen(filename,"w")))
+  {
+    printf("Can't creat file\n");
+    process_exit(-1);
+  }
+  fwrite( (char*)Xpix1, 1, size, infile);
+
+  fclose(infile);
+
+  printf("%s %d %04d >> write_raw() -- Wrote to file \"%s\".\n",
+      __FILE__, __LINE__, get_proc_id(lattice), filename);
+} /* void write_raw( lattice_ptr lattice, double *a,  ... */
+
+
+/*void write_raw1(
+       lattice_ptr lattice,
+       double *a,
+       int     stride,
+       double  a_max,
+       double  a_min,
        char   *filename)
 {
   int size;
@@ -901,26 +986,26 @@ void write_raw(
   nj = lattice->param.LY;
   nk = lattice->param.LZ;
 //       R      G       B
-//14	88	0	0
-//15	114	0	1
-//16	140	0	1
-//17	166	0	1        decane
-//18	192	0	1
-//19	218	0	1
-//20	244	0	1
+//14  88  0  0
+//15  114  0  1
+//16  140  0  1
+//17  166  0  1        decane
+//18  192  0  1
+//19  218  0  1
+//20  244  0  1
 //
-//33	255	0	2
-//34	255	0	78
-//35	255	0	171
-//36	127	0	254      
-//37	0	0	254
-//38	0	0	254      water
+//33  255  0  2
+//34  255  0  78
+//35  255  0  171
+//36  127  0  254
+//37  0  0  254
+//38  0  0  254      water
 //
-//64	0	0	254
-//65	0	0	178
-//66	88	36	101      
-//67	213	198	24
-//68	254	254	0       solid
+//64  0  0  254
+//65  0  0  178
+//66  88  36  101
+//67  213  198  24
+//68  254  254  0       solid
 
   size = ni*nj*nk*sizeof(unsigned char);
 
@@ -947,8 +1032,8 @@ void write_raw(
     {
       Xpix1[n] = (unsigned char)255.;
     }
-    //printf("%s %d %04d >> write_raw() -- Xpix1[%d] = 255*ROUND(%f) = %d.\n", 
-    //    __FILE__, __LINE__, get_proc_id(lattice), 
+    //printf("%s %d %04d >> write_raw() -- Xpix1[%d] = 255*ROUND(%f) = %d.\n",
+    //    __FILE__, __LINE__, get_proc_id(lattice),
     //  n, (a[stride*n]-a_min)/(a_max-a_min), (int)Xpix1[n]);
   }
 
@@ -961,17 +1046,17 @@ void write_raw(
 
   fclose(infile);
 
-  printf("%s %d %04d >> write_raw() -- Wrote to file \"%s\".\n", 
+  printf("%s %d %04d >> write_raw() -- Wrote to file \"%s\".\n",
       __FILE__, __LINE__, get_proc_id(lattice), filename);
 } // void write_raw( lattice_ptr lattice, double *a,  ... */
 //cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-void write_dat( 
+void write_dat(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
        int     stride,
-       double  a_max, 
-       double  a_min, 
+       double  a_max,
+       double  a_min,
        char   *filename)
 {
   int size;
@@ -1014,13 +1099,13 @@ void write_dat(
 
   fclose(infile);
 
-  printf("%s %d %04d >> write_dat() -- Wrote to file \"%s\".\n", 
+  printf("%s %d %04d >> write_dat() -- Wrote to file \"%s\".\n",
       __FILE__, __LINE__, get_proc_id(lattice), filename);
 
 } /* void write_dat( lattice_ptr lattice, double *a,  ... */
 
 #if (NUM_FLUID_COMPONENTS==2)
-void write_plt( 
+void write_plt(
        lattice_ptr lattice,
        double *a, double *b,
        char   *filename, char *filename2)
@@ -1041,7 +1126,7 @@ void write_plt(
 
   size = ni*nj*nk*sizeof(double);
 
- 
+
   if (!(infile = fopen(filename,"w")))
   {
     printf("Can't creat file\n");
@@ -1075,7 +1160,7 @@ void write_plt(
     printf("Can't creat file\n");
     process_exit(-1);
   }
-  //ptinf out the 2D plt file of upper inlet surface 
+  //ptinf out the 2D plt file of upper inlet surface
   fprintf(FL3,"variables = i, j, rho1, u, v, w\n");
   fprintf(FL3,"zone i=%d, j=%d,  f=point\n", ni,  nj);
    v_in = 0.;
@@ -1106,31 +1191,31 @@ void write_plt(
   for( n=0; n<ni*nj*nk; n++)
   {
    if( lattice->solids[0][n].is_solid)
-     {	   
+     {  
       a[4*n] = -1.;
       lattice->macro_vars[1][n].rho = -1.;
-     } 
+     }
 
      if(  get_proc_id(lattice) == get_num_procs(lattice)-1 &&
 N2Z(n,ni,nj,nk)+basek == (get_num_procs(lattice) *lattice->param.LZ-1) )
-     { 
-	     v_in= v_in + a[4*n+3];
-	     v_inupr= v_inupr +lattice->ueq[n].u[2];
-     
- 	 fprintf(FL3,"%4d %4d %7.4f  %2.9f  %2.9f %2.9f \n",N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), a[4*n], a[4*n+1], a[4*n+2], a[4*n+3] ); //MS changed format from 8.5 to 2.9
-     }
-     if(get_proc_id(lattice) == 0 && N2Z(n,ni,nj,nk)+basek == 1) 
      {
-	     v_out= v_out + a[4*n+3];
+       v_in= v_in + a[4*n+3];
+       v_inupr= v_inupr +lattice->ueq[n].u[2];
+
+    fprintf(FL3,"%4d %4d %7.4f  %2.9f  %2.9f %2.9f \n",N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), a[4*n], a[4*n+1], a[4*n+2], a[4*n+3] ); //MS changed format from 8.5 to 2.9
+     }
+     if(get_proc_id(lattice) == 0 && N2Z(n,ni,nj,nk)+basek == 1)
+     {
+       v_out= v_out + a[4*n+3];
              v_outupr= v_outupr +lattice->ueq[n].u[2];
- 	 fprintf(FL4,"%4d %4d %7.4f  %2.9f  %2.9f %2.9f \n",N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), a[4*n], a[4*n+1], a[4*n+2], a[4*n+3] ); //MS changed format from 8.5 to 2.9
+    fprintf(FL4,"%4d %4d %7.4f  %2.9f  %2.9f %2.9f \n",N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), a[4*n], a[4*n+1], a[4*n+2], a[4*n+3] ); //MS changed format from 8.5 to 2.9
 
      }
      if( (N2Z(n,ni,nj,nk)+basek >lattice->param.z1 &&
-		N2Z(n,ni,nj,nk)+basek <lattice->param.z2 
-			     ) && (a[4*n] > (lattice->param.rho_A[0]+lattice->param.rho_A[1])/2.) ) 
+    N2Z(n,ni,nj,nk)+basek <lattice->param.z2
+           ) && (a[4*n] > (lattice->param.rho_A[0]+lattice->param.rho_A[1])/2.) )
      {count++;}
-//  fprintf( infile, "%4d  %4d %4d  %7.4f  %7.4f  %2d\n", N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), N2Z(n,ni,nj,nk), 
+//  fprintf( infile, "%4d  %4d %4d  %7.4f  %7.4f  %2d\n", N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), N2Z(n,ni,nj,nk),
 //  a[/*stride*/ 4*n], lattice->macro_vars[1][n].rho , lattice->solids[0][n].is_solid/255  );
   fprintf( infile, " %7.4f \n",   a[/*stride*/ 4*n]  );
   fprintf( infile2, " %7.4f \n",   b[/*stride*/ 4*n]  );
@@ -1154,15 +1239,15 @@ N2Z(n,ni,nj,nk)+basek == (get_num_procs(lattice) *lattice->param.LZ-1) )
   fclose(infile);
   fclose(infile2);
 
-  printf("%s %d %04d >> write_tecplot_file() -- Wrote to file \"%s\".\n", 
+  printf("%s %d %04d >> write_tecplot_file() -- Wrote to file \"%s\".\n",
       __FILE__, __LINE__, get_proc_id(lattice), filename);
-  printf("%s %d >> Non-Wetting fluid nodes: %d \n", 
+  printf("%s %d >> Non-Wetting fluid nodes: %d \n",
       __FILE__, __LINE__, count);
 
 } /* void write_plt( lattice_ptr lattice, double *a,  ... */
 #endif
 
-void write_plt_uvw( 
+void write_plt_uvw(
        lattice_ptr lattice,
        double *a, double *b,
        char   *filename)
@@ -1189,14 +1274,14 @@ void write_plt_uvw(
  for( n=0; n<ni*nj*nk; n++)
   {
    if( lattice->solids[0][n].is_solid)
-     {	   
+     {  
       a[4*n] = -1.;
       lattice->macro_vars[1][n].rho = -1.;
-     } 
-   
+     }
+
 //   if(NUM_FLUID_COMPONENT ==2)
    {
-	fprintf( infile, "%4d  %4d %4d  %7.4f  %7.4f  %7.4f\n", N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), N2Z(n,ni,nj,nk), 
+  fprintf( infile, "%4d  %4d %4d  %7.4f  %7.4f  %7.4f\n", N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), N2Z(n,ni,nj,nk),
     b[/*stride*/ 4*n+1], b[/*stride*/ 4*n+2], b[/*stride*/ 4*n+3]  );
    }
 
@@ -1204,15 +1289,15 @@ void write_plt_uvw(
 
   fclose(infile);
 
-  printf("%s %d %04d >> write_tecplot_uvw_file() -- Wrote to file \"%s\".\n", 
+  printf("%s %d %04d >> write_tecplot_uvw_file() -- Wrote to file \"%s\".\n",
       __FILE__, __LINE__, get_proc_id(lattice), filename);
 
 } /* void write_plt_uvw( lattice_ptr lattice, double *a,  ... */
 
 
-void write_plt_single( 
+void write_plt_single(
        lattice_ptr lattice,
-       double *a, 
+       double *a,
        char   *filename)
 {
   int size;
@@ -1230,7 +1315,7 @@ void write_plt_single(
 
   size = ni*nj*nk*sizeof(double);
 
-  if(lattice->time==0 && get_proc_id(lattice) == get_num_procs(lattice)-1)  
+  if(lattice->time==0 && get_proc_id(lattice) == get_num_procs(lattice)-1)
   {
   if (!(FL1 = fopen("./out/in_vels.dat","w+")))
   {
@@ -1240,7 +1325,7 @@ void write_plt_single(
   fprintf(FL1, "time  integration in \n" );
 
   }//endif   if(get_proc_id(lattice) == get_num_procs(lattice)-1)
-  if(lattice->time!=0 && get_proc_id(lattice) == get_num_procs(lattice)-1)  
+  if(lattice->time!=0 && get_proc_id(lattice) == get_num_procs(lattice)-1)
   {
   if (!(FL1 = fopen("./out/in_vels.dat","a+")))
   {
@@ -1248,7 +1333,7 @@ void write_plt_single(
     process_exit(-1);
   }
   }//endif   if(get_proc_id(lattice) == get_num_procs(lattice)-1)
-  
+
   if (lattice->time==0 && get_proc_id(lattice) == 0)
   {
   if (!(FL2 = fopen("./out/out_vels.dat","w+")))
@@ -1257,7 +1342,7 @@ void write_plt_single(
     process_exit(-1);
   }
   fprintf(FL2, "time  integration in \n" );
-  
+
   }
 //if   if(get_proc_id(lattice) == 0
   if (lattice->time!=0 && get_proc_id(lattice) == 0)
@@ -1284,38 +1369,38 @@ void write_plt_single(
  for( n=0; n<ni*nj*nk; n++)
   {
    if( lattice->solids[0][n].is_solid)
-     {	   
+     {  
       a[4*n] = -1.;
-     } 
+     }
    else
      {
-	     if(  (get_proc_id(lattice) == get_num_procs(lattice)-1) && 
-			     N2Z(n,ni,nj,nk)+basek == get_num_procs(lattice) *lattice->param.LZ-1) v_in= v_in + a[4*n+3];
-	     if(  (get_proc_id(lattice) == 0) && N2Z(n,ni,nj,nk)+basek ==1) v_out= v_out + a[4*n+3];
-     }              
-  fprintf( infile, "%4d  %4d %4d  %7.4f  %2.9f %2.9f %2.9f %2d\n", N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), N2Z(n,ni,nj,nk)+basek, 
+       if(  (get_proc_id(lattice) == get_num_procs(lattice)-1) &&
+           N2Z(n,ni,nj,nk)+basek == get_num_procs(lattice) *lattice->param.LZ-1) v_in= v_in + a[4*n+3];
+       if(  (get_proc_id(lattice) == 0) && N2Z(n,ni,nj,nk)+basek ==1) v_out= v_out + a[4*n+3];
+     }
+  fprintf( infile, "%4d  %4d %4d  %7.4f  %2.9f %2.9f %2.9f %2d\n", N2X(n,ni,nj,nk),N2Y(n,ni,nj,nk), N2Z(n,ni,nj,nk)+basek,
   a[/*stride*/ 4*n], a[/*stride*/ 4*n+1], a[/*stride*/ 4*n+2], a[/*stride*/ 4*n+3], lattice->solids[0][n].is_solid/255  ); //MS changed format from 8.5 to 2.9
 
-//  fprintf( infile, " %7.4f  %7.4f  %2d\n",  
+//  fprintf( infile, " %7.4f  %7.4f  %2d\n",
 //  a[/*stride*/ 4*n],  a[/*stride*/ 4*n+3], lattice->solids[0][n].is_solid/255  );
   }
- 
+
 if(get_proc_id(lattice) == get_num_procs(lattice)-1) //Works only if Parallel (MS)
-  
+
   {
   fprintf(FL1, "%8d  %12.7f\n", lattice->time, v_in );
   fclose(FL1);
   }
 
-  if(get_proc_id(lattice) == 0)  
-  {  
+  if(get_proc_id(lattice) == 0)
+  {
   fprintf(FL2, "%8d  %12.7f\n", lattice->time, v_out );
   fclose(FL2);
   }
 
   fclose(infile);
 
-  printf("%s %d %04d >> write_tecplot_file() -- Wrote to file \"%s\".\n", 
+  printf("%s %d %04d >> write_tecplot_file() -- Wrote to file \"%s\".\n",
       __FILE__, __LINE__, get_proc_id(lattice), filename);
 
 } /* void write_plt( lattice_ptr lattice, double *a,  ... */
