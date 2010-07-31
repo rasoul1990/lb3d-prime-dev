@@ -381,6 +381,7 @@ struct param_struct
   // Inflow and outflow conditions for density and velocity.
   double rho_in,   rho_out;
   double ux_in,    ux_out;
+  double uy_in,    uy_out;
   double uz_in,    uz_out;
 
   // Param: big_V0;
@@ -436,6 +437,14 @@ struct param_struct
   int  PressureBC;
   int AllBoundaryPeriodic;
   // Flags for pressure and velocity boundaries.
+  int    pressure_t_in[  NUM_FLUID_COMPONENTS];
+  int    pressure_b_in[  NUM_FLUID_COMPONENTS];
+  int    pressure_t_out[ NUM_FLUID_COMPONENTS];
+  int    pressure_b_out[ NUM_FLUID_COMPONENTS];
+  int    velocity_t_in[  NUM_FLUID_COMPONENTS];
+  int    velocity_b_in[  NUM_FLUID_COMPONENTS];
+  int    velocity_t_out[ NUM_FLUID_COMPONENTS];
+  int    velocity_b_out[ NUM_FLUID_COMPONENTS];
   int    pressure_n_in[  NUM_FLUID_COMPONENTS];
   int    pressure_s_in[  NUM_FLUID_COMPONENTS];
   int    pressure_n_out[ NUM_FLUID_COMPONENTS];
@@ -454,6 +463,14 @@ struct param_struct
   int    velocity_w_out[ NUM_FLUID_COMPONENTS];
 
   // Flags for (inamuro) concentration boundaries.
+  int    constcon_t_in;
+  int    constcon_b_in;
+  int    constcon_t_out;
+  int    constcon_b_out;
+  int    constflx_t_in;
+  int    constflx_b_in;
+  int    constflx_t_out;
+  int    constflx_b_out;
   int    constcon_n_in;
   int    constcon_s_in;
   int    constcon_n_out;
@@ -475,6 +492,8 @@ struct param_struct
   // These differ from inamuro's concentration flux boundaries
   // in that they allow advective flux of the concentration
   // across the boundary.
+  int    zeroconcgrad_t;
+  int    zeroconcgrad_b;
   int    zeroconcgrad_n;
   int    zeroconcgrad_s;
   int    zeroconcgrad_e;

@@ -981,7 +981,7 @@ void compute_fluid_fluid_force( lattice_ptr lattice)
   for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
 // for fluid 1 injection into porous media filled with fluid 2, rev_Huang
-#if PARALLEL  
+#if PARALLEL
 //     rho_send_recv_begin( lattice, subs);
 #endif
     for( k=k1; k<k2; k++)
@@ -1003,7 +1003,7 @@ void compute_fluid_fluid_force( lattice_ptr lattice)
             {
               ia = ( i+vx[a]<ni)?( ( i+vx[a]>=0)?( i+vx[a]):( ni-1)):( 0   );
               ja = ( j+vy[a]<nj)?( ( j+vy[a]>=0)?( j+vy[a]):( nj-1)):( 0   );
-  
+
 #if PARALLEL
         if( k+vz[a]<nk &&  k+vz[a]>=0 )
         {
@@ -1052,7 +1052,7 @@ void compute_fluid_fluid_force( lattice_ptr lattice)
                 force[subs][2] += WM*vz[a]*rho;
               }
 
-#endif  
+#endif
       }//a=0,... 6
 
             for( a=7; a<Q; a++)
@@ -1097,7 +1097,7 @@ void compute_fluid_fluid_force( lattice_ptr lattice)
         }
 
 
-#else  
+#else
               ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
               na = XYZ2N( ia, ja, ka, ni, nj);
               if( !( lattice->solids[subs][ na].is_solid ))
@@ -1414,7 +1414,7 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
          }
         }
 
-#else  
+#else
             ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
             if(  ( lattice->solids[0][
                   XYZ2N( ia, ja, ka, ni, nj)].is_solid ))
@@ -1424,7 +1424,7 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
               sum_z += WM*vz[a];
             }
 #endif
-  
+
           } // a = 0....6
 
           for( a=7; a<Q; a++)
@@ -1464,7 +1464,7 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
          }
         }
 
-#else        
+#else
             ka = ( k+vz[a]<nk)?( ( k+vz[a]>=0)?( k+vz[a]):( nk-1)):( 0   );
             if(  ( lattice->solids[0][
                   XYZ2N( ia, ja, ka, ni, nj)].is_solid ))
@@ -1473,7 +1473,7 @@ void compute_double_fluid_solid_force( lattice_ptr lattice)
               sum_y += WD*vy[a];
               sum_z += WD*vz[a];
             }
-#endif  
+#endif
           } //a = 7,....18
 
 #if 0

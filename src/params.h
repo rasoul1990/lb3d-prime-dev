@@ -47,6 +47,7 @@ void read_params( lattice_ptr lattice, const char *infile)
 
 //default
   lattice->param.GZL = 0;
+  lattice->param.PressureBC = 0;
 //default
 
   if( !( in = fopen( infile, "r")))
@@ -99,7 +100,7 @@ void read_params( lattice_ptr lattice, const char *infile)
     skip_label( in); fscanf( in, "%d ", &(lattice->param.buoyancy      ) );
     skip_label( in); fscanf( in, "%d ", &(lattice->param.incompressible) );
     skip_label( in); fscanf( in, "%d ", &(lattice->param.simple_diffusion) );
-    skip_label( in); fscanf( in, "%lf", &(lattice->param.rhow)           );
+//  skip_label( in); fscanf( in, "%lf", &(lattice->param.rhow)           );
 //    lattice->param.rhow = 1.0;
     skip_label( in); fscanf( in, "%lf", &(  lattice->param.rho_A)        );
     skip_label( in); fscanf( in, "%lf", &(  lattice->param.rho_B)        );
@@ -134,8 +135,8 @@ void read_params( lattice_ptr lattice, const char *infile)
     skip_label( in); fscanf( in, "%lf",&( lattice->param.rho_out)        );
     skip_label( in); fscanf( in, "%lf",&( lattice->param.ux_in)          );
     skip_label( in); fscanf( in, "%lf",&( lattice->param.ux_out)         );
-//printf(" %s %d >> %f\n",__FILE__,__LINE__,
-//  lattice->param.ux_out);
+    skip_label( in); fscanf( in, "%lf",&( lattice->param.uy_in)          );
+    skip_label( in); fscanf( in, "%lf",&( lattice->param.uy_out)         );
     skip_label( in); fscanf( in, "%lf",&( lattice->param.uz_in)          );
     skip_label( in); fscanf( in, "%lf",&( lattice->param.uz_out)         );
     skip_label( in); fscanf( in, "%lf",&( lattice->param.big_V0)         );
@@ -169,6 +170,14 @@ void read_params( lattice_ptr lattice, const char *infile)
 #else /* !( INAMURO_SIGMA_COMPONENT) */
     skip_label( in); fscanf( in, "%d",   &blank                          );
 #endif /* INAMURO_SIGMA_COMPONENT */
+    skip_label( in); fscanf( in, "%d",    lattice->param.pressure_t_in+0 );
+    skip_label( in); fscanf( in, "%d",    lattice->param.pressure_b_in+0 );
+    skip_label( in); fscanf( in, "%d",    lattice->param.pressure_t_out+0);
+    skip_label( in); fscanf( in, "%d",    lattice->param.pressure_b_out+0);
+    skip_label( in); fscanf( in, "%d",    lattice->param.velocity_t_in+0 );
+    skip_label( in); fscanf( in, "%d",    lattice->param.velocity_b_in+0 );
+    skip_label( in); fscanf( in, "%d",    lattice->param.velocity_t_out+0);
+    skip_label( in); fscanf( in, "%d",    lattice->param.velocity_b_out+0);
     skip_label( in); fscanf( in, "%d",    lattice->param.pressure_n_in+0 );
     skip_label( in); fscanf( in, "%d",    lattice->param.pressure_s_in+0 );
     skip_label( in); fscanf( in, "%d",    lattice->param.pressure_n_out+0);
@@ -187,6 +196,15 @@ void read_params( lattice_ptr lattice, const char *infile)
     skip_label( in); fscanf( in, "%d",    lattice->param.velocity_w_out+0);
   if( NUM_FLUID_COMPONENTS==2)
   {
+
+    skip_label( in); fscanf( in, "%d",    lattice->param.pressure_t_in+1 );
+    skip_label( in); fscanf( in, "%d",    lattice->param.pressure_b_in+1 );
+    skip_label( in); fscanf( in, "%d",    lattice->param.pressure_t_out+1);
+    skip_label( in); fscanf( in, "%d",    lattice->param.pressure_b_out+1);
+    skip_label( in); fscanf( in, "%d",    lattice->param.velocity_t_in+1 );
+    skip_label( in); fscanf( in, "%d",    lattice->param.velocity_b_in+1 );
+    skip_label( in); fscanf( in, "%d",    lattice->param.velocity_t_out+1);
+    skip_label( in); fscanf( in, "%d",    lattice->param.velocity_b_out+1);
     skip_label( in); fscanf( in, "%d",    lattice->param.pressure_n_in+1 );
     skip_label( in); fscanf( in, "%d",    lattice->param.pressure_s_in+1 );
     skip_label( in); fscanf( in, "%d",    lattice->param.pressure_n_out+1);
@@ -222,6 +240,14 @@ void read_params( lattice_ptr lattice, const char *infile)
     skip_label( in); fscanf( in, "%d",    &blank                         );
     skip_label( in); fscanf( in, "%d",    &blank                         );
     skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
   }
   else
   {
@@ -235,6 +261,14 @@ void read_params( lattice_ptr lattice, const char *infile)
   }
   if( INAMURO_SIGMA_COMPONENT)
   {
+    skip_label( in); fscanf( in, "%d",    &lattice->param.constcon_t_in     );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.constcon_b_in     );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.constcon_t_out    );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.constcon_b_out    );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.constflx_t_in     );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.constflx_b_in     );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.constflx_t_out    );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.constflx_b_out    );
     skip_label( in); fscanf( in, "%d",    &lattice->param.constcon_n_in     );
     skip_label( in); fscanf( in, "%d",    &lattice->param.constcon_s_in     );
     skip_label( in); fscanf( in, "%d",    &lattice->param.constcon_n_out    );
@@ -251,6 +285,8 @@ void read_params( lattice_ptr lattice, const char *infile)
     skip_label( in); fscanf( in, "%d",    &lattice->param.constflx_w_in     );
     skip_label( in); fscanf( in, "%d",    &lattice->param.constflx_e_out    );
     skip_label( in); fscanf( in, "%d",    &lattice->param.constflx_w_out    );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.zeroconcgrad_t    );
+    skip_label( in); fscanf( in, "%d",    &lattice->param.zeroconcgrad_b    );
     skip_label( in); fscanf( in, "%d",    &lattice->param.zeroconcgrad_n    );
     skip_label( in); fscanf( in, "%d",    &lattice->param.zeroconcgrad_s    );
     skip_label( in); fscanf( in, "%d",    &lattice->param.zeroconcgrad_e    );
@@ -259,6 +295,16 @@ void read_params( lattice_ptr lattice, const char *infile)
   }
   else
   {
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
+    skip_label( in); fscanf( in, "%d",    &blank                         );
     skip_label( in); fscanf( in, "%d",    &blank                         );
     skip_label( in); fscanf( in, "%d",    &blank                         );
     skip_label( in); fscanf( in, "%d",    &blank                         );
@@ -349,7 +395,7 @@ void read_params( lattice_ptr lattice, const char *infile)
     lattice->param.cut = 0.3;
   }
 
-  // Set default values for x1, x2, y1, y2 if they are negative.
+  // Set default values for x1, x2, y1, y2, z1, z2 if they are negative.
   if( lattice->param.x1 < 0.)
   {
     if( lattice->param.rel_x1 < 0.)
@@ -552,6 +598,8 @@ void dump_params( struct lattice_struct *lattice)
   fprintf( o, "rho_out              %f\n", lattice->param.rho_out        );
   fprintf( o, "ux_in                %f\n", lattice->param.ux_in          );
   fprintf( o, "ux_out               %f\n", lattice->param.ux_out         );
+  fprintf( o, "uy_in                %f\n", lattice->param.uy_in          );
+  fprintf( o, "uy_out               %f\n", lattice->param.uy_out         );
   fprintf( o, "uz_in                %f\n", lattice->param.uz_in          );
   fprintf( o, "uz_out               %f\n", lattice->param.uz_out         );
   fprintf( o, "big_V0               %f\n", lattice->param.big_V0         );
@@ -606,6 +654,14 @@ void dump_params( struct lattice_struct *lattice)
 #else /* !( INAMURO_SIGMA_COMPONENT) */
   fprintf( o, "bc_sigma_slip        %s\n", "--"                          );
 #endif /* INAMURO_SIGMA_COMPONENT */
+  fprintf( o, "pressure_t_in[0]     %d\n", lattice->param.pressure_t_in[0]  );
+  fprintf( o, "pressure_b_in[0]     %d\n", lattice->param.pressure_b_in[0]  );
+  fprintf( o, "pressure_t_out[0]    %d\n", lattice->param.pressure_t_out[0] );
+  fprintf( o, "pressure_b_out[0]    %d\n", lattice->param.pressure_b_out[0] );
+  fprintf( o, "velocity_t_in[0]     %d\n", lattice->param.velocity_t_in[0]  );
+  fprintf( o, "velocity_b_in[0]     %d\n", lattice->param.velocity_b_in[0]  );
+  fprintf( o, "velocity_t_out[0]    %d\n", lattice->param.velocity_t_out[0] );
+  fprintf( o, "velocity_b_out[0]    %d\n", lattice->param.velocity_b_out[0] );
   fprintf( o, "pressure_n_in[0]     %d\n", lattice->param.pressure_n_in[0]  );
   fprintf( o, "pressure_s_in[0]     %d\n", lattice->param.pressure_s_in[0]  );
   fprintf( o, "pressure_n_out[0]    %d\n", lattice->param.pressure_n_out[0] );
@@ -622,8 +678,18 @@ void dump_params( struct lattice_struct *lattice)
   fprintf( o, "velocity_w_in[0]     %d\n", lattice->param.velocity_w_in[0]  );
   fprintf( o, "velocity_e_out[0]    %d\n", lattice->param.velocity_e_out[0] );
   fprintf( o, "velocity_w_out[0]    %d\n", lattice->param.velocity_w_out[0] );
+
   if( NUM_FLUID_COMPONENTS==2)
   {
+
+  fprintf( o, "pressure_t_in[0]     %d\n", lattice->param.pressure_t_in[1]  );
+  fprintf( o, "pressure_b_in[0]     %d\n", lattice->param.pressure_b_in[1]  );
+  fprintf( o, "pressure_t_out[0]    %d\n", lattice->param.pressure_t_out[1] );
+  fprintf( o, "pressure_b_out[0]    %d\n", lattice->param.pressure_b_out[1] );
+  fprintf( o, "velocity_t_in[0]     %d\n", lattice->param.velocity_t_in[1]  );
+  fprintf( o, "velocity_b_in[0]     %d\n", lattice->param.velocity_b_in[1]  );
+  fprintf( o, "velocity_t_out[0]    %d\n", lattice->param.velocity_t_out[1] );
+  fprintf( o, "velocity_b_out[0]    %d\n", lattice->param.velocity_b_out[1] );
   fprintf( o, "pressure_n_in[1]     %d\n", lattice->param.pressure_n_in[1]  );
   fprintf( o, "pressure_s_in[1]     %d\n", lattice->param.pressure_s_in[1]  );
   fprintf( o, "pressure_n_out[1]    %d\n", lattice->param.pressure_n_out[1] );
@@ -643,6 +709,14 @@ void dump_params( struct lattice_struct *lattice)
   }
   else if( NUM_FLUID_COMPONENTS==1)
   {
+  fprintf( o, "pressure_t_in[1]     %s\n", "--"                             );
+  fprintf( o, "pressure_b_in[1]     %s\n", "--"                             );
+  fprintf( o, "pressure_t_out[1]    %s\n", "--"                             );
+  fprintf( o, "pressure_b_out[1]    %s\n", "--"                             );
+  fprintf( o, "velocity_t_in[1]     %s\n", "--"                             );
+  fprintf( o, "velocity_b_in[1]     %s\n", "--"                             );
+  fprintf( o, "velocity_t_out[1]    %s\n", "--"                             );
+  fprintf( o, "velocity_b_out[1]    %s\n", "--"                             );
   fprintf( o, "pressure_n_in[1]     %s\n", "--"                             );
   fprintf( o, "pressure_s_in[1]     %s\n", "--"                             );
   fprintf( o, "pressure_n_out[1]    %s\n", "--"                             );
@@ -672,6 +746,14 @@ void dump_params( struct lattice_struct *lattice)
   }
   if( INAMURO_SIGMA_COMPONENT)
   {
+  fprintf( o, "constcon_t_in        %d\n", lattice->param.constcon_t_in  );
+  fprintf( o, "constcon_b_in        %d\n", lattice->param.constcon_b_in  );
+  fprintf( o, "constcon_t_out       %d\n", lattice->param.constcon_t_out );
+  fprintf( o, "constcon_b_out       %d\n", lattice->param.constcon_b_out );
+  fprintf( o, "constflx_t_in        %d\n", lattice->param.constflx_t_in  );
+  fprintf( o, "constflx_b_in        %d\n", lattice->param.constflx_b_in  );
+  fprintf( o, "constflx_t_out       %d\n", lattice->param.constflx_t_out );
+  fprintf( o, "constflx_b_out       %d\n", lattice->param.constflx_b_out );
   fprintf( o, "constcon_n_in        %d\n", lattice->param.constcon_n_in  );
   fprintf( o, "constcon_s_in        %d\n", lattice->param.constcon_s_in  );
   fprintf( o, "constcon_n_out       %d\n", lattice->param.constcon_n_out );
@@ -680,22 +762,32 @@ void dump_params( struct lattice_struct *lattice)
   fprintf( o, "constflx_s_in        %d\n", lattice->param.constflx_s_in  );
   fprintf( o, "constflx_n_out       %d\n", lattice->param.constflx_n_out );
   fprintf( o, "constflx_s_out       %d\n", lattice->param.constflx_s_out );
-  fprintf( o, "constcon_n_in        %d\n", lattice->param.constcon_e_in  );
-  fprintf( o, "constcon_s_in        %d\n", lattice->param.constcon_w_in  );
-  fprintf( o, "constcon_n_out       %d\n", lattice->param.constcon_e_out );
-  fprintf( o, "constcon_s_out       %d\n", lattice->param.constcon_w_out );
-  fprintf( o, "constflx_n_in        %d\n", lattice->param.constflx_e_in  );
-  fprintf( o, "constflx_s_in        %d\n", lattice->param.constflx_w_in  );
-  fprintf( o, "constflx_n_out       %d\n", lattice->param.constflx_e_out );
-  fprintf( o, "constflx_s_out       %d\n", lattice->param.constflx_w_out );
+  fprintf( o, "constcon_e_in        %d\n", lattice->param.constcon_e_in  );
+  fprintf( o, "constcon_w_in        %d\n", lattice->param.constcon_w_in  );
+  fprintf( o, "constcon_e_out       %d\n", lattice->param.constcon_e_out );
+  fprintf( o, "constcon_w_out       %d\n", lattice->param.constcon_w_out );
+  fprintf( o, "constflx_e_in        %d\n", lattice->param.constflx_e_in  );
+  fprintf( o, "constflx_w_in        %d\n", lattice->param.constflx_w_in  );
+  fprintf( o, "constflx_e_out       %d\n", lattice->param.constflx_e_out );
+  fprintf( o, "constflx_w_out       %d\n", lattice->param.constflx_w_out );
+  fprintf( o, "zeroconcgrad_t       %d\n", lattice->param.zeroconcgrad_t );
+  fprintf( o, "zeroconcgrad_b       %d\n", lattice->param.zeroconcgrad_b );
   fprintf( o, "zeroconcgrad_n       %d\n", lattice->param.zeroconcgrad_n );
   fprintf( o, "zeroconcgrad_s       %d\n", lattice->param.zeroconcgrad_s );
-  fprintf( o, "zeroconcgrad_n       %d\n", lattice->param.zeroconcgrad_e );
-  fprintf( o, "zeroconcgrad_s       %d\n", lattice->param.zeroconcgrad_w );
+  fprintf( o, "zeroconcgrad_e       %d\n", lattice->param.zeroconcgrad_e );
+  fprintf( o, "zeroconcgrad_w       %d\n", lattice->param.zeroconcgrad_w );
   fprintf( o, "zeroconcgrad_full    %d\n", lattice->param.zeroconcgrad_full );
   }
   else
   {
+  fprintf( o, "constcon_t_in        %s\n", "--"                             );
+  fprintf( o, "constcon_b_in        %s\n", "--"                             );
+  fprintf( o, "constcon_t_out       %s\n", "--"                             );
+  fprintf( o, "constcon_b_out       %s\n", "--"                             );
+  fprintf( o, "constflx_t_in        %s\n", "--"                             );
+  fprintf( o, "constflx_b_in        %s\n", "--"                             );
+  fprintf( o, "constflx_t_out       %s\n", "--"                             );
+  fprintf( o, "constflx_b_out       %s\n", "--"                             );
   fprintf( o, "constcon_n_in        %s\n", "--"                             );
   fprintf( o, "constcon_s_in        %s\n", "--"                             );
   fprintf( o, "constcon_n_out       %s\n", "--"                             );
@@ -712,6 +804,8 @@ void dump_params( struct lattice_struct *lattice)
   fprintf( o, "constflx_w_in        %s\n", "--"                             );
   fprintf( o, "constflx_e_out       %s\n", "--"                             );
   fprintf( o, "constflx_w_out       %s\n", "--"                             );
+  fprintf( o, "zeroconcgrad_t       %s\n", "--"                             );
+  fprintf( o, "zeroconcgrad_b       %s\n", "--"                             );
   fprintf( o, "zeroconcgrad_n       %s\n", "--"                             );
   fprintf( o, "zeroconcgrad_s       %s\n", "--"                             );
   fprintf( o, "zeroconcgrad_e       %s\n", "--"                             );

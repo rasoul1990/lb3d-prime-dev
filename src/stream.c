@@ -85,7 +85,7 @@ void stream( lattice_ptr lattice)
    //###########################################################################
    for( k=0; k<nk; k++)
    {
-//!lattice->param.GZL  
+//!lattice->param.GZL
 //     if(!lattice->param.GZL )
      {
      kp = ( k<nk-1)?( k+1):( 0   );

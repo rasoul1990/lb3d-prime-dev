@@ -246,7 +246,7 @@ void init_problem( struct lattice_struct *lattice)
     {
       switch( lattice->param.initial_condition)
       {
-    
+
         case 0: // Uniform
         {
            switch( NUM_FLUID_COMPONENTS)
@@ -256,7 +256,7 @@ void init_problem( struct lattice_struct *lattice)
     *rho = lattice->param.rho_A[subs];
                 break;
     }
-    
+
     case 2:
     {
     *rho = lattice->param.rho_B[subs];
@@ -327,13 +327,13 @@ void init_problem( struct lattice_struct *lattice)
        if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
        if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
 #endif
-#endif  
+#endif
              if( i > lattice->param.x1 && i < lattice->param.x2 &&
                  j > lattice->param.y1 && j < lattice->param.y2 &&
 #if PARALLEL
                  k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2 )
 //if 0      k >=k1 && k<=k2 )
-#else    
+#else
      k > lattice->param.z1 && k < lattice->param.z2  )
 #endif
               {
@@ -349,7 +349,7 @@ void init_problem( struct lattice_struct *lattice)
             case 2:
             {
 #if PARALLEL
-#if 0    
+#if 0
        if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
        if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
        if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
@@ -360,7 +360,7 @@ void init_problem( struct lattice_struct *lattice)
 #if PARALLEL
     k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2)
 //      k >=k1 && k<=k2 )
-#else    
+#else
      k > lattice->param.z1 && k < lattice->param.z2  )
 #endif
               {
@@ -501,7 +501,7 @@ void init_problem( struct lattice_struct *lattice)
 #if PARALLEL
     k+ get_proc_id(lattice)*nk < lattice->param.z1 || k+ get_proc_id(lattice)*nk > lattice->param.z2)
 //      k >=k1 && k<=k2 )
-#else    
+#else
      k < lattice->param.z1 || k > lattice->param.z2  )
 #endif
               {

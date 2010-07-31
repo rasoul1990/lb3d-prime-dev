@@ -405,15 +405,15 @@ void dump_macro_vars( struct lattice_struct *lattice, int time)
       filename);
 #endif
 #if WRITE_MACRO_VAR_RAW_FILES
-//    sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
-//        ni, nj, nk, frame, subs, get_proc_id( lattice));
-//    write_raw(
-//      lattice,
-//      &(lattice->macro_vars[subs][0].u[0]),
-//      /*stride*/ 4,
-//      max_u[0],
-//      /*min_u[0]*/0.,
-//      filename);
+    sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
+        ni, nj, nk, frame, subs, get_proc_id( lattice));
+    write_raw(
+      lattice,
+      &(lattice->macro_vars[subs][0].u[0]),
+      /*stride*/ 4,
+      max_u[0],
+      /*min_u[0]*/0.,
+      filename);
 #endif /* (WRITE_MACRO_VAR_RAW_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
     sprintf( filename, "./out/u_x_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat",
@@ -427,15 +427,15 @@ void dump_macro_vars( struct lattice_struct *lattice, int time)
       filename);
 #endif /* (WRITE_MACRO_VAR_DAT_FILES) */
 #if WRITE_MACRO_VAR_RAW_FILES
-//    sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
-//        ni, nj, nk, frame, subs, get_proc_id( lattice));
-//    write_raw(
-//      lattice,
-//      &(lattice->macro_vars[subs][0].u[1]),
-//      /*stride*/ 4,
-//      max_u[1],
-//      /*min_u[1]*/0.,
-//      filename);
+    sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
+        ni, nj, nk, frame, subs, get_proc_id( lattice));
+    write_raw(
+      lattice,
+      &(lattice->macro_vars[subs][0].u[1]),
+      /*stride*/ 4,
+      max_u[1],
+      /*min_u[1]*/0.,
+      filename);
 #endif /* (WRITE_MACRO_VAR_RAW_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
     sprintf( filename, "./out/u_y_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat",
@@ -449,15 +449,15 @@ void dump_macro_vars( struct lattice_struct *lattice, int time)
       filename);
 #endif /* (WRITE_MACRO_VAR_DAT_FILES) */
 #if WRITE_MACRO_VAR_RAW_FILES
-//    sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
-//        ni, nj, nk, frame, subs, get_proc_id( lattice));
-//    write_raw(
-//      lattice,
-//      &(lattice->macro_vars[subs][0].u[2]),
-//      /*stride*/ 4,
-//      max_u[2],
-//      /*min_u[2]*/0.,
-//      filename);
+    sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d_proc%04d.raw",
+        ni, nj, nk, frame, subs, get_proc_id( lattice));
+    write_raw(
+      lattice,
+      &(lattice->macro_vars[subs][0].u[2]),
+      /*stride*/ 4,
+      max_u[2],
+      /*min_u[2]*/0.,
+      filename);
 #endif /* (WRITE_MACRO_VAR_RAW_FILES) */
 #if WRITE_MACRO_VAR_DAT_FILES
     sprintf( filename, "./out/u_z_%dx%dx%d_frame%04d_subs%02d_proc%04d.dat",
@@ -577,8 +577,7 @@ FILE *out;
   {
 
      if( (N2Z(n,ni,nj,nk)+basek >lattice->param.z1 &&
-    N2Z(n,ni,nj,nk)+basek <lattice->param.z2
-           ) )
+          N2Z(n,ni,nj,nk)+basek <lattice->param.z2    ) )
      {
        count++;
       if ( lattice->macro_vars[0][n].rho> (lattice->param.rho_A[0]+lattice->param.rho_A[1])/2.) count1 ++;
@@ -1191,7 +1190,7 @@ void write_plt(
   for( n=0; n<ni*nj*nk; n++)
   {
    if( lattice->solids[0][n].is_solid)
-     {  
+     {
       a[4*n] = -1.;
       lattice->macro_vars[1][n].rho = -1.;
      }
@@ -1274,7 +1273,7 @@ void write_plt_uvw(
  for( n=0; n<ni*nj*nk; n++)
   {
    if( lattice->solids[0][n].is_solid)
-     {  
+     {
       a[4*n] = -1.;
       lattice->macro_vars[1][n].rho = -1.;
      }
@@ -1369,7 +1368,7 @@ void write_plt_single(
  for( n=0; n<ni*nj*nk; n++)
   {
    if( lattice->solids[0][n].is_solid)
-     {  
+     {
       a[4*n] = -1.;
      }
    else

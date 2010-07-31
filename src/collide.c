@@ -92,7 +92,7 @@ void collide( lattice_ptr lattice)
 #if NUM_FLUID_COMPONENTS==2
         else // subs==1
         {
-    
+
            // Usual non-slip bounce-back condition.
 
           f = ftemp[ E];
@@ -266,7 +266,7 @@ void collide( lattice_ptr lattice)
 #if NUM_FLUID_COMPONENTS==2
         else // subs==1
         {
-    
+
 #if INAMURO_SIGMA_COMPONENT
           if( lattice->param.bc_sigma_slip)
           {

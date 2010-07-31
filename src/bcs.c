@@ -11,15 +11,15 @@
 
 #define RHO0_TEST 0
 
-// void bcs( lattice_ptr lattice)
+#if SAVE_MEMO
+//                                   B C S
 //##############################################################################
 //
-// B C S
+// Apply boundary conditions.
 //
-//  - Apply boundary conditions.
-#if SAVE_MEMO
 void bcs( lattice_ptr lattice)
-{ int    i, j, k, n, n1, a;
+{
+  int    i, j, k, n, n1, a;
   int    ni, nj, nk;
   int    subs;
   double *ftemp, *ftemp1, *feq, *feq1, temp[Q];
@@ -43,174 +43,178 @@ void bcs( lattice_ptr lattice)
   feq    = (double*)malloc(19*sizeof(double));
   feq1   = (double*)malloc(19*sizeof(double));
 
- for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
- {
-  // GZL GZL GZL GZL P R E S S U R E // V E L O C I T Y   T O P   I N F L O W   B C
-  //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  //  -- Velocity boundary on top side using inflow velocity condition.
-  if( lattice->param.GZL && lattice->param.PressureBC)//lattice->param.velocity_t_in[subs])
+  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
-    k = nk-1;
-
-    for( j=0; j<nj; j++)
+    // GZL P R E S S U R E // V E L O C I T Y   T O P   I N F L O W   B C
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    //  -- Velocity boundary on top side using inflow velocity condition.
+    if( lattice->param.GZL && lattice->param.PressureBC)//lattice->param.velocity_t_in[subs])
     {
-      for( i=0; i<ni; i++)
+      k = nk-1;
+
+      for( j=0; j<nj; j++)
       {
-        n = XYZ2N( i, j, k, ni, nj);
-        ftemp = lattice->pdf[subs][n].ftemp;
+        for( i=0; i<ni; i++)
+        {
+          n = XYZ2N( i, j, k, ni, nj);
+          ftemp = lattice->pdf[subs][n].ftemp;
 
 #if STORE_UEQ
 
 #else /* !( STORE_UEQ) */
-//       lattice->macro_vars[subs][n].u[0] =  0.02 ;
-//       lattice->macro_vars[subs][n].u[1] =  0. ;
-//       lattice->macro_vars[subs][n].u[2] =  0. ;
-#endif /* STORE_UEQ */  
+          //       lattice->macro_vars[subs][n].u[0] =  0.02 ;
+          //       lattice->macro_vars[subs][n].u[1] =  0. ;
+          //       lattice->macro_vars[subs][n].u[2] =  0. ;
+#endif /* STORE_UEQ */
 
-        n1 = XYZ2N( i, j, k-1, ni, nj);
-        ftemp1 = lattice->pdf[subs][n1].ftemp;
+          n1 = XYZ2N( i, j, k-1, ni, nj);
+          ftemp1 = lattice->pdf[subs][n1].ftemp;
 
-  switch(NUM_FLUID_COMPONENTS)
-  {case 1:
-    {
-    rho =  /*lattice->macro_vars[subs][n1].rho;*/lattice->param.rho_in;
-    u_x =  0.;//lattice->macro_vars[subs][n1].u[0] ;
-    u_y =  0.;//lattice->macro_vars[subs][n1].u[1] ;
-    u_z =  lattice->macro_vars[subs][n1].u[2] ;
-    lattice->macro_vars[subs][n].u[2] = u_z;
-    break;
-    }
-  case 2:
-    {
+          switch(NUM_FLUID_COMPONENTS)
+          {
+            case 1:
+            {
+              rho =  /*lattice->macro_vars[subs][n1].rho;*/lattice->param.rho_in;
+              u_x =  0.;//lattice->macro_vars[subs][n1].u[0] ;
+              u_y =  0.;//lattice->macro_vars[subs][n1].u[1] ;
+              u_z =  lattice->macro_vars[subs][n1].u[2] ;
+              lattice->macro_vars[subs][n].u[2] = u_z;
+              break;
+            }
+            case 2:
+            {
 #if STORE_UEQ
-    if(subs==0)
+              if(subs==0)
+              {
+                rho = lattice->param.rho_in;
+                //     rho = 8+ 0.001*(double)lattice->time;//lattice->param.rho_in ;    //lattice->param.uz_in; subs= 0 Non-wetting
+                //     if( lattice->time >1000)  {rho = 9.2;}
+              }
+              if(subs==1) rho = 0.001 ;    //lattice->param.uz_in; subs= 1 Wetting
+
+              //          rho =  lattice->param.rho_A[subs];
+              u_x =  0.;// lattice->ueq[n1].u[0] ;
+              u_y =  0.;// lattice->ueq[n1].u[1] ;
+              u_z =  lattice->ueq[n1].u[2] ;
+              lattice->macro_vars[subs][n].u[2] = u_z;
+              lattice->ueq[n].u[2] = u_z;
+
+#endif
+              break;
+            }
+          }
+          lattice->macro_vars[subs][n].rho = rho;
+          lattice->macro_vars[subs][n].u[0] = u_x;
+          lattice->macro_vars[subs][n].u[1] = u_y;
+
+          //rho1 = lattice->macro_vars[subs][n1].rho
+          //u1   = lattice->macro_vars[subs][n1].u[0];
+          //v1   = lattice->macro_vars[subs][n1].u[1];
+          //w1   = lattice->macro_vars[subs][n1].u[2];
+
+          if( !lattice->solids[subs][n].is_solid)
+          {
+            compute_a_feq( feq, rho, u_x, u_y, u_z );
+            compute_single_feq(  lattice, n1, subs, feq1);
+            for (a= 0; a<Q; a++)
+            {
+              temp[a] =  ftemp1[a] - feq1[a];
+              ftemp[a]=  feq[a]+ temp[a];
+            }
+
+
+          } /* if( !is_solid) */
+
+        } /* for( i=0; i<ni; i++) */
+      } /* for( j=0; j<nj; j++) */
+
+    } /* if( lattice->param.velocity_GZL) */
+
+    //GZL P R E S S U R E // V E L O C I T Y   B O T T O M   O U T F L O W   B C
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // velocity bottom inflow
+    //  -- Velocity boundary on bottom side using inflow velocity condition.
+    if(  lattice->param.GZL && lattice->param.PressureBC)//lattice->param.velocity_b_in[subs])
     {
-    rho = lattice->param.rho_in;
-//     rho = 8+ 0.001*(double)lattice->time;//lattice->param.rho_in ;    //lattice->param.uz_in; subs= 0 Non-wetting
-//     if( lattice->time >1000)  {rho = 9.2;}
-    }
-    if(subs==1) rho = 0.001 ;    //lattice->param.uz_in; subs= 1 Wetting
-      
-//          rho =  lattice->param.rho_A[subs];
-    u_x =  0.;// lattice->ueq[n1].u[0] ;
-    u_y =  0.;// lattice->ueq[n1].u[1] ;
-    u_z =  lattice->ueq[n1].u[2] ;
-    lattice->macro_vars[subs][n].u[2] = u_z;
-    lattice->ueq[n].u[2] = u_z;
 
-#endif    
-    break;
-           }
-   }
-    lattice->macro_vars[subs][n].rho = rho;
-    lattice->macro_vars[subs][n].u[0] = u_x;
-    lattice->macro_vars[subs][n].u[1] = u_y;
+      k = 0;
 
-//rho1 = lattice->macro_vars[subs][n1].rho
-//u1   = lattice->macro_vars[subs][n1].u[0];
-//v1   = lattice->macro_vars[subs][n1].u[1];
-//w1   = lattice->macro_vars[subs][n1].u[2];
-
-        if( !lattice->solids[subs][n].is_solid)
-        {
-         compute_a_feq( feq, rho, u_x, u_y, u_z );
-         compute_single_feq(  lattice, n1, subs, feq1);
-         for (a= 0; a<Q; a++)
-   {
-          temp[a] =  ftemp1[a] - feq1[a];
-    ftemp[a]=  feq[a]+ temp[a];
-   }  
-
-
-  } /* if( !is_solid) */
-
-      } /* for( i=0; i<ni; i++) */
-    } /* for( j=0; j<nj; j++) */
-
-  } /* if( lattice->param.velocity_GZL) */
-
-  //GZL GZL GZL GZL P R E S S U R E // V E L O C I T Y   B O T T O M   O U T F L O W   B C
-  //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // velocity bottom inflow
-  //  -- Velocity boundary on bottom side using inflow velocity condition.
-  if(  lattice->param.GZL && lattice->param.PressureBC)//lattice->param.velocity_b_in[subs])
-  {
-
-    k = 0;
-
-     for( j=0; j<nj; j++)
-    {
-      for( i=0; i<ni; i++)
+      for( j=0; j<nj; j++)
       {
-        n = XYZ2N( i, j, k, ni, nj);
-        ftemp = lattice->pdf[subs][n].ftemp;
-
-        n1 = XYZ2N( i, j, k+1, ni, nj);
-        ftemp1   = lattice->pdf[subs][n1].ftemp;
-
-  switch(NUM_FLUID_COMPONENTS)
-  {case 1:
-    {
-    rho =  /*lattice->macro_vars[subs][n1].rho;*/lattice->param.rho_out;
-    u_x =  0.;//lattice->macro_vars[subs][n1].u[0] ;
-    u_y =  0.;//lattice->macro_vars[subs][n1].u[1] ;
-    u_z =  lattice->macro_vars[subs][n1].u[2] ;
-    lattice->macro_vars[subs][n].u[2] = u_z;
-    break;
-    }
-  case 2:
-    {
-#if STORE_UEQ  
-    if(subs==0) rho = 0.001;
-    if(subs==1)
-    {
-    rho = lattice->param.rho_out;
-      //rho = 8.0- 0.001*(double)lattice->time;//
-      //if( lattice->time >1000)   {rho = 6.8;}
-    }
-//          rho =  lattice->param.rho_B[subs];
-    u_x =  0.;//lattice->ueq[n1].u[0] ;
-    u_y =  0.;//lattice->ueq[n1].u[1] ;
-    u_z =  lattice->ueq[n1].u[2] ;
-    lattice->macro_vars[subs][n].u[2] = u_z;
-    lattice->ueq[n].u[2] = u_z;    
-#endif    
-    break;
-           }
-   }
-    lattice->macro_vars[subs][n].rho = rho;
-    lattice->macro_vars[subs][n].u[0] = u_x;
-    lattice->macro_vars[subs][n].u[1] = u_y;
-
-//rho1 = lattice->macro_vars[subs][n1].rho;
-//u1   = lattice->macro_vars[subs][n1].u[0];
-//v1   = lattice->macro_vars[subs][n1].u[1];
-//w1   = lattice->macro_vars[subs][n1].u[2];
-
-        if( !lattice->solids[subs][n].is_solid)
+        for( i=0; i<ni; i++)
         {
-         compute_a_feq( feq, rho, u_x, u_y, u_z );
-         compute_single_feq(  lattice, n1, subs, feq1);
+          n = XYZ2N( i, j, k, ni, nj);
+          ftemp = lattice->pdf[subs][n].ftemp;
 
-         for (a= 0; a<Q; a++)
-   {
-          temp[a] =  ftemp1[a] - feq1[a];
-    ftemp[a]=  feq[a]+ temp[a];
-   }
+          n1 = XYZ2N( i, j, k+1, ni, nj);
+          ftemp1   = lattice->pdf[subs][n1].ftemp;
 
-        } /* if( !is_solid) */
+          switch(NUM_FLUID_COMPONENTS)
+          {
+            case 1:
+            {
+              rho =  /*lattice->macro_vars[subs][n1].rho;*/lattice->param.rho_out;
+              u_x =  0.;//lattice->macro_vars[subs][n1].u[0] ;
+              u_y =  0.;//lattice->macro_vars[subs][n1].u[1] ;
+              u_z =  lattice->macro_vars[subs][n1].u[2] ;
+              lattice->macro_vars[subs][n].u[2] = u_z;
+              break;
+            }
+            case 2:
+            {
+#if STORE_UEQ
+              if(subs==0) rho = 0.001;
+              if(subs==1)
+              {
+                rho = lattice->param.rho_out;
+                //rho = 8.0- 0.001*(double)lattice->time;//
+                //if( lattice->time >1000)   {rho = 6.8;}
+              }
+              //          rho =  lattice->param.rho_B[subs];
+              u_x =  0.;//lattice->ueq[n1].u[0] ;
+              u_y =  0.;//lattice->ueq[n1].u[1] ;
+              u_z =  lattice->ueq[n1].u[2] ;
+              lattice->macro_vars[subs][n].u[2] = u_z;
+              lattice->ueq[n].u[2] = u_z;
+#endif
+              break;
+            }
+          }
+          lattice->macro_vars[subs][n].rho = rho;
+          lattice->macro_vars[subs][n].u[0] = u_x;
+          lattice->macro_vars[subs][n].u[1] = u_y;
 
-      } /* for( i=0; i<ni; i++) */
-    } /* for( j=0; j<nj; j++) */
+          //rho1 = lattice->macro_vars[subs][n1].rho;
+          //u1   = lattice->macro_vars[subs][n1].u[0];
+          //v1   = lattice->macro_vars[subs][n1].u[1];
+          //w1   = lattice->macro_vars[subs][n1].u[2];
 
-  } /* if( lattice->param.velocity_GZL) */
- } /*for SUBS*/
+          if( !lattice->solids[subs][n].is_solid)
+          {
+            compute_a_feq( feq, rho, u_x, u_y, u_z );
+            compute_single_feq(  lattice, n1, subs, feq1);
+
+            for (a= 0; a<Q; a++)
+            {
+              temp[a] =  ftemp1[a] - feq1[a];
+              ftemp[a]=  feq[a]+ temp[a];
+            }
+
+          } /* if( !is_solid) */
+
+        } /* for( i=0; i<ni; i++) */
+      } /* for( j=0; j<nj; j++) */
+
+    } /* if( lattice->param.velocity_GZL) */
+  } /*for SUBS*/
 
 }
-
-
 #else
-
+//                                   B C S
+//##############################################################################
+//
+// Apply boundary conditions.
+//
 void bcs( lattice_ptr lattice)
 {
   int    i, j, k, n, n1, a, id;
@@ -253,35 +257,40 @@ void bcs( lattice_ptr lattice)
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // pressure top inflow
   //  -- Pressure boundary on top side using inflow pressure condition.
-  if( (id ==(get_num_procs(lattice)-1)) && !lattice->param.GZL  && lattice->param.PressureBC)//1)//lattice->param.pressure_t_in[subs] )
+  if(   (id ==(get_num_procs(lattice)-1))
+     && !lattice->param.GZL
+     && lattice->param.pressure_t_in[subs] )
   {
 
     k = nk-1;
     switch(NUM_FLUID_COMPONENTS)
-    { case 1:
-      {rho_in = lattice->param.rho_in; break;}
+    {
+      case 1:
+      {
+        rho_in = lattice->param.rho_in; break;
+      }
       case 2:
-        {  
+      {
 #if 0
-  
-  if(subs==0)
-          {
-     hua    = (lattice->param.rho_in -lattice->param.rho_A[0])/(5000.);
-     rho_in =  lattice->param.rho_A[0] + hua *(double)lattice->time;//
-     if( lattice->time >5000)  {rho_in = lattice->param.rho_in;}
-          }
-  if(subs==1) rho_in = 0.001 ;    //lattice->param.uz_in; subs= 1 Wetting
+
+        if(subs==0)
+        {
+          hua    = (lattice->param.rho_in -lattice->param.rho_A[0])/(5000.);
+          rho_in =  lattice->param.rho_A[0] + hua *(double)lattice->time;//
+          if( lattice->time >5000)  {rho_in = lattice->param.rho_in;}
+        }
+        if(subs==1) rho_in = 0.001 ;    //lattice->param.uz_in; subs= 1 Wetting
 #else
-  if(subs==0)
-          {
-      rho_in = lattice->param.rho_in;
-          }
-  if(subs==1) rho_in = lattice->param.rho_A[subs] ;    //lattice->param.uz_in; subs= 1 Wetting
-//lattice->param.rho_A[subs]
+        if(subs==0)
+        {
+          rho_in = lattice->param.rho_in;
+        }
+        if(subs==1) rho_in = lattice->param.rho_A[subs] ;    //lattice->param.uz_in; subs= 1 Wetting
+        //lattice->param.rho_A[subs]
 #endif
-  break;
-  }
-  
+        break;
+      }
+
     }
 
     for( j=0; j<nj; j++)
@@ -291,7 +300,7 @@ void bcs( lattice_ptr lattice)
         n = XYZ2N( i, j, k, ni, nj);
         ftemp = lattice->pdf[subs][n].ftemp;
 
-        // North, Inflow
+        // Top, Inflow
         if( lattice->param.incompressible)
         {
           u_y = -rho_in
@@ -303,14 +312,14 @@ void bcs( lattice_ptr lattice)
         }
         else // compressible
         {
-          u_y = -1.
+          u_z = -1.
               + ( ftemp[C]
                 + ftemp[N] + ftemp[S] + ftemp[E] + ftemp[W]
     + ftemp[NE] + ftemp[NW] + ftemp[SE] + ftemp[SW]
                 + 2.*( ftemp[T]
                      + ftemp[TW] + ftemp[TE] + ftemp[TS] + ftemp[TN]))
               / rho_in;
-          c = u_y*rho_in;
+          c = u_z*rho_in;
         }
     //rev_Huang
           ftemp[B ] = ftemp[T ] - (1./3.)*c;
@@ -338,10 +347,10 @@ void bcs( lattice_ptr lattice)
 
 // P R E S S U R E   B O T T O M   O U T F L O W   B C  (peter's attempt?)
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-  // pressure bottom inflow
-  //  -- Pressure boundary on bottom side using inflow pressure condition.
+  // pressure bottom outflow
+  //  -- Pressure boundary on bottom side using outflow pressure condition.
 
-  if((id ==0) && !lattice->param.GZL && lattice->param.PressureBC)//1)//lattice->param.pressure_b_in[subs] )
+  if((id ==0) && !lattice->param.GZL && lattice->param.pressure_b_out[subs] )
   {
 
     k = 0;
@@ -350,12 +359,12 @@ void bcs( lattice_ptr lattice)
     {
     case 1:
       {  rho_out = lattice->param.rho_out; break; }
-    case 2:  
+    case 2:
       {
 #if 0
             if(subs==0) rho_out = 0.001 ;    //lattice->param.uz_in; Non-wetting
            if(subs==1)
-      {    
+      {
      hua = (lattice->param.rho_out -lattice->param.rho_A[0])/(5000.);
      rho_out =  lattice->param.rho_A[0] + hua *(double)lattice->time;//
      if( lattice->time >5000)  {rho_out = lattice->param.rho_out;}
@@ -364,13 +373,13 @@ void bcs( lattice_ptr lattice)
             if(subs==0) rho_out = lattice->param.rho_out;
            if(subs==1)
       {
-       rho_out = lattice->param.rho_A[subs];    
+       rho_out = lattice->param.rho_A[subs];
       }
 
 #endif
       break;
    }
-  
+
     }
 
     for( j=0; j<nj; j++)
@@ -380,26 +389,26 @@ void bcs( lattice_ptr lattice)
         n = XYZ2N( i, j, k, ni, nj);
         ftemp = lattice->pdf[subs][n].ftemp;
 
-  // North, Inflow
+  // Bottom, rho_out
         if( lattice->param.incompressible)
         {
-          u_y = rho_out
+          u_z = rho_out
               - ( ftemp[C]
                 + ftemp[N] + ftemp[S] + ftemp[E] + ftemp[W]
                 + 2.*( ftemp[B]
                      + ftemp[BW] + ftemp[BE] + ftemp[BS] + ftemp[BN]));
-          c = u_y;
+          c = u_z;
         }
         else // compressible
         {
-          u_y =  1.
+          u_z =  1.
               - ( ftemp[C]
                 + ftemp[N] + ftemp[S] + ftemp[E] + ftemp[W]
                + ftemp[NW] + ftemp[NE] + ftemp[SW] + ftemp[SE]
                  + 2.*( ftemp[B]
                      + ftemp[BW] + ftemp[BE] + ftemp[BS] + ftemp[BN]))
               / rho_out;
-          c = u_y*rho_out;
+          c = u_z*rho_out;
         }
 
           ftemp[T ] = ftemp[B ] + (1./3.)*c;
@@ -415,7 +424,7 @@ void bcs( lattice_ptr lattice)
       } /* for( i=0; i<ni; i++) */
     } /* for( j=0; j<nj; j++) */
 
-  } /* if( lattice->param.pressure_b_in[subs] ) */
+  } /* if( lattice->param.pressure_b_out[subs] ) */
 
 
 //********************************************************************************
@@ -423,7 +432,7 @@ void bcs( lattice_ptr lattice)
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // velocity top inflow
   //  -- Velocity boundary on top side using inflow velocity condition.
-  if( !lattice->param.GZL && !lattice->param.PressureBC)//lattice->param.velocity_t_in[subs])
+  if( !lattice->param.GZL && lattice->param.velocity_t_in[subs])
   {
     if(subs==0) u = lattice->param.uz_in;    //lattice->param.uz_in; Non-wetting
     if(subs==1) u = lattice->param.uz_in;    //lattice->param.uz_in;
@@ -469,7 +478,7 @@ void bcs( lattice_ptr lattice)
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // velocity bottom inflow
   //  -- Velocity boundary on bottom side using outflow velocity condition.
-  if( !lattice->param.GZL && ! lattice->param.PressureBC)//lattice->param.velocity_b_in[subs])
+  if( !lattice->param.GZL && lattice->param.velocity_b_in[subs])
   {
     if(subs==0) u = lattice->param.uz_out;    //lattice->param.uz_out;  Non-wetting
     if(subs==1) u = lattice->param.uz_out;    //lattice->param.uz_out;
@@ -516,7 +525,7 @@ void bcs( lattice_ptr lattice)
 //********************************************************************************
 
 
-  // GZL GZL GZL GZL P R E S S U R E // V E L O C I T Y   T O P   I N F L O W   B C
+  // GZL P R E S S U R E // V E L O C I T Y   T O P   I N F L O W   B C
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //  -- Velocity boundary on top side using inflow velocity condition.
 #if PARALLEL
@@ -544,7 +553,7 @@ void bcs( lattice_ptr lattice)
 //       lattice->macro_vars[subs][n].u[0] =  0.02 ;
 //       lattice->macro_vars[subs][n].u[1] =  0. ;
 //       lattice->macro_vars[subs][n].u[2] =  0. ;
-#endif /* STORE_UEQ */  
+#endif /* STORE_UEQ */
 
         n1 = XYZ2N( i, j, k-1, ni, nj);
         f1 = lattice->pdf[subs][n1].f;
@@ -570,7 +579,7 @@ void bcs( lattice_ptr lattice)
      if( lattice->time >1000)  {rho = lattice->param.rho_in;}
     }
     if(subs==1) rho = 0.000 ;    //lattice->param.uz_in; subs= 1 Wetting
-      
+
 //          rho =  lattice->param.rho_A[subs];
     u_x =  0.;// lattice->ueq[n1].u[0] ;
     u_y =  0.;// lattice->ueq[n1].u[1] ;
@@ -578,7 +587,7 @@ void bcs( lattice_ptr lattice)
     lattice->macro_vars[subs][n].u[2] = u_z;
     lattice->ueq[n].u[2] = u_z;
 
-#endif    
+#endif
     break;
            }
    }
@@ -595,7 +604,7 @@ void bcs( lattice_ptr lattice)
    {
           temp[a] =  f1[a] - feq1[a];
     f[a]=feq[a]+ temp[a];
-   }  
+   }
 
 
   } /* if( !is_solid) */
@@ -605,7 +614,7 @@ void bcs( lattice_ptr lattice)
 
   } /* if( lattice->param.velocity_GZL) */
 
-  //GZL GZL GZL GZL P R E S S U R E // V E L O C I T Y   B O T T O M   O U T F L O W   B C
+  //GZL P R E S S U R E // V E L O C I T Y   B O T T O M   O U T F L O W   B C
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // velocity bottom inflow
   //  -- Velocity boundary on bottom side using inflow velocity condition.
@@ -642,7 +651,7 @@ void bcs( lattice_ptr lattice)
     }
   case 2:
     {
-#if STORE_UEQ  
+#if STORE_UEQ
     if(subs==0) rho = 0.000;
     if(subs==1)
     {
@@ -654,8 +663,8 @@ void bcs( lattice_ptr lattice)
     u_y =  0.;//lattice->ueq[n1].u[1] ;
     u_z =  lattice->ueq[n1].u[2] ;
     lattice->macro_vars[subs][n].u[2] = u_z;
-    lattice->ueq[n].u[2] = u_z;    
-#endif    
+    lattice->ueq[n].u[2] = u_z;
+#endif
     break;
            }
    }
@@ -684,7 +693,7 @@ void bcs( lattice_ptr lattice)
 
 
 
-  //PAN PAN PAN PAN   V E L O C I T Y   T O P   I N F L O W   B C
+  //PAN   V E L O C I T Y   T O P   I N F L O W   B C
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   //  -- Velocity boundary on top side using inflow velocity condition.
   if( lattice->param.GZL && (!lattice->param.PressureBC))//lattice->param.velocity_t_in[subs])
@@ -721,7 +730,7 @@ void bcs( lattice_ptr lattice)
     u_x = 0.;// lattice->ueq[n1].u[0] ;
     u_y = 0.;// lattice->ueq[n1].u[1] ;
     u_z = 0.;// lattice->ueq[n1].u[2] ;
-#endif    
+#endif
     break;
            }
    }
@@ -736,7 +745,7 @@ void bcs( lattice_ptr lattice)
          compute_a_feq( feq, rho, u_x, u_y, u_z );
 
          for (a= 0; a<Q; a++)
-   {f[a] = feq[a];}//+(f1[a] - feq1[a]);}  
+   {f[a] = feq[a];}//+(f1[a] - feq1[a]);}
 
 
         } /* if( !is_solid) */
@@ -746,7 +755,7 @@ void bcs( lattice_ptr lattice)
 
   } /* if( lattice->param.velocity_GZL) */
 
-  //PAN PAN PAN PAN V E L O C I T Y   B O T T O M   I N F L O W   B C
+  //PAN V E L O C I T Y   B O T T O M   I N F L O W   B C
   //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   // velocity bottom inflow
   //  -- Velocity boundary on bottom side using inflow velocity condition.
@@ -779,12 +788,12 @@ void bcs( lattice_ptr lattice)
     }
   case 2:
     {
-#if STORE_UEQ      
+#if STORE_UEQ
           rho =  lattice->param.rho_B[subs];
     u_x =  0.;//lattice->ueq[n1].u[0] ;
     u_y =  0.;//lattice->ueq[n1].u[1] ;
     u_z =  0.;//lattice->ueq[n1].u[2] ;
-#endif    
+#endif
     break;
            }
    }
