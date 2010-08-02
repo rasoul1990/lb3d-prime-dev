@@ -160,8 +160,8 @@ void read_params( lattice_ptr lattice, const char *infile)
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
-    skip_label( in); fscanf( in, "%d", &( lattice->param.ns_flag)        );
-    skip_label( in); fscanf( in, "%lf",&( lattice->param.ns)             );
+    skip_label( in); fscanf( in, "%d", &( lattice->param.ns_flag       ) );
+    skip_label( in); fscanf( in, "%lf",&( lattice->param.ns            ) );
     skip_label( in); fscanf( in, "%d", &( lattice->param.ic_poisseuille) );
     skip_label( in); fscanf( in, "%d", &( lattice->param.bc_poisseuille) );
     skip_label( in); fscanf( in, "%d", &( lattice->param.bc_slip_north ) );
@@ -644,7 +644,7 @@ void dump_params( struct lattice_struct *lattice)
       NUM_FLUID_COMPONENTS);
     process_exit(1);
   }
-  fprintf( o, "ns                   %d\n", lattice->param.ns_flag        );
+  fprintf( o, "ns_flag              %d\n", lattice->param.ns_flag        );
   fprintf( o, "ns                   %f\n", lattice->param.ns             );
   fprintf( o, "ic_poisseuille       %d\n", lattice->param.ic_poisseuille );
   fprintf( o, "bc_poisseuille       %d\n", lattice->param.bc_poisseuille );

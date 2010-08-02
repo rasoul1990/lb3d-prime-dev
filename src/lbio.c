@@ -664,6 +664,7 @@ void read_solids( lattice_ptr lattice, char *filename)
   g_n = get_g_StartNode( lattice); // Global node index.
   for( n=0; n<lattice->NumNodes; n++)
   {
+    //printf("%s %d >> raw[%d] = %d\n",__FILE__,__LINE__,g_n,raw[g_n]);
     for( subs=0; subs<(NUM_FLUID_COMPONENTS); subs++)
     {
       lattice->solids[subs][n].is_solid = raw[g_n];
@@ -724,6 +725,129 @@ void read_solids( lattice_ptr lattice, char *filename)
 #endif
 
 } /* read_solids( lattice_ptr lattice, char *filename) */
+
+void read_ns( lattice_ptr lattice, char *filename)
+{
+  int size, size_read;
+  unsigned char *raw;
+  int n;
+  int g_n;
+  int subs;
+  FILE *fd;
+#if 1
+  int i, j, k, p;
+#endif
+
+  for( n=0; n<lattice->NumNodes; n++)
+  {
+    lattice->ns[n].ns = 0;
+  }
+
+  fd = fopen( filename, "r+");
+  if( !fd)
+  {
+    printf("%s %d %04d >> ERROR: Can't open file \"%s\". (Exiting!)\n",
+      __FILE__,__LINE__, get_proc_id(lattice), filename);
+    process_exit(1);
+  }
+
+  size = get_g_NumNodes( lattice)*sizeof(unsigned char);
+  if( !( raw = (unsigned char *)malloc(size)))
+  {
+    printf("%s %d %04d >> read_solids() -- "
+        "ERROR: Can't malloc image buffer. (Exiting!)\n", __FILE__, __LINE__, get_proc_id(lattice));
+    process_exit(1);
+  }
+
+  printf("%s %d %04d >> Reading %d bytes from file \"%s\".\n",
+      __FILE__, __LINE__, get_proc_id(lattice), size, filename);
+
+  //size_read = read( fd, raw, size);
+  size_read = fread( raw, 1, size, fd);
+
+  if( size_read != size)
+  {
+    printf("%s %d %04d >> read_solids() -- "
+        "ERROR: Can't read image data: read = %d. (Exiting!)\n",
+          __FILE__, __LINE__, get_proc_id(lattice), size_read);
+    process_exit(1);
+  }
+
+  fclose( fd);
+
+  g_n = get_g_StartNode( lattice); // Global node index.
+  for( n=0; n<lattice->NumNodes; n++)
+  {
+    //printf("%s %d >> raw[%d] = %d\n",__FILE__,__LINE__,g_n,raw[g_n]);
+    lattice->ns[n].ns = raw[g_n]/255.0;
+    //printf("%s %d %04d >> ns[%d] = %f.\n",
+    //    __FILE__, __LINE__, get_proc_id(lattice), n,
+    //    lattice->ns[n].ns);
+    g_n++;
+  }
+
+  free(raw);
+
+#if 0
+  if( /* Domain not too big. (Tweak to suit.) */
+      ( get_LX(lattice) <= 12
+      &&
+        get_LY(lattice) <= 12
+      &&
+        get_LZ(lattice) <= 12
+      )
+    )
+  {
+#if PARALLEL
+  for( p=0; p<get_num_procs( lattice); p++)
+  {
+    MPI_Barrier( MPI_COMM_WORLD);
+    if( p == get_proc_id( lattice))
+    {
+      printf("%s %d %04d >> Solids:\n", __FILE__, __LINE__, p);
+#endif
+      int ni = get_LX(lattice);
+      int nj = get_LY(lattice);
+      for( j=0; j<get_LY( lattice); j++)
+      {
+        for( k=0; k<get_LZ( lattice); k++)
+        {
+          for( i=0; i<get_LX( lattice); i++)
+          {
+            if(    lattice->ns[XYZ2N(i,j,k,ni,nj)].ns > 32
+                &&
+                   lattice->ns[XYZ2N(i,j,k,ni,nj)].ns < 127)
+            {
+              printf("%c", (char)(lattice->ns[XYZ2N(i,j,k,ni,nj)].ns));
+            }
+            else
+            {
+              if(    lattice->ns[XYZ2N(i,j,k,ni,nj)].ns-128 > 32
+                  &&
+                     lattice->ns[XYZ2N(i,j,k,ni,nj)].ns-128 != 127)
+              {
+                printf("%c", (char)(lattice->ns[XYZ2N(i,j,k,ni,nj)].ns-128));
+              }
+              else
+              {
+                printf(" ");
+              }
+            }
+          }
+          printf(" ");
+        }
+        printf("\n");
+      }
+#if PARALLEL
+    }
+  }
+  MPI_Barrier( MPI_COMM_WORLD);
+#endif
+  }
+#endif
+
+} /* read_solids( lattice_ptr lattice, char *filename) */
+
 
 
 /*void read_solids_from_plt( lattice_ptr lattice, char *filename)

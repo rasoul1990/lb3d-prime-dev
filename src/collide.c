@@ -368,8 +368,118 @@ void collide( lattice_ptr lattice)
 
     } /* if( !( is_solid & BC_SOLID_NODE)) else */
 
-
   } /* for( n=0; n<lattice_NumNodes; n++) */
+
+#if POROUS_MEDIA
+  if( INAMURO_SIGMA_COMPONENT!=0 || subs==0)
+  {
+    int LX = get_LX( lattice);
+    int LY = get_LY( lattice);
+    int LZ = get_LZ( lattice);
+
+    double ns;
+    double* nsterm = lattice->nsterm;
+
+    // Compute the solid density term for fluid component.
+    for( n=0; n<lattice->NumNodes; n++)
+    {
+      if( is_not_solid(lattice, n))
+      {
+        // ns_flag = 0 ==> uniform ns value read from scalar
+        // ns_flag in {1,2} ==> variable ns_value read from array
+        if( lattice->param.ns_flag == 0) { ns = lattice->param.ns; }
+                                    else { ns = lattice->ns[n].ns; }
+/*  E */nsterm[Q*n+ E] = ns*( lattice->pdf[subs][n].ftemp[ W]
+                            - lattice->pdf[subs][n].f    [ E]);
+/*  W */nsterm[Q*n+ W] = ns*( lattice->pdf[subs][n].ftemp[ E]
+                            - lattice->pdf[subs][n].f    [ W]);
+/*  N */nsterm[Q*n+ N] = ns*( lattice->pdf[subs][n].ftemp[ S]
+                            - lattice->pdf[subs][n].f    [ N]);
+/*  S */nsterm[Q*n+ S] = ns*( lattice->pdf[subs][n].ftemp[ N]
+                            - lattice->pdf[subs][n].f    [ S]);
+/*  T */nsterm[Q*n+ T] = ns*( lattice->pdf[subs][n].ftemp[ B]
+                            - lattice->pdf[subs][n].f    [ T]);
+/*  B */nsterm[Q*n+ B] = ns*( lattice->pdf[subs][n].ftemp[ T]
+                            - lattice->pdf[subs][n].f    [ B]);
+/* NW */nsterm[Q*n+NW] = ns*( lattice->pdf[subs][n].ftemp[NE]
+                            - lattice->pdf[subs][n].f    [NW]);
+/* NE */nsterm[Q*n+NE] = ns*( lattice->pdf[subs][n].ftemp[NW]
+                            - lattice->pdf[subs][n].f    [NE]);
+/* SW */nsterm[Q*n+SW] = ns*( lattice->pdf[subs][n].ftemp[SE]
+                            - lattice->pdf[subs][n].f    [SW]);
+/* SE */nsterm[Q*n+SE] = ns*( lattice->pdf[subs][n].ftemp[SW]
+                            - lattice->pdf[subs][n].f    [SE]);
+/* TW */nsterm[Q*n+TW] = ns*( lattice->pdf[subs][n].ftemp[TE]
+                            - lattice->pdf[subs][n].f    [TW]);
+/* TE */nsterm[Q*n+TE] = ns*( lattice->pdf[subs][n].ftemp[TW]
+                            - lattice->pdf[subs][n].f    [TE]);
+/* BW */nsterm[Q*n+BW] = ns*( lattice->pdf[subs][n].ftemp[BE]
+                            - lattice->pdf[subs][n].f    [BW]);
+/* BE */nsterm[Q*n+BE] = ns*( lattice->pdf[subs][n].ftemp[BW]
+                            - lattice->pdf[subs][n].f    [BE]);
+/* TN */nsterm[Q*n+TN] = ns*( lattice->pdf[subs][n].ftemp[TS]
+                            - lattice->pdf[subs][n].f    [TN]);
+/* TS */nsterm[Q*n+TS] = ns*( lattice->pdf[subs][n].ftemp[TN]
+                            - lattice->pdf[subs][n].f    [TS]);
+/* BN */nsterm[Q*n+BN] = ns*( lattice->pdf[subs][n].ftemp[BS]
+                            - lattice->pdf[subs][n].f    [BN]);
+/* BS */nsterm[Q*n+BS] = ns*( lattice->pdf[subs][n].ftemp[BN]
+                            - lattice->pdf[subs][n].f    [BS]);
+
+      }
+    } /* for( n=0; n<lattice_NumNodes; n++) */
+
+    for( n=0; n<lattice->NumNodes; n++)
+    {
+      f = lattice->pdf[subs][n].f;
+
+      if( is_not_solid(lattice, n))
+      {
+        for( a=1; a<Q; a++)
+        {
+#if 0
+          // Store f in ftemp, because the compute_macro vars before
+          // output_frames needs to have the pre-ns version of f.
+          if( is_last_step_of_frame(lattice))
+          {
+            // This temp copy of f in ftemp prior to application
+            // of ns only needs to be done before outputting a frame,
+            // not after each timestep.
+            lattice->pdf[subs][n].ftemp[a] = f[a];
+          }
+#endif
+          // OLD: fout = fc + ns*( fc_(x+cdt) - fc(x))
+          //        f +=      ns*( f_(x+cdt)  - f(x))
+          //
+          //  - - - >o< - - -   <------o------>   <--<---o--->-->
+          //        1 2         3             4   3  5       6  4
+          //                    ------>o<------
+          //                          5 6
+          //
+          // CUR: fout = fc + ns*( fc_(x)     - fc(x)) = (1-ns)*fc + ns*fc_(x)
+          //        f +=      ns*( f_(x)      - f(x))
+          //
+          //  - - - >o< - - -   <------o------>   <--<---o--->-->
+          //        1 2         3             4   3  4       3  4
+          //
+          // NEW: fout = fc + ns*( fin_(x)    - fc(x)) = (1-ns)*fc + ns*fin_(x)
+          //        f +=      ns*( ftemp_(x)  - f(x))
+          //
+          //  - - - >o< - - -   <------o------>   <--<- -o- ->-->
+          //        1 2         3             4   3  1       2  4
+          //
+          // c.f., Walsh, Stuart D. C. and Burwinkle, Holly and Saar, Martin
+          // O., A new partial-bounceback lattice-Boltzmann method for fluid
+          // flow through heterogeneous media, COMPUTERS & GEOSCIENCES, 2009,
+          // 35, 6, 1186-1193, JUN, ISI:000266544700013
+          f[a] += nsterm[Q*n+a];
+
+        } /* for( a=1; a<Q; a++) */
+      } /* if( !( bc_type & BC_SOLID_NODE)) */
+    } /* for( n=0; n<lattice->NumNodes; n++, f+=18) */
+
+  } /* if( INAMURO_SIGMA_COMPONENT!=0 || subs==0) */
+#endif
 
  } /* for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
 

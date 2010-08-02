@@ -133,27 +133,21 @@ void stream( lattice_ptr lattice)
          lattice->pdf[subs][ XYZ2N( in, j , k , ni, nj)].ftemp[ W] = f[ W];
          lattice->pdf[subs][ XYZ2N( i , jp, k , ni, nj)].ftemp[ N] = f[ N];
          lattice->pdf[subs][ XYZ2N( i , jn, k , ni, nj)].ftemp[ S] = f[ S];
+         lattice->pdf[subs][ XYZ2N( i , j , kp, ni, nj)].ftemp[ T] = f[ T];
+         lattice->pdf[subs][ XYZ2N( i , j , kn, ni, nj)].ftemp[ B] = f[ B];
 
          lattice->pdf[subs][ XYZ2N( in, jp, k , ni, nj)].ftemp[NW] = f[NW];
          lattice->pdf[subs][ XYZ2N( ip, jp, k , ni, nj)].ftemp[NE] = f[NE];
          lattice->pdf[subs][ XYZ2N( in, jn, k , ni, nj)].ftemp[SW] = f[SW];
          lattice->pdf[subs][ XYZ2N( ip, jn, k , ni, nj)].ftemp[SE] = f[SE];
-//  if(index !=1)
-  {
-         lattice->pdf[subs][ XYZ2N( i , j , kp, ni, nj)].ftemp[ T] = f[ T];
-   lattice->pdf[subs][ XYZ2N( in, j , kp, ni, nj)].ftemp[TW] = f[TW];
+         lattice->pdf[subs][ XYZ2N( in, j , kp, ni, nj)].ftemp[TW] = f[TW];
          lattice->pdf[subs][ XYZ2N( ip, j , kp, ni, nj)].ftemp[TE] = f[TE];
          lattice->pdf[subs][ XYZ2N( i , jp, kp, ni, nj)].ftemp[TN] = f[TN];
          lattice->pdf[subs][ XYZ2N( i , jn, kp, ni, nj)].ftemp[TS] = f[TS];
-  }
-//  if(index !=2)
-  {
-         lattice->pdf[subs][ XYZ2N( i , j , kn, ni, nj)].ftemp[ B] = f[ B];
-   lattice->pdf[subs][ XYZ2N( in, j , kn, ni, nj)].ftemp[BW] = f[BW];
+         lattice->pdf[subs][ XYZ2N( in, j , kn, ni, nj)].ftemp[BW] = f[BW];
          lattice->pdf[subs][ XYZ2N( ip, j , kn, ni, nj)].ftemp[BE] = f[BE];
          lattice->pdf[subs][ XYZ2N( i , jp, kn, ni, nj)].ftemp[BN] = f[BN];
          lattice->pdf[subs][ XYZ2N( i , jn, kn, ni, nj)].ftemp[BS] = f[BS];
-  }
        } /* if( i=0; i<ni; i++, n++) */
      } /* if( j=0; j<nj; j++) */
    } /* if( k=0; k<nk; k++) */

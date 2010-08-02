@@ -55,10 +55,12 @@
 #define ZHANG_AND_CHEN_ENERGY_TRANSPORT ( 0 && (INAMURO_SIGMA_COMPONENT))
 
 // Simulate POROUS_MEDIA via a solid density parameter
-// as proposed by Dardis and McCloskey,
-// Phys Rev E, 57, 4, 4834-4837, 1998
+// c.f., Walsh, Stuart D. C. and Burwinkle, Holly and Saar, Martin
+// O., A new partial-bounceback lattice-Boltzmann method for fluid
+// flow through heterogeneous media, COMPUTERS & GEOSCIENCES, 2009,
+// 35, 6, 1186-1193, JUN, ISI:000266544700013
 // Flag: POROUS_MEDIA
-#define POROUS_MEDIA 0
+#define POROUS_MEDIA 1
 
 // When there are two (or more) fluid components, a single velocity is
 // sometimes (always?) used to compute the equilibrium distribution
@@ -141,7 +143,7 @@
 // Flag: INITIALIZE_WITH_UY_IN
 #define INITIALIZE_WITH_UY_IN   0
 // Flag: INITIALIZE_WITH_UZ_IN
-#define INITIALIZE_WITH_UZ_IN   1
+#define INITIALIZE_WITH_UZ_IN   0
 
 // Write .raw files for viewing with imagej, volsuite, 3dview, etc...
 // Flag: WRITE_MACRO_VAR_RAW_FILES

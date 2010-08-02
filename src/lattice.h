@@ -609,6 +609,7 @@ struct lattice_struct
 #endif /* STORE_UEQ */
 #if POROUS_MEDIA
   struct ns_struct         *ns;
+  double* nsterm;
 #endif /* POROUS_MEDIA */
 
   struct process_struct    process;

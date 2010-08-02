@@ -148,6 +148,215 @@ void construct_lattice( lattice_ptr *lattice, int argc, char **argv)
   }
 #endif /* STORE_UEQ */
 
+#if POROUS_MEDIA
+  switch( (*lattice)->param.ns_flag)
+  {
+    case 0:
+    {
+      if( (*lattice)->param.ns > 1. || (*lattice)->param.ns < 0.)
+      {
+        printf(
+          "latman.c: construct_lattice() -- "
+          "ERROR: ns = %f. "
+          "Should have 0 <= ns <=1. "
+          "Exiting!\n", (*lattice)->param.ns
+          );
+        process_exit(1);
+      }
+      break;
+    }
+
+    case 1:
+    {
+      // Allocate space for ns values.
+      (*lattice)->ns =
+        (struct ns_struct*)
+          malloc((*lattice)->NumNodes*sizeof(struct ns_struct));
+      if( (*lattice)->ns==NULL)
+      {
+        printf(
+          "construct_lattice() -- ERROR:  "
+          "Attempt to allocate %d struct ns_struct types failed.  "
+          "Exiting!\n",
+          (*lattice)->NumNodes
+          );
+        process_exit(1);
+      }
+
+#if 0
+    // Try to read ns<LX>x<LY>.bmp file.
+    sprintf( filename, "./in/ns%dx%d.bmp",
+           get_LX(*lattice),
+           get_LY(*lattice));
+    if( in = fopen( filename, "r+"))
+    {
+      printf("%s %d >> Reading file \"%s\".\n",__FILE__,__LINE__,filename);
+      bmp_read_header( in, &bmih);
+      for( n=0; n<(*lattice)->NumNodes; n++)
+      {
+        bmp_read_entry( in, &bmih, &r, &g, &b);
+
+        // Verify grayscale.
+        if(    (double)r != (double)g
+            || (double)g != (double)b
+            || (double)r != (double)b)
+        {
+          printf(
+            "%s %d >> latman.c: construct_lattice() -- "
+            "n=%d:  [ r g b] = [ %3u %3u %3u]\n",__FILE__,__LINE__,
+            n, (unsigned int)r%256, (unsigned int)g%256, (unsigned int)b%256);
+          printf(
+            "%s %d >> latman.c: construct_lattice() -- "
+            "ERROR: File %s needs to be grayscale. "
+            "Exiting!\n",__FILE__,__LINE__, filename);
+          process_exit(1);
+        }
+
+        // Assign ns value.
+        (*lattice)->ns[n].ns = ((double)((unsigned int)r%256))/255.;
+#if 0 && VERBOSITY_LEVEL>0
+        printf("%s %d >> n=%d, ns=%f\n",
+            __FILE__, __LINE__, n, (*lattice)->ns[n].ns);
+#endif /* 1 && VERBOSITY_LEVEL>0 */
+
+      } /* for( n=0; n<(*lattice)->NumNodes; n++) */
+
+      fclose( in);
+
+    } /* if( in = fopen( filename, "r+")) */
+
+    else /* !( in = fopen( filename, "r+")) */
+    {
+      // Can't read ns.bmp file, so use default values.
+      printf("%s %d >> WARNING: Can't read \"%s\". "
+          "Using default ns values.\n",__FILE__,__LINE__,filename);
+    } /* if( in = fopen( filename, "r+")) else */
+
+
+#else
+      // Read solids from .raw file.
+      sprintf(filename, "./in/ns%dx%dx%d.raw",
+          get_g_LX(*lattice),
+          get_g_LY(*lattice),
+          get_g_LZ(*lattice) );
+      printf("%s %d >> Reading ns values from file \"%s\"\n",
+        __FILE__, __LINE__, filename);
+      read_ns( *lattice, filename);
+#endif
+      break;
+    }
+
+    case 2:
+    {
+#if 0
+    // Allocate space for ns values.
+    (*lattice)->ns =
+      (struct ns_struct*)malloc( (*lattice)->NumNodes*sizeof(struct ns_struct));
+    if( (*lattice)->ns==NULL)
+    {
+      printf(
+        "construct_lattice() -- ERROR:  "
+        "Attempt to allocate %d struct ns_struct types failed.  "
+        "Exiting!\n",
+        (*lattice)->NumNodes
+        );
+      process_exit(1);
+    }
+
+    // Try to read ns<LX>x<LY>.bmp file.
+    sprintf( filename, "./in/ns%dx%d.bmp",
+           get_LX(*lattice),
+           get_LY(*lattice));
+    if( in = fopen( filename, "r+"))
+    {
+      printf("%s %d >> Reading file \"%s\".\n",__FILE__,__LINE__,filename);
+      bmp_read_header( in, &bmih);
+      for( n=0; n<(*lattice)->NumNodes; n++)
+      {
+        bmp_read_entry( in, &bmih, &r, &g, &b);
+
+        // Verify grayscale.
+        if(    (double)r != (double)g
+            || (double)g != (double)b
+            || (double)r != (double)b)
+        {
+          printf(
+            "%s %d >> latman.c: construct_lattice() -- "
+            "n=%d:  [ r g b] = [ %3u %3u %3u]\n",__FILE__,__LINE__,
+            n, (unsigned int)r%256, (unsigned int)g%256, (unsigned int)b%256);
+          printf(
+            "%s %d >> latman.c: construct_lattice() -- "
+            "ERROR: File %s needs to be grayscale. "
+            "Exiting!\n",__FILE__,__LINE__, filename);
+          process_exit(1);
+        }
+
+        if( ((unsigned int)r%256) != 0 && ((unsigned int)r%256) != 255 )
+        {
+          printf(
+            "%s %d >> latman.c: construct_lattice() -- "
+            "ERROR: File %s needs to be black and white. "
+            "Exiting!\n",__FILE__,__LINE__, filename);
+          process_exit(1);
+        }
+
+        // Assign ns value.
+        if( ((unsigned int)r%256) == 0)
+        {
+          (*lattice)->ns[n].ns = (*lattice)->param.ns;
+        }
+        else
+        {
+          (*lattice)->ns[n].ns = 0.;
+        }
+#if 0 && VERBOSITY_LEVEL>0
+        printf("%s %d >> n=%d, ns=%f\n",
+            __FILE__, __LINE__, n, (*lattice)->ns[n].ns);
+#endif /* 1 && VERBOSITY_LEVEL>0 */
+
+      } /* for( n=0; n<(*lattice)->NumNodes; n++) */
+
+      fclose( in);
+
+    } /* if( in = fopen( filename, "r+")) */
+
+    else /* !( in = fopen( filename, "r+")) */
+    {
+      // Can't read ns.bmp file, so use default values.
+      printf("%s %d >> WARNING: Can't read \"%s\". "
+          "Using default ns values.\n",__FILE__,__LINE__,filename);
+    } /* if( in = fopen( filename, "r+")) else */
+      break;
+#else
+      printf("%s %d >> Case ns_flag==2 pending. (Exiting)\n",__FILE__,__LINE__);
+      process_exit(1);
+#endif
+    }
+
+    default:
+    {
+      printf("%s %d >> construct_lattice() -- Unhandled case: "
+        "ns_flag = %d . (Exiting!)\n",
+        __FILE__,__LINE__,(*lattice)->param.ns_flag < 0.);
+      process_exit(1);
+      break;
+    }
+
+  } /* switch( (*lattice)->param.ns_flag) */
+  (*lattice)->nsterm = (double*)malloc( (*lattice)->NumNodes*Q*sizeof(double));
+  if( (*lattice)->nsterm==NULL)
+  {
+    printf(
+      "construct_lattice() -- ERROR:  "
+      "Attempt to allocate %d double types for nsterm failed.  "
+      "Exiting!\n",
+      (*lattice)->NumNodes
+      );
+    process_exit(1);
+  }
+#endif /* POROUS_MEDIA */
+
+
   dump_params( *lattice);
 
 } /* void construct_lattice( struct lattice_struct **lattice) */
@@ -1113,11 +1322,16 @@ int get_sizeof_lattice_structure( lattice_ptr lattice)
 int get_sizeof_lattice( lattice_ptr lattice)
 {
   return
-      sizeof(int)
-    + sizeof(int)
-    + sizeof(int)
-    + sizeof(int)*NUM_FLUID_COMPONENTS
-    + sizeof(int)*NUM_FLUID_COMPONENTS
+      sizeof(int) /* NumNodes*/
+    + sizeof(int) /* NumTimeSteps */
+    + sizeof(int) /* time */
+    + sizeof(int)*NUM_FLUID_COMPONENTS /* periodic_x */
+    + sizeof(int)*NUM_FLUID_COMPONENTS /* periodic_y */
+
+#if INAMURO_SIGMA_COMPONENT
+    + sizeof(int) /* SizeBTC */
+    + sizeof(int) /* FlowDir */
+#endif
 
     + sizeof(struct param_struct)
 
@@ -1134,7 +1348,9 @@ int get_sizeof_lattice( lattice_ptr lattice)
 #endif /* STORE_UEQ */
 #if POROUS_MEDIA
       + sizeof(struct ns_struct)
+      + Q*sizeof(double) /* nsterm */
 #endif /* POROUS_MEDIA */
+      + sizeof(struct process_struct)
       );
 
 } /* int get_sizeof_lattice( lattice_ptr lattice) */
