@@ -79,7 +79,7 @@
 // If COMPUTE_ON_SOLIDS is on, macroscopic variables and feq will be computed
 // on solid nodes, even though they are not conceptually meaningful there.
 // This can be helpful for debugging purposes.
-#define COMPUTE_ON_SOLIDS 1
+#define COMPUTE_ON_SOLIDS 0
 // NON_LOCAL_FORCES toggles any mechanisms for computing and storing
 // non-local (interaction) forces.
 // Flag: NON_LOCAL_FORCES

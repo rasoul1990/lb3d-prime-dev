@@ -60,3 +60,15 @@ double get_uz( lattice_ptr lattice, const int subs, const int n)
   return lattice->macro_vars[subs][n].u[2];
 }
 
+int do_post_streaming_bcs( lattice_ptr lattice)
+{
+  return !lattice->param.GZL
+      && !lattice->param.AllBoundaryPeriodic;
+}
+
+int do_post_collision_bcs( lattice_ptr lattice)
+{
+  return  lattice->param.GZL
+      && !lattice->param.AllBoundaryPeriodic;
+}
+

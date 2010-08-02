@@ -404,429 +404,422 @@ void init_problem( struct lattice_struct *lattice)
 
   lattice->time = 0;
 
-#if PARALLEL
- if(lattice->param.initial_condition ==1)
- {
-
- for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
- {
-
-  for( n=0; n<get_proc_id(lattice)* lattice->NumNodes; n++)
+#if 0 && PARALLEL
+  if(lattice->param.initial_condition ==1)
   {
-
-      if( (double)rand()/(double)RAND_MAX < lattice->param.cut)
-              {
-                //Non to test RAND is not a real random;
-              }
-  }
-
- }
-
- }//it works !! Great!!, no problem now , it gives same results as PC version!!
+    for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
+    {
+      for( n=0; n<get_proc_id(lattice)* lattice->NumNodes; n++)
+      {
+        if( (double)rand()/(double)RAND_MAX < lattice->param.cut)
+        {
+          //Non to test RAND is not a real random;
+        }
+      }
+    }
+  } //it works! Great! no problem now. it gives same results as PC version!
+  // DT: The above is by Haibo, I guess, apparently to test the portability
+  // of the rand function. It is not needed now, I think, so I put '0 && ' in
+  // the #if above.
 #endif
 
-
- for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
- {
-
-  for( n=0; n<lattice->NumNodes; n++)
+  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
-    i = N2X(n,ni,nj,nk);//n%lattice->param.LX;
-    j = N2Y(n,ni,nj,nk);//n/lattice->param.LX;
-    k = N2Z(n,ni,nj,nk);
+    for( n=0; n<lattice->NumNodes; n++)
+    {
+      i = N2X(n,ni,nj,nk);//n%lattice->param.LX;
+      j = N2Y(n,ni,nj,nk);//n/lattice->param.LX;
+      k = N2Z(n,ni,nj,nk);
 
-    rho = &( lattice->macro_vars[subs][n].rho);
-    u_x = &( lattice->macro_vars[subs][n].u[0]);
-    u_y = &( lattice->macro_vars[subs][n].u[1]);
-    u_z = &( lattice->macro_vars[subs][n].u[2]);
+      rho = &( lattice->macro_vars[subs][n].rho);
+      u_x = &( lattice->macro_vars[subs][n].u[0]);
+      u_y = &( lattice->macro_vars[subs][n].u[1]);
+      u_z = &( lattice->macro_vars[subs][n].u[2]);
 #if STORE_UEQ
-    ueq_x = &( lattice->ueq[n].u[0]);
-    ueq_y = &( lattice->ueq[n].u[1]);
-    ueq_z = &( lattice->ueq[n].u[2]);
+      ueq_x = &( lattice->ueq[n].u[0]);
+      ueq_y = &( lattice->ueq[n].u[1]);
+      ueq_z = &( lattice->ueq[n].u[2]);
 #endif /* STORE_UEQ */
 
+      is_solid = lattice->solids[subs][n].is_solid;
 
-    is_solid = lattice->solids[subs][n].is_solid;
-
-    // Set initial density.
-    if( ( 1 || !( is_solid)) )
-//    if(   !( is_solid) )
-//rev_Huang
-    {
-      switch( lattice->param.initial_condition)
+      // Set initial density.
+      // if(   !( is_solid) ) //rev_Huang
+      if( ( 1 || !( is_solid)) )
       {
-
-        case 0: // Uniform
+        switch( lattice->param.initial_condition)
         {
-           switch( NUM_FLUID_COMPONENTS)
-     {
-    case 1:
-    {
-    *rho = lattice->param.rho_A[subs];
-                break;
-    }
-
-    case 2:
-    {
-    *rho = lattice->param.rho_B[subs];
-    break;
-    }
-     }
-    break;
-        }
-
-        case 1: // Random
-        {
-          switch( NUM_FLUID_COMPONENTS)
+          case 0: // Uniform
           {
-            case 1:
+            switch( NUM_FLUID_COMPONENTS)
             {
-              *rho =
-                lattice->param.rho_A[0] + 10.*(double)rand()/(double)RAND_MAX;
-              break;
-            }
+              case 1:
+                {
+                  *rho = lattice->param.rho_A[subs];
+                  break;
+                }
 
-            case 2:
-            {
-              if( (double)rand()/(double)RAND_MAX < lattice->param.cut)
-              {
-                *rho = lattice->param.rho_A[subs];
-              }
-              else
-              {
-                *rho = lattice->param.rho_B[subs];
-              }
-              break;
+              case 2:
+                {
+                  *rho = lattice->param.rho_B[subs];
+                  break;
+                }
             }
-
-            default:
-            {
-              printf("%s %d >> ERROR: Unhandled case %d.\n",
-                __FILE__,__LINE__,
-                NUM_FLUID_COMPONENTS);
-              process_exit(1);
-              break;
-            }
-          }
-          break;
-        }
-
-        case 2: // Cube
-        {
-#if PARALLEL
-#if 0
-    id1 =  (int)floor(lattice->param.z1/(double)(nk);
-    newz1 =  (int)(lattice->param.z1) % (nk);
-    id2 =  (int)floor(lattice->param.z2/(double)(nk));
-    newz2 =  (int)(lattice->param.z2) % (nk);
-    if(id2>get_num_procs(lattice))
-    {
-      id2 = get_num_procs(lattice);
-      newz2 = nk ;
-    }
-#endif
-#endif
-          switch( NUM_FLUID_COMPONENTS)
-          {
-            case 1:
-            {
-#if PARALLEL
-#if 0
-       if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
-       if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
-       if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
-#endif
-#endif
-             if( i > lattice->param.x1 && i < lattice->param.x2 &&
-                 j > lattice->param.y1 && j < lattice->param.y2 &&
-#if PARALLEL
-                 k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2 )
-//if 0      k >=k1 && k<=k2 )
-#else
-     k > lattice->param.z1 && k < lattice->param.z2  )
-#endif
-              {
-                *rho = lattice->param.rho_A[0];
-              }
-              else
-              {
-                *rho = lattice->param.rho_B[0];
-              }
-              break;
-            }
-
-            case 2:
-            {
-#if PARALLEL
-#if 0
-       if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
-       if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
-       if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
-#endif
-#endif
-       if( i >= lattice->param.x1 && i <= lattice->param.x2 &&
-                 j >= lattice->param.y1 && j <= lattice->param.y2 &&
-#if PARALLEL
-    k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2)
-//      k >=k1 && k<=k2 )
-#else
-     k > lattice->param.z1 && k < lattice->param.z2  )
-#endif
-              {
-                *rho = lattice->param.rho_A[subs];
-              }
-              else
-              {
-                *rho = lattice->param.rho_B[subs];
-              }
-              break;
-            }
-
-            default:
-            {
-              printf("%s %d >> ERROR: Unhandled case %d.\n",
-                __FILE__,__LINE__,
-                NUM_FLUID_COMPONENTS);
-              process_exit(1);
-              break;
-            }
+            break;
           }
 
-          break;
-        }
-
-        case 3: // Sphere
-        {
-          switch( NUM_FLUID_COMPONENTS)
+          case 1: // Random
           {
-            case 1:
+            switch( NUM_FLUID_COMPONENTS)
             {
-              if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
-      (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+              case 1:
+                {
+                  *rho =
+                    lattice->param.rho_A[0] + 10.*(double)rand()/(double)RAND_MAX;
+                  break;
+                }
+
+              case 2:
+                {
+                  if( (double)rand()/(double)RAND_MAX < lattice->param.cut)
+                  {
+                    *rho = lattice->param.rho_A[subs];
+                  }
+                  else
+                  {
+                    *rho = lattice->param.rho_B[subs];
+                  }
+                  break;
+                }
+
+              default:
+                {
+                  printf("%s %d >> ERROR: Unhandled case %d.\n",
+                      __FILE__,__LINE__,
+                      NUM_FLUID_COMPONENTS);
+                  process_exit(1);
+                  break;
+                }
+            }
+            break;
+          }
+
+          case 2: // Cube
+            {
+#if PARALLEL
+#if 0
+              id1 =  (int)floor(lattice->param.z1/(double)(nk);
+                  newz1 =  (int)(lattice->param.z1) % (nk);
+                  id2 =  (int)floor(lattice->param.z2/(double)(nk));
+                  newz2 =  (int)(lattice->param.z2) % (nk);
+                  if(id2>get_num_procs(lattice))
+                  {
+                  id2 = get_num_procs(lattice);
+                  newz2 = nk ;
+                  }
+#endif
+#endif
+                  switch( NUM_FLUID_COMPONENTS)
+                  {
+                  case 1:
+                  {
+#if PARALLEL
+#if 0
+                  if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
+                  if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
+                  if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
+#endif
+#endif
+                  if( i > lattice->param.x1 && i < lattice->param.x2 &&
+                      j > lattice->param.y1 && j < lattice->param.y2 &&
+#if PARALLEL
+                      k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2 )
+                    //if 0      k >=k1 && k<=k2 )
+#else
+                    k > lattice->param.z1 && k < lattice->param.z2  )
+#endif
+                    {
+                      *rho = lattice->param.rho_A[0];
+                    }
+                  else
+                  {
+                    *rho = lattice->param.rho_B[0];
+                  }
+                  break;
+                  }
+
+                  case 2:
+                  {
+#if PARALLEL
+#if 0
+                    if(get_proc_id(lattice) ==id1 ) {k1=newz1; k2 = nk;}
+                    if(get_proc_id(lattice) ==id2 ) {k1=0; k2 = newz2;}
+                    if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
+#endif
+#endif
+                    if( i >= lattice->param.x1 && i <= lattice->param.x2 &&
+                        j >= lattice->param.y1 && j <= lattice->param.y2 &&
+#if PARALLEL
+                        k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2)
+                      //      k >=k1 && k<=k2 )
+#else
+                      k > lattice->param.z1 && k < lattice->param.z2  )
+#endif
+                      {
+                        *rho = lattice->param.rho_A[subs];
+                      }
+                    else
+                    {
+                      *rho = lattice->param.rho_B[subs];
+                    }
+                    break;
+                  }
+
+                  default:
+                  {
+                    printf("%s %d >> ERROR: Unhandled case %d.\n",
+                        __FILE__,__LINE__,
+                        NUM_FLUID_COMPONENTS);
+                    process_exit(1);
+                    break;
+                  }
+                  }
+
+              break;
+            }
+
+          case 3: // Sphere
+            {
+              switch( NUM_FLUID_COMPONENTS)
               {
-                *rho = lattice->param.rho_A[0];
-              }
-              else
-              {
-                *rho = lattice->param.rho_B[0];
+                case 1:
+                  {
+                    if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
+                        (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+                    {
+                      *rho = lattice->param.rho_A[0];
+                    }
+                    else
+                    {
+                      *rho = lattice->param.rho_B[0];
+                    }
+                    break;
+                  }
+                case 2:
+                  {
+                    if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
+                        (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+                    {
+                      *rho = lattice->param.rho_A[subs];
+                    }
+                    else
+                    {
+                      *rho = lattice->param.rho_B[subs];
+                    }
+                    break;
+                  }
+                default:
+                  {
+                    printf(
+                        "%s (%d) >> init_problem() -- Unhandled case  "
+                        "NUM_FLUID_COMPONENTS = %d.  "
+                        "Exiting!\n", __FILE__, __LINE__,
+                        NUM_FLUID_COMPONENTS);
+                    process_exit(1);
+                  }
               }
               break;
             }
-            case 2:
+          case 4: // Linear Density Gradient
             {
-              if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
-      (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+              switch( NUM_FLUID_COMPONENTS)
               {
-                *rho = lattice->param.rho_A[subs];
+                case 1:
+                  {
+
+                    *rho = ((lattice->param.rho_out-lattice->param.rho_in)/nk)*k + lattice->param.rho_in;//lattice->param.rho_A[0];
+
+
+                    break;
+                  }
+
+                case 2:
+                  {
+                    if( i > 20 && i < 32 &&
+                        j > 10 && j < 22
+                        && k >  8 && k < 18
+                      )
+                    {
+                      *rho = lattice->param.rho_A[subs];
+                    }
+                    else
+                    {
+                      *rho = lattice->param.rho_B[subs];
+                    }
+                    break;
+                  }
+
+                default:
+                  {
+                    printf("%s %d >> ERROR: Unhandled case %d.\n",
+                        __FILE__,__LINE__,
+                        NUM_FLUID_COMPONENTS);
+                    process_exit(1);
+                    break;
+                  }
               }
-              else
-              {
-                *rho = lattice->param.rho_B[subs];
-              }
+
               break;
             }
-            default:
+
+          default:
             {
               printf(
-                "%s (%d) >> init_problem() -- Unhandled case  "
-                "NUM_FLUID_COMPONENTS = %d.  "
-                "Exiting!\n", __FILE__, __LINE__,
-                NUM_FLUID_COMPONENTS);
-              process_exit(1);
-            }
-          }
-          break;
-        }
-      case 4: // Linear Density Gradient
-        {
-          switch( NUM_FLUID_COMPONENTS)
-          {
-            case 1:
-            {
-
-                *rho = ((lattice->param.rho_out-lattice->param.rho_in)/nk)*k + lattice->param.rho_in;//lattice->param.rho_A[0];
-
-
-              break;
-            }
-
-            case 2:
-            {
-              if( i > 20 && i < 32 &&
-                  j > 10 && j < 22
-               && k >  8 && k < 18
-                  )
-              {
-                *rho = lattice->param.rho_A[subs];
-              }
-              else
-              {
-                *rho = lattice->param.rho_B[subs];
-              }
-              break;
-            }
-
-            default:
-            {
-              printf("%s %d >> ERROR: Unhandled case %d.\n",
-                __FILE__,__LINE__,
-                NUM_FLUID_COMPONENTS);
+                  "%s (%d) >> init_problem() -- Unhandled case  "
+                  "lattice->param.initial_condition = %d.  "
+                  "Exiting!\n", __FILE__, __LINE__,
+                  lattice->param.initial_condition );
               process_exit(1);
               break;
             }
-          }
-
-          break;
-        }
-
-        default:
-        {
-          printf(
-            "%s (%d) >> init_problem() -- Unhandled case  "
-            "lattice->param.initial_condition = %d.  "
-            "Exiting!\n", __FILE__, __LINE__,
-            lattice->param.initial_condition );
-          process_exit(1);
-          break;
-        }
-      } /* switch( lattice->param.initial_condition) */
-    } /* if( ( 1 || !( solids->is_solid & BC_SOLID_NODE)) ) */
-    else
-    {
-    //if( solids->is_solid)
-    //{
-    //  *macro_var_ptr++ = lattice->param.rho_A[subs];
-    //  *macro_var_ptr++ = lattice->param.rho_in;
-    //}
-    //else
-    //{
+        } /* switch( lattice->param.initial_condition) */
+      } /* if( ( 1 || !( solids->is_solid & BC_SOLID_NODE)) ) */
+      else
+      {
+        //if( solids->is_solid)
+        //{
+        //  *macro_var_ptr++ = lattice->param.rho_A[subs];
+        //  *macro_var_ptr++ = lattice->param.rho_in;
+        //}
+        //else
+        //{
         *rho = 0.;
-    //}
-    } /* if( ( 1 || !( solids->is_solid & BC_SOLID_NODE)) ) else */
+        //}
+      } /* if( ( 1 || !( solids->is_solid & BC_SOLID_NODE)) ) else */
 
 #if SPONGE
-       if(// i >= lattice->param.x1 && i <= lattice->param.x2 &&
-                // j >= lattice->param.y1 && j <= lattice->param.y2 &&
+      if(// i >= lattice->param.x1 && i <= lattice->param.x2 &&
+          // j >= lattice->param.y1 && j <= lattice->param.y2 &&
 #if PARALLEL
-    k+ get_proc_id(lattice)*nk < lattice->param.z1 || k+ get_proc_id(lattice)*nk > lattice->param.z2)
-//      k >=k1 && k<=k2 )
+          k+ get_proc_id(lattice)*nk < lattice->param.z1 || k+ get_proc_id(lattice)*nk > lattice->param.z2)
+        //      k >=k1 && k<=k2 )
 #else
-     k < lattice->param.z1 || k > lattice->param.z2  )
+        k < lattice->param.z1 || k > lattice->param.z2  )
 #endif
-              {
-                *rho = lattice->param.rho_A[subs];
-              }
+        {
+          *rho = lattice->param.rho_A[subs];
+        }
 #endif
 
-    // Set initial velocity.
+      // Set initial velocity.
 #if INITIALIZE_WITH_UX_IN
-    *u_x = lattice->param.ux_in;
+      *u_x = lattice->param.ux_in;
 #else
-    *u_x = 0.;
+      *u_x = 0.;
 #endif
 #if INITIALIZE_WITH_UY_IN
-    *u_y = lattice->param.uy_in;
+      *u_y = lattice->param.uy_in;
 #else
-    *u_y = 0.;
+      *u_y = 0.;
 #endif
 #if INITIALIZE_WITH_UZ_IN
-    *u_z = lattice->param.uz_in;
+      *u_z = lattice->param.uz_in;
 #else
-    *u_z = 0.;
+      *u_z = 0.;
 #endif
 
 #if STORE_UEQ
-    *ueq_x = 0.;
-    *ueq_y = 0.;
-    *ueq_z = 0.;
+      *ueq_x = 0.;
+      *ueq_y = 0.;
+      *ueq_z = 0.;
 #endif /* STORE_UEQ */
 
-  } /* for( n=0; n<lattice->NumNodes; n++) */
+    } /* for( n=0; n<lattice->NumNodes; n++) */
 
- } /* for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
+  } /* for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
 
-printf("%s %d >> Before compute_feq...\n",__FILE__,__LINE__);
+  printf("%s %d >> Before compute_feq...\n",__FILE__,__LINE__);
 
   // Compute initial feq.
 #if SAVE_MEMO
 
 #else
-compute_feq( lattice);
+  compute_feq( lattice);
 #endif
 
-printf("%s %d >> After compute_feq!\n",__FILE__,__LINE__);
+  printf("%s %d >> After compute_feq!\n",__FILE__,__LINE__);
 
- for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
- {
-  for( n=0; n<lattice->NumNodes; n++)
+  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
+    for( n=0; n<lattice->NumNodes; n++)
+    {
 #if SAVE_MEMO
-    compute_single_feq(  lattice, n, subs, &(lattice->pdf[subs][n].ftemp) );
+      compute_single_feq(  lattice, n, subs, &(lattice->pdf[subs][n].ftemp) );
 
 #else
 
-          f = lattice->pdf[subs][n].f;
-    feq = lattice->pdf[subs][n].feq;
-    ftemp = lattice->pdf[subs][n].ftemp;
-    is_solid = lattice->solids[subs][n].is_solid;
-//***********************************************************************************
+      f = lattice->pdf[subs][n].f;
+      feq = lattice->pdf[subs][n].feq;
+      ftemp = lattice->pdf[subs][n].ftemp;
+      is_solid = lattice->solids[subs][n].is_solid;
+      //***********************************************************************************
       if(!lattice->time)
-    {
-      fcountone = is_solid;
-    }
-    else
-    {
-      fcountone = 0.;
-    }
-//***************************************************************p-edit*************
-    if( /*ALLOW_INIT_ON_SOLID_NODES*/fcountone || !( is_solid))
-    {
-      // Copy feq to f.
-      for( a=0; a<Q; a++)
       {
-     // printf("feq = %d, is_solid = %d, ftemp = %d, f[ %d ] = %d \n", lattice->pdf[subs][n].feq,
-     // lattice->solids[subs][n].is_solid,lattice->pdf[subs][n].ftemp, a, f[a]); //****Problem here?******************
-        f[a] = feq[a];
+        fcountone = is_solid;
       }
-
-      // Initialize ftemp.
-      for( a=0; a<Q; a++)
+      else
       {
-        ftemp[a]= 0.;
+        fcountone = 0.;
       }
-
-    }
-    else
-    {
-      // f
-      for( a=0; a<Q; a++)
+      //***************************************************************p-edit*************
+      if( /*ALLOW_INIT_ON_SOLID_NODES*/fcountone || !( is_solid))
       {
-        f[a] = 0.;
-      }
+        // Copy feq to f.
+        for( a=0; a<Q; a++)
+        {
+          // printf("feq = %d, is_solid = %d, ftemp = %d, f[ %d ] = %d \n", lattice->pdf[subs][n].feq,
+          // lattice->solids[subs][n].is_solid,lattice->pdf[subs][n].ftemp, a, f[a]); //****Problem here?******************
+          f[a] = feq[a];
+        }
 
-      // ftemp
-      for( a=0; a<Q; a++)
+        // Initialize ftemp.
+        for( a=0; a<Q; a++)
+        {
+          ftemp[a]= 0.;
+        }
+
+      }
+      else
       {
-        ftemp[a] = 0.;
-      }
+        // f
+        for( a=0; a<Q; a++)
+        {
+          f[a] = 0.;
+        }
 
-    }
+        // ftemp
+        for( a=0; a<Q; a++)
+        {
+          ftemp[a] = 0.;
+        }
+
+      }
 #endif
-  } /* for( n=0; n<lattice->NumNodes; n++) */
+    } /* for( n=0; n<lattice->NumNodes; n++) */
 
 #if NON_LOCAL_FORCES
-  for( n=0; n<lattice->NumNodes; n++)
-  {
-    lattice->force[subs][n].force[0] = 0.;
-    lattice->force[subs][n].force[1] = 0.;
-    lattice->force[subs][n].force[2] = 0.;
-    lattice->force[subs][n].sforce[0] = 0.;
-    lattice->force[subs][n].sforce[1] = 0.;
-    lattice->force[subs][n].sforce[2] = 0.;
-  }
+    for( n=0; n<lattice->NumNodes; n++)
+    {
+      lattice->force[subs][n].force[0] = 0.;
+      lattice->force[subs][n].force[1] = 0.;
+      lattice->force[subs][n].force[2] = 0.;
+      lattice->force[subs][n].sforce[0] = 0.;
+      lattice->force[subs][n].sforce[1] = 0.;
+      lattice->force[subs][n].sforce[2] = 0.;
+    }
 #endif /* NON_LOCAL_FORCES */
 
- } /* for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
+  } /* for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
 
 
   //compute_macro_vars( lattice);
@@ -838,7 +831,7 @@ printf("%s %d >> After compute_feq!\n",__FILE__,__LINE__);
   printf("init_problem() -- Problem initialized.\n");
 #endif /* VERBOSITY_LEVEL > 0 */
 
-//compute_macro_vars( lattice);//*********************************************p-edit***
+  //compute_macro_vars( lattice);//*********************************************p-edit***
 
 } /* void init_problem( struct lattice_struct *lattice) */
 

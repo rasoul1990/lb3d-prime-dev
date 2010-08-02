@@ -476,140 +476,140 @@ void compute_macro_vars( struct lattice_struct *lattice)
     } /*for( n=0; n<lattice->NumNodes; n++) */
   } /* for(subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
 
- if( NUM_FLUID_COMPONENTS==2)
- {
-  tau0 = lattice->param.tau[0];
-  tau1 = lattice->param.tau[1];
-
-  for( n=0; n<lattice->NumNodes; n++)
+  if( NUM_FLUID_COMPONENTS==2)
   {
-    for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
+    tau0 = lattice->param.tau[0];
+    tau1 = lattice->param.tau[1];
+
+    for( n=0; n<lattice->NumNodes; n++)
     {
-      rho[subs]   = &( lattice->macro_vars[subs][n].rho);
-      u_x[subs]   = &( lattice->macro_vars[subs][n].u[0]);
-      u_y[subs]   = &( lattice->macro_vars[subs][n].u[1]);
-      u_z[subs]   = &( lattice->macro_vars[subs][n].u[2]);
-    }
+      for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
+      {
+        rho[subs]   = &( lattice->macro_vars[subs][n].rho);
+        u_x[subs]   = &( lattice->macro_vars[subs][n].u[0]);
+        u_y[subs]   = &( lattice->macro_vars[subs][n].u[1]);
+        u_z[subs]   = &( lattice->macro_vars[subs][n].u[2]);
+      }
 
 #if STORE_UEQ
-    ueq = lattice->ueq[n].u;
+      ueq = lattice->ueq[n].u;
 #endif /* STORE_UEQ */
 
-    is_solid  = ( lattice->solids[0][n].is_solid);
+      is_solid  = ( lattice->solids[0][n].is_solid);
 
-    if( !( is_solid))
-    {
-      ux_sum =  *u_x[0]/tau0 + *u_x[1]/tau1;
-      uy_sum =  *u_y[0]/tau0 + *u_y[1]/tau1;
-      uz_sum =  *u_z[0]/tau0 + *u_z[1]/tau1;
+      if( !( is_solid))
+      {
+        ux_sum =  *u_x[0]/tau0 + *u_x[1]/tau1;
+        uy_sum =  *u_y[0]/tau0 + *u_y[1]/tau1;
+        uz_sum =  *u_z[0]/tau0 + *u_z[1]/tau1;
 
 #if STORE_UEQ
-      if( *rho[0] + *rho[1] != 0.)
-      {
-//        ueq[0] = ( ux_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
-//        ueq[1] = ( uy_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
-//        ueq[2] = ( uz_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
-        *ueq++ = ( ux_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
-        *ueq++ = ( uy_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
-        *ueq++ = ( uz_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
-      }
-      else
-      {
-        *ueq++ = 0.;
-        *ueq++ = 0.;
-        *ueq++ = 0.;
-      }
+        if( *rho[0] + *rho[1] != 0.)
+        {
+          //        ueq[0] = ( ux_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
+          //        ueq[1] = ( uy_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
+          //        ueq[2] = ( uz_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
+          *ueq++ = ( ux_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
+          *ueq++ = ( uy_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
+          *ueq++ = ( uz_sum) / ( *rho[0]/tau0 + *rho[1]/tau1);
+        }
+        else
+        {
+          *ueq++ = 0.;
+          *ueq++ = 0.;
+          *ueq++ = 0.;
+        }
 #endif /* STORE_UEQ */
 
 
-      if( ux_sum != 0.)
+        if( ux_sum != 0.)
+        {
+          if( *rho[0] != 0.) { *u_x[0] = *u_x[0] / *rho[0]; }
+          else {             *u_x[0] = 0.; }
+          if( *rho[1] != 0.) { *u_x[1] = *u_x[1] / *rho[1]; }
+          else {             *u_x[1] = 0.; }
+        }
+        else { *u_x[0] = 0.; *u_x[1] = 0.; }
+
+        if( uy_sum != 0.)
+        {
+          if( *rho[0] != 0.) { *u_y[0] = *u_y[0] / *rho[0]; }
+          else {             *u_y[0] = 0.; }
+          if( *rho[1] != 0.) { *u_y[1] = *u_y[1] / *rho[1]; }
+          else {             *u_y[1] = 0.; }
+        }
+        else { *u_y[0] = 0.; *u_y[1] = 0.; }
+
+        if( uz_sum != 0.)
+        {
+          if( *rho[0] != 0.) { *u_z[0] = *u_z[0] / *rho[0]; }
+          else {             *u_z[0] = 0.; }
+          if( *rho[1] != 0.) { *u_z[1] = *u_z[1] / *rho[1]; }
+          else {             *u_z[1] = 0.; }
+        }
+        else { *u_z[0] = 0.; *u_z[1] = 0.; }
+
+      } /* if( !( is_solid)) */
+
+    } /* for( n=0; n<lattice->NumNodes; n++) */
+
+  } /* if( NUM_FLUID_COMPONENTS==2) */
+
+  else if( NUM_FLUID_COMPONENTS == 1)
+  {
+    for( n=0; n<lattice->NumNodes; n++)
+    {
+      rho[0]      = &( lattice->macro_vars[0][n].rho);
+      u_x[0]      = &( lattice->macro_vars[0][n].u[0]);
+      u_y[0]      = &( lattice->macro_vars[0][n].u[1]);
+      u_z[0]      = &( lattice->macro_vars[0][n].u[2]);
+      is_solid    =  ( lattice->solids[0][n].is_solid);
+
+
+      if( !( is_solid) )
       {
-        if( *rho[0] != 0.) { *u_x[0] = *u_x[0] / *rho[0]; }
-        else {             *u_x[0] = 0.; }
-        if( *rho[1] != 0.) { *u_x[1] = *u_x[1] / *rho[1]; }
-        else {             *u_x[1] = 0.; }
-      }
-      else { *u_x[0] = 0.; *u_x[1] = 0.; }
+        if( *rho[0] != 0. && *u_x[0] != 0.)
+        {
+          *u_x[0] = *u_x[0] / *rho[0];
+        }
+        else
+        {
+          *u_x[0] = 0.;
+        }
 
-      if( uy_sum != 0.)
-      {
-        if( *rho[0] != 0.) { *u_y[0] = *u_y[0] / *rho[0]; }
-        else {             *u_y[0] = 0.; }
-        if( *rho[1] != 0.) { *u_y[1] = *u_y[1] / *rho[1]; }
-        else {             *u_y[1] = 0.; }
-      }
-      else { *u_y[0] = 0.; *u_y[1] = 0.; }
+        if( *rho[0] != 0. && *u_y[0] != 0.)
+        {
+          *u_y[0] = *u_y[0] / *rho[0];
+        }
+        else
+        {
+          *u_y[0] = 0.;
+        }
 
-      if( uz_sum != 0.)
-      {
-        if( *rho[0] != 0.) { *u_z[0] = *u_z[0] / *rho[0]; }
-        else {             *u_z[0] = 0.; }
-        if( *rho[1] != 0.) { *u_z[1] = *u_z[1] / *rho[1]; }
-        else {             *u_z[1] = 0.; }
-      }
-      else { *u_z[0] = 0.; *u_z[1] = 0.; }
+        if( *rho[0] != 0. && *u_z[0] != 0.)
+        {
+          *u_z[0] = *u_z[0] / *rho[0];
+        }
+        else
+        {
+          *u_z[0] = 0.;
+        }
 
-    } /* if( !( is_solid)) */
+      } /* if( !( is_solid)) */
 
-  } /* for( n=0; n<lattice->NumNodes; n++) */
-
- } /* if( NUM_FLUID_COMPONENTS==2) */
-
- else if( NUM_FLUID_COMPONENTS == 1)
- {
-   for( n=0; n<lattice->NumNodes; n++)
-   {
-     rho[0]      = &( lattice->macro_vars[0][n].rho);
-     u_x[0]      = &( lattice->macro_vars[0][n].u[0]);
-     u_y[0]      = &( lattice->macro_vars[0][n].u[1]);
-     u_z[0]      = &( lattice->macro_vars[0][n].u[2]);
-     is_solid    =  ( lattice->solids[0][n].is_solid);
-
-
-     if( !( is_solid) )
-     {
-       if( *rho[0] != 0. && *u_x[0] != 0.)
-       {
-         *u_x[0] = *u_x[0] / *rho[0];
-       }
-       else
-       {
-         *u_x[0] = 0.;
-       }
-
-       if( *rho[0] != 0. && *u_y[0] != 0.)
-       {
-         *u_y[0] = *u_y[0] / *rho[0];
-       }
-       else
-       {
-         *u_y[0] = 0.;
-       }
-
-       if( *rho[0] != 0. && *u_z[0] != 0.)
-       {
-         *u_z[0] = *u_z[0] / *rho[0];
-       }
-       else
-       {
-         *u_z[0] = 0.;
-       }
-
-     } /* if( !( is_solid)) */
-
-   } /* for( n=0; n<lattice->NumNodes; n++) */
- }
- else
- {
-  printf(
-    "compute_macro_vars() -- "
-    "Unhandled case "
-    "NUM_FLUID_COMPONENTS = %d . "
-    "Exiting!\n",
-    NUM_FLUID_COMPONENTS);
-  process_exit(1);
- }
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    } /* for( n=0; n<lattice->NumNodes; n++) */
+  }
+  else
+  {
+    printf(
+        "compute_macro_vars() -- "
+        "Unhandled case "
+        "NUM_FLUID_COMPONENTS = %d . "
+        "Exiting!\n",
+        NUM_FLUID_COMPONENTS);
+    process_exit(1);
+  }
+  //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 #if PARALLEL
 
   rho_send_recv_begin(  lattice, 0);
@@ -619,32 +619,32 @@ void compute_macro_vars( struct lattice_struct *lattice)
   solid_send_recv_end(  lattice, 0);
 
 #endif
-//&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+  //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 #if NON_LOCAL_FORCES
   switch( NUM_FLUID_COMPONENTS)
   {
     case 1:
-    {
-      compute_phase_force( lattice, 0);
-      compute_single_fluid_solid_force( lattice, 0);
-      break;
-    }
+      {
+        compute_phase_force( lattice, 0);
+        compute_single_fluid_solid_force( lattice, 0);
+        break;
+      }
 
     case 2:
-    {
-      compute_fluid_fluid_force( lattice);
-      compute_double_fluid_solid_force( lattice);
-      break;
-    }
+      {
+        compute_fluid_fluid_force( lattice);
+        compute_double_fluid_solid_force( lattice);
+        break;
+      }
 
     default:
-    {
-      printf("%s %d >> ERROR: Unhandled case %d\n",
-        __FILE__,__LINE__,
-        NUM_FLUID_COMPONENTS);
-      process_exit(1);
-      break;
-    }
+      {
+        printf("%s %d >> ERROR: Unhandled case %d\n",
+            __FILE__,__LINE__,
+            NUM_FLUID_COMPONENTS);
+        process_exit(1);
+        break;
+      }
   }
 #endif /* NON_LOCAL_FORCES */
 
@@ -715,45 +715,44 @@ void compute_single_feq( struct lattice_struct *lattice, int n, int subs, double
       is_solid  =    lattice->solids[subs][n].is_solid;
 
 //      if( /*fcountone*/  1 || !(is_solid))
-      if( !(is_solid))
-
+      if( !lattice->time || !(is_solid))
       {
 #if STORE_UEQ
-      // Start with the composite macroscopic velocities.
-      u_x       =    lattice->ueq[n].u[0];
-      u_y       =    lattice->ueq[n].u[1];
-      u_z       =    lattice->ueq[n].u[2];
-//  u_x       = *ueq;     *ueq++;
-//  u_y       = *ueq;     *ueq++;
-//  u_z       = *ueq;     *ueq++;
+        // Start with the composite macroscopic velocities.
+        u_x       =    lattice->ueq[n].u[0];
+        u_y       =    lattice->ueq[n].u[1];
+        u_z       =    lattice->ueq[n].u[2];
+        //  u_x       = *ueq;     *ueq++;
+        //  u_y       = *ueq;     *ueq++;
+        //  u_z       = *ueq;     *ueq++;
 #else /* !( STORE_UEQ) */
-      // Start with the individual component velocities.
-      u_x       =    lattice->macro_vars[subs][n].u[0];
-      u_y       =    lattice->macro_vars[subs][n].u[1];
-      u_z       =    lattice->macro_vars[subs][n].u[2];
+        // Start with the individual component velocities.
+        u_x       =    lattice->macro_vars[subs][n].u[0];
+        u_y       =    lattice->macro_vars[subs][n].u[1];
+        u_z       =    lattice->macro_vars[subs][n].u[2];
 #endif /* STORE_UEQ */
 
-      u_x       = u_x
+        u_x       = u_x
 #if NON_LOCAL_FORCES
-                +tau*lattice->force[ subs][n].force[0]
-                +tau*lattice->force[ subs][n].sforce[0]
+          +tau*lattice->force[ subs][n].force[0]
+          +tau*lattice->force[ subs][n].sforce[0]
 #endif /* NON_LOCAL_FORCES */
-                +tau*lattice->param.gforce[ subs][0]/rho
-                ;
-      u_y       = u_y
+          +tau*lattice->param.gforce[ subs][0]/rho
+          ;
+        u_y       = u_y
 #if NON_LOCAL_FORCES
-                +tau*lattice->force[ subs][n].force[1]
-                +tau*lattice->force[ subs][n].sforce[1]
+          +tau*lattice->force[ subs][n].force[1]
+          +tau*lattice->force[ subs][n].sforce[1]
 #endif /* NON_LOCAL_FORCES */
-                +tau*lattice->param.gforce[ subs][1]/rho
-                ;
-      u_z       = u_z
+          +tau*lattice->param.gforce[ subs][1]/rho
+          ;
+        u_z       = u_z
 #if NON_LOCAL_FORCES
-                +tau*lattice->force[ subs][n].force[2]
-                +tau*lattice->force[ subs][n].sforce[2]
+          +tau*lattice->force[ subs][n].force[2]
+          +tau*lattice->force[ subs][n].sforce[2]
 #endif /* NONhLOCAL_FORCES */
-                + tau*lattice->param.gforce[ subs][2]/rho
-                ;
+          + tau*lattice->param.gforce[ subs][2]/rho
+          ;
 
         usq = u_x*u_x + u_y*u_y + u_z*u_z;
 
@@ -1689,6 +1688,41 @@ void compute_ave_u( lattice_ptr lattice, double *ave_u, int subs)
   }
 
 } /* void compute_ave_u( lattice_ptr lattice, double *ave_u, int subs) */
+
+void compute_flux( lattice_ptr lattice, double *flux, int subs)
+{
+  int n, nn;
+  double rho, u_x, u_y, u_z;
+  *(flux+0) = 0.;
+  *(flux+1) = 0.;
+  *(flux+2) = 0.;
+  *(flux+3) = 0.;
+  nn = 0;
+  for( n=0; n<lattice->NumNodes; n++)
+  {
+    rho = lattice->macro_vars[subs][n].rho;
+    u_x = lattice->macro_vars[subs][n].u[0];
+    u_y = lattice->macro_vars[subs][n].u[1];
+    u_z = lattice->macro_vars[subs][n].u[2];
+
+    if( is_not_solid(lattice,subs))
+    {
+      *(flux+0) += rho*sqrt(u_x*u_x+u_y*u_y+u_z*u_z);
+      *(flux+1) += rho*u_x;
+      *(flux+2) += rho*u_y;
+      *(flux+3) += rho*u_z;
+      nn++;
+    }
+  }
+  if( nn != 0)
+  {
+    *(flux+0) = (*(flux+0))/nn;
+    *(flux+1) = (*(flux+1))/nn;
+    *(flux+2) = (*(flux+2))/nn;
+    *(flux+3) = (*(flux+3))/nn;
+  }
+
+} /* void compute_flux( lattice_ptr lattice, double *flux, int subs) */
 
 #if STORE_UEQ
 //void compute_max_ueq( lattice_ptr lattice, double *max_u)

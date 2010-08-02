@@ -159,17 +159,17 @@ void collide( lattice_ptr lattice)
   printf("collide() -- Hi!\n");
 #endif /* SAY_HI */
 
- for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
- {
-  for( n=0; n<lattice->NumNodes; n++)
+  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
   {
-    feq      = lattice->pdf[subs][n].feq;
-    f        = lattice->pdf[subs][n].f;
-    ftemp    = lattice->pdf[subs][n].ftemp;
-    is_solid = lattice->solids[subs][n].is_solid;
-
-    if( !is_solid)
+    for( n=0; n<lattice->NumNodes; n++)
     {
+      feq      = lattice->pdf[subs][n].feq;
+      f        = lattice->pdf[subs][n].f;
+      ftemp    = lattice->pdf[subs][n].ftemp;
+      is_solid = lattice->solids[subs][n].is_solid;
+
+      if( !is_solid)
+      {
         // C O L L I D E
 
         // f = ftemp - (1/tau[subs])( ftemp - feq)
@@ -177,11 +177,11 @@ void collide( lattice_ptr lattice)
         {
 #if 1
           f[a] = ftemp[a]
-               - ftemp[a] / lattice->param.tau[subs]
-               +   feq[a] / lattice->param.tau[subs] ;
+            - ftemp[a] / lattice->param.tau[subs]
+            +   feq[a] / lattice->param.tau[subs] ;
 #else
           f[a] = ftemp[a] - ( ( ftemp[a] )
-                            - ( feq[a]   ) ) / lattice->param.tau[subs];
+              - ( feq[a]   ) ) / lattice->param.tau[subs];
 #endif
         } /* for( a=0; a<=8; a++) */
 
@@ -192,152 +192,57 @@ void collide( lattice_ptr lattice)
           {
             printf("\n");
             printf(
-              "collide() -- Node %d (%d,%d), subs %d, "
-              "has negative density %20.17f "
-              "in direction %d "
-              "at timestep %d. Exiting!\n",
-              n, n%lattice->param.LX,
-                 n/lattice->param.LX,
-                 subs,
-                 f[a], a,
-                 lattice->time             );
+                "collide() -- Node %d (%d,%d), subs %d, "
+                "has negative density %20.17f "
+                "in direction %d "
+                "at timestep %d. Exiting!\n",
+                n, n%lattice->param.LX,
+                n/lattice->param.LX,
+                subs,
+                f[a], a,
+                lattice->time             );
             printf("\n");
             process_exit(1);
           }
         } /* for( a=0; a<Q; a++) */
 #endif /* PUKE_NEGATIVE_DENSITIES */
 
-    } /* if( !( is_solid & BC_SOLID_NODE)) */
+      } /* if( !( is_solid & BC_SOLID_NODE)) */
 
-    else // is_solid & BC_SOLID_NODE
-    {
-      // B O U N C E B A C K
-
-      if(   lattice->param.bc_slip_north
-         && n >= lattice->NumNodes - lattice->param.LX)
+      else // is_solid & BC_SOLID_NODE
       {
-        // Slip condition on north boundary.
+        // B O U N C E B A C K
 
-        f[1] = ftemp[1];
-        f[2] = ftemp[4];
-        f[3] = ftemp[3];
-        f[4] = ftemp[2];
-        f[5] = ftemp[8];
-        f[6] = ftemp[7];
-        f[7] = ftemp[6];
-        f[8] = ftemp[5];
-
-      } /* if(   lattice->param.bc_slip_north && ... ) */
-
-      else
-      {
-        if( subs==0)
+        if(   lattice->param.bc_slip_north
+            && n >= lattice->NumNodes - lattice->param.LX)
         {
-          // Usual non-slip bounce-back condition.
-          /*
-          //   N -> S
-          //   S -> N
-          //   E -> W
-          //   W -> E
-          //   T -> B
-          //   B -> T
-          */
-          f[ E] = ftemp[ W];
-          f[ W] = ftemp[ E];
-          f[ N] = ftemp[ S];
-          f[ S] = ftemp[ N];
-          f[ T] = ftemp[ B];
-          f[ B] = ftemp[ T];
-          f[NW] = ftemp[SE];
-          f[NE] = ftemp[SW];
-          f[SW] = ftemp[NE];
-          f[SE] = ftemp[NW];
-          f[TW] = ftemp[BE];
-          f[TE] = ftemp[BW];
-          f[BW] = ftemp[TE];
-          f[BE] = ftemp[TW];
-          f[TN] = ftemp[BS];
-          f[TS] = ftemp[BN];
-          f[BN] = ftemp[TS];
-          f[BS] = ftemp[TN];
+          // Slip condition on north boundary.
 
-        } /* if( subs==0) */
+          f[1] = ftemp[1];
+          f[2] = ftemp[4];
+          f[3] = ftemp[3];
+          f[4] = ftemp[2];
+          f[5] = ftemp[8];
+          f[6] = ftemp[7];
+          f[7] = ftemp[6];
+          f[8] = ftemp[5];
 
-#if NUM_FLUID_COMPONENTS==2
-        else // subs==1
+        } /* if(   lattice->param.bc_slip_north && ... ) */
+
+        else
         {
-
-#if INAMURO_SIGMA_COMPONENT
-          if( lattice->param.bc_sigma_slip)
+          if( subs==0)
           {
-            //
-            // Slip BC for solute on side walls.
-            // Will this make a difference on Taylor dispersion?
-            //
-            if( lattice->FlowDir == /*Vertical*/2)
-            {
-              if(   /*west*/(n  )%lattice->param.LX == 0
-                 || /*east*/(n+1)%lattice->param.LX == 0)
-              {
-                // Slip condition on east/west boundary.
-
-                f[1] = ftemp[3];
-                f[2] = ftemp[2];
-                f[3] = ftemp[1];
-                f[4] = ftemp[4];
-                f[5] = ftemp[6];
-                f[6] = ftemp[5];
-                f[7] = ftemp[8];
-                f[8] = ftemp[7];
-
-              }
-            }
-            else if( lattice->FlowDir == /*Horizontal*/1)
-            {
-              if(   /*north*/ n >= lattice->NumNodes - lattice->param.LX
-                 || /*south*/ n <  lattice->param.LX )
-              {
-                // Slip condition on north/south boundary.
-
-                f[1] = ftemp[1];
-                f[2] = ftemp[4];
-                f[3] = ftemp[3];
-                f[4] = ftemp[2];
-                f[5] = ftemp[8];
-                f[6] = ftemp[7];
-                f[7] = ftemp[6];
-                f[8] = ftemp[5];
-
-              }
-              else
-              {
-                // ERROR: Solid exists somewhere other than as side walls.
-                printf("%s (%d) >> "
-                  "ERROR: "
-                  "bc_sigma_slip is on. "
-                  "FlowDir is determined to be horizontal. "
-                  "Encountered solid node somewhere other than side walls. "
-                  "That situation is not supported. "
-                  "Exiting!", __FILE__, __LINE__);
-                process_exit(1);
-              }
-            }
-            else
-            {
-              printf("%s (%d) >> "
-                "FlowDir is indeterminate. "
-                "Cannot apply slip BC (bc_sigma_slip). "
-                "Exiting!", __FILE__, __LINE__);
-              process_exit(1);
-            }
-
-          } /* if( lattice->param.bc_sigma_slip) */
-
-          else
-          {
-#endif /* INAMURO_SIGMA_COMPONENT */
             // Usual non-slip bounce-back condition.
-
+            /*
+            //   N -> S
+            //   S -> N
+            //   E -> W
+            //   W -> E
+            //   T -> B
+            //   B -> T
+             */
+            f[ C] = ftemp[ C];
             f[ E] = ftemp[ W];
             f[ W] = ftemp[ E];
             f[ N] = ftemp[ S];
@@ -357,38 +262,134 @@ void collide( lattice_ptr lattice)
             f[BN] = ftemp[TS];
             f[BS] = ftemp[TN];
 
+          } /* if( subs==0) */
+
+#if NUM_FLUID_COMPONENTS==2
+          else // subs==1
+          {
+
 #if INAMURO_SIGMA_COMPONENT
-          } /* if( lattice->param.bc_sigma_slip) else */
+            if( lattice->param.bc_sigma_slip)
+            {
+              //
+              // Slip BC for solute on side walls.
+              // Will this make a difference on Taylor dispersion?
+              //
+              if( lattice->FlowDir == /*Vertical*/2)
+              {
+                if(   /*west*/(n  )%lattice->param.LX == 0
+                    || /*east*/(n+1)%lattice->param.LX == 0)
+                {
+                  // Slip condition on east/west boundary.
+
+                  f[1] = ftemp[3];
+                  f[2] = ftemp[2];
+                  f[3] = ftemp[1];
+                  f[4] = ftemp[4];
+                  f[5] = ftemp[6];
+                  f[6] = ftemp[5];
+                  f[7] = ftemp[8];
+                  f[8] = ftemp[7];
+
+                }
+              }
+              else if( lattice->FlowDir == /*Horizontal*/1)
+              {
+                if(   /*north*/ n >= lattice->NumNodes - lattice->param.LX
+                    || /*south*/ n <  lattice->param.LX )
+                {
+                  // Slip condition on north/south boundary.
+
+                  f[1] = ftemp[1];
+                  f[2] = ftemp[4];
+                  f[3] = ftemp[3];
+                  f[4] = ftemp[2];
+                  f[5] = ftemp[8];
+                  f[6] = ftemp[7];
+                  f[7] = ftemp[6];
+                  f[8] = ftemp[5];
+
+                }
+                else
+                {
+                  // ERROR: Solid exists somewhere other than as side walls.
+                  printf("%s (%d) >> "
+                      "ERROR: "
+                      "bc_sigma_slip is on. "
+                      "FlowDir is determined to be horizontal. "
+                      "Encountered solid node somewhere other than side walls. "
+                      "That situation is not supported. "
+                      "Exiting!", __FILE__, __LINE__);
+                  process_exit(1);
+                }
+              }
+              else
+              {
+                printf("%s (%d) >> "
+                    "FlowDir is indeterminate. "
+                    "Cannot apply slip BC (bc_sigma_slip). "
+                    "Exiting!", __FILE__, __LINE__);
+                process_exit(1);
+              }
+
+            } /* if( lattice->param.bc_sigma_slip) */
+
+            else
+            {
+#endif /* INAMURO_SIGMA_COMPONENT */
+              // Usual non-slip bounce-back condition.
+
+              f[ E] = ftemp[ W];
+              f[ W] = ftemp[ E];
+              f[ N] = ftemp[ S];
+              f[ S] = ftemp[ N];
+              f[ T] = ftemp[ B];
+              f[ B] = ftemp[ T];
+              f[NW] = ftemp[SE];
+              f[NE] = ftemp[SW];
+              f[SW] = ftemp[NE];
+              f[SE] = ftemp[NW];
+              f[TW] = ftemp[BE];
+              f[TE] = ftemp[BW];
+              f[BW] = ftemp[TE];
+              f[BE] = ftemp[TW];
+              f[TN] = ftemp[BS];
+              f[TS] = ftemp[BN];
+              f[BN] = ftemp[TS];
+              f[BS] = ftemp[TN];
+
+#if INAMURO_SIGMA_COMPONENT
+            } /* if( lattice->param.bc_sigma_slip) else */
 #endif /* INAMURO_SIGMA_COMPONENT */
 
-        } /* if( subs==0) else*/
+          } /* if( subs==0) else*/
 #endif /* NUM_FLUID_COMPONENTS==2 */
 
-      } /* if(   lattice->param.bc_slip_north && ... ) else */
+        } /* if(   lattice->param.bc_slip_north && ... ) else */
 
-    } /* if( !( is_solid & BC_SOLID_NODE)) else */
+      } /* if( !( is_solid & BC_SOLID_NODE)) else */
 
-  } /* for( n=0; n<lattice_NumNodes; n++) */
+    } /* for( n=0; n<lattice_NumNodes; n++) */
 
 #if POROUS_MEDIA
-  if( INAMURO_SIGMA_COMPONENT!=0 || subs==0)
-  {
-    int LX = get_LX( lattice);
-    int LY = get_LY( lattice);
-    int LZ = get_LZ( lattice);
-
-    double ns;
-    double* nsterm = lattice->nsterm;
-
-    // Compute the solid density term for fluid component.
-    for( n=0; n<lattice->NumNodes; n++)
+    if( INAMURO_SIGMA_COMPONENT!=0 || subs==0)
     {
-      if( is_not_solid(lattice, n))
+      int LX = get_LX( lattice);
+      int LY = get_LY( lattice);
+      int LZ = get_LZ( lattice);
+
+      double ns;
+      double* nsterm = lattice->nsterm;
+
+      // Compute the solid density term for fluid component.
+      for( n=0; n<lattice->NumNodes; n++)
       {
-        // ns_flag = 0 ==> uniform ns value read from scalar
-        // ns_flag in {1,2} ==> variable ns_value read from array
-        if( lattice->param.ns_flag == 0) { ns = lattice->param.ns; }
-                                    else { ns = lattice->ns[n].ns; }
+        if( is_not_solid(lattice, n))
+        {
+          // ns_flag = 0 ==> uniform ns value read from scalar
+          // ns_flag in {1,2} ==> variable ns_value read from array
+          if( lattice->param.ns_flag == 0) { ns = lattice->param.ns; }
+          else { ns = lattice->ns[n].ns; }
 /*  E */nsterm[Q*n+ E] = ns*( lattice->pdf[subs][n].ftemp[ W]
                             - lattice->pdf[subs][n].f    [ E]);
 /*  W */nsterm[Q*n+ W] = ns*( lattice->pdf[subs][n].ftemp[ E]
@@ -425,63 +426,62 @@ void collide( lattice_ptr lattice)
                             - lattice->pdf[subs][n].f    [BN]);
 /* BS */nsterm[Q*n+BS] = ns*( lattice->pdf[subs][n].ftemp[BN]
                             - lattice->pdf[subs][n].f    [BS]);
+        }
+      } /* for( n=0; n<lattice_NumNodes; n++) */
 
-      }
-    } /* for( n=0; n<lattice_NumNodes; n++) */
-
-    for( n=0; n<lattice->NumNodes; n++)
-    {
-      f = lattice->pdf[subs][n].f;
-
-      if( is_not_solid(lattice, n))
+      for( n=0; n<lattice->NumNodes; n++)
       {
-        for( a=1; a<Q; a++)
+        f = lattice->pdf[subs][n].f;
+
+        if( is_not_solid(lattice, n))
         {
-#if 0
-          // Store f in ftemp, because the compute_macro vars before
-          // output_frames needs to have the pre-ns version of f.
-          if( is_last_step_of_frame(lattice))
+          for( a=1; a<Q; a++)
           {
-            // This temp copy of f in ftemp prior to application
-            // of ns only needs to be done before outputting a frame,
-            // not after each timestep.
-            lattice->pdf[subs][n].ftemp[a] = f[a];
-          }
+#if 0
+            // Store f in ftemp, because the compute_macro vars before
+            // output_frames needs to have the pre-ns version of f.
+            if( is_last_step_of_frame(lattice))
+            {
+              // This temp copy of f in ftemp prior to application
+              // of ns only needs to be done before outputting a frame,
+              // not after each timestep.
+              lattice->pdf[subs][n].ftemp[a] = f[a];
+            }
 #endif
-          // OLD: fout = fc + ns*( fc_(x+cdt) - fc(x))
-          //        f +=      ns*( f_(x+cdt)  - f(x))
+        // OLD: fout = fc + ns*( fc_(x+cdt) - fc(x))
+        //        f +=      ns*( f_(x+cdt)  - f(x))
+        //
+        //  - - - >o< - - -   <------o------>   <--<---o--->-->
+        //        1 2         3             4   3  5       6  4
+        //                    ------>o<------
+        //                          5 6
+        //
+        // CUR: fout = fc + ns*( fc_(x)     - fc(x)) = (1-ns)*fc + ns*fc_(x)
+        //        f +=      ns*( f_(x)      - f(x))
+        //
+        //  - - - >o< - - -   <------o------>   <--<---o--->-->
+        //        1 2         3             4   3  4       3  4
+        //
+        // NEW: fout = fc + ns*( fin_(x)    - fc(x)) = (1-ns)*fc + ns*fin_(x)
+        //        f +=      ns*( ftemp_(x)  - f(x))
+        //
+        //  - - - >o< - - -   <------o------>   <--<- -o- ->-->
+        //        1 2         3             4   3  1       2  4
           //
-          //  - - - >o< - - -   <------o------>   <--<---o--->-->
-          //        1 2         3             4   3  5       6  4
-          //                    ------>o<------
-          //                          5 6
-          //
-          // CUR: fout = fc + ns*( fc_(x)     - fc(x)) = (1-ns)*fc + ns*fc_(x)
-          //        f +=      ns*( f_(x)      - f(x))
-          //
-          //  - - - >o< - - -   <------o------>   <--<---o--->-->
-          //        1 2         3             4   3  4       3  4
-          //
-          // NEW: fout = fc + ns*( fin_(x)    - fc(x)) = (1-ns)*fc + ns*fin_(x)
-          //        f +=      ns*( ftemp_(x)  - f(x))
-          //
-          //  - - - >o< - - -   <------o------>   <--<- -o- ->-->
-          //        1 2         3             4   3  1       2  4
-          //
-          // c.f., Walsh, Stuart D. C. and Burwinkle, Holly and Saar, Martin
-          // O., A new partial-bounceback lattice-Boltzmann method for fluid
-          // flow through heterogeneous media, COMPUTERS & GEOSCIENCES, 2009,
-          // 35, 6, 1186-1193, JUN, ISI:000266544700013
-          f[a] += nsterm[Q*n+a];
+            // c.f., Walsh, Stuart D. C. and Burwinkle, Holly and Saar, Martin
+            // O., A new partial-bounceback lattice-Boltzmann method for fluid
+            // flow through heterogeneous media, COMPUTERS & GEOSCIENCES, 2009,
+            // 35, 6, 1186-1193, JUN, ISI:000266544700013
+            f[a] += nsterm[Q*n+a];
 
-        } /* for( a=1; a<Q; a++) */
-      } /* if( !( bc_type & BC_SOLID_NODE)) */
-    } /* for( n=0; n<lattice->NumNodes; n++, f+=18) */
+          } /* for( a=1; a<Q; a++) */
+        } /* if( !( bc_type & BC_SOLID_NODE)) */
+      } /* for( n=0; n<lattice->NumNodes; n++, f+=18) */
 
-  } /* if( INAMURO_SIGMA_COMPONENT!=0 || subs==0) */
+    } /* if( INAMURO_SIGMA_COMPONENT!=0 || subs==0) */
 #endif
 
- } /* for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
+  } /* for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++) */
 
 #if SAY_HI
   printf("collide() -- Bye!\n");

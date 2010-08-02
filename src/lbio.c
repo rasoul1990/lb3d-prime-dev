@@ -105,6 +105,7 @@ void dump_frame_summary( struct lattice_struct *lattice)
   char   filename[1024];
   FILE   *o;
   double min_u[3], max_u[3],  ave_u[3];
+  double flux[4];
   double min_rho, max_rho,   ave_rho;
   double rho_ratio, u_x_ratio, u_y_ratio, u_z_ratio;
   int    subs;
@@ -142,6 +143,10 @@ void dump_frame_summary( struct lattice_struct *lattice)
         fprintf( o, "\n");
         fprintf( o,
         "        time "
+        "         |j| "
+        "         j_x "
+        "         j_y "
+        "         j_z "
         "    min_u[x] "
         "    min_u[y] "
         "    min_u[z] "
@@ -159,6 +164,10 @@ void dump_frame_summary( struct lattice_struct *lattice)
         "     ave_rho "
         "     max/ave "
         "\n");fprintf( o,
+        "------------ "
+        "------------ "
+        "------------ "
+        "------------ "
         "------------ "
         "------------ "
         "------------ "
@@ -194,6 +203,8 @@ void dump_frame_summary( struct lattice_struct *lattice)
   compute_max_rho( lattice, &max_rho, subs);
   compute_ave_rho( lattice, &ave_rho, subs);
 
+  compute_flux( lattice, flux, subs);
+
   if( 1|| is_on_root_proc( lattice))
   {
     rho_ratio = ( ave_rho  != 0.) ? ( max_rho /ave_rho ):( 1.);
@@ -203,6 +214,7 @@ void dump_frame_summary( struct lattice_struct *lattice)
 
     fprintf( o,
       "%12d "
+      "%12.7f %12.7f %12.7f %12.7f"
       "%12.7f %12.7f %12.7f "
       "%12.7f %12.7f %12.7f "
       "%12.7f %12.7f %12.7f "
@@ -210,6 +222,7 @@ void dump_frame_summary( struct lattice_struct *lattice)
       "%12.7f %12.7f %12.7f "
       "%12.7f\n",
       lattice->time,
+      flux[0], flux[1], flux[2], flux[3],
       min_u[0], min_u[1], min_u[2],
       max_u[0], max_u[1], max_u[2],
       ave_u[0], ave_u[1], ave_u[2],
@@ -726,6 +739,7 @@ void read_solids( lattice_ptr lattice, char *filename)
 
 } /* read_solids( lattice_ptr lattice, char *filename) */
 
+#if POROUS_MEDIA
 void read_ns( lattice_ptr lattice, char *filename)
 {
   int size, size_read;
@@ -847,8 +861,7 @@ void read_ns( lattice_ptr lattice, char *filename)
 #endif
 
 } /* read_solids( lattice_ptr lattice, char *filename) */
-
-
+#endif
 
 /*void read_solids_from_plt( lattice_ptr lattice, char *filename)
 {

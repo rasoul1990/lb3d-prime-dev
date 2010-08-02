@@ -35,20 +35,21 @@ int main( int argc, char **argv)
 
     stream( lattice);
 
-    if( !lattice->param.GZL && (!lattice->param.AllBoundaryPeriodic)) bcs( lattice);
+    if( do_post_streaming_bcs(lattice)) { bcs( lattice);}
 
     compute_macro_vars( lattice);
 
 #if SAVE_MEMO
-//feq was calculated in collide_save(lattice)
+    // feq was calculated in collide_save(lattice)
 #else
     compute_feq( lattice);
 #endif
 
     collide( lattice);
 
-    if( lattice->param.GZL && (!lattice->param.AllBoundaryPeriodic)) bcs( lattice);
-//compute_feq( lattice);
+    if( do_post_collision_bcs(lattice)) { bcs( lattice);}
+
+    //compute_feq( lattice);
 
     if( !(time%lattice->param.FrameRate)) { output_frame( lattice); frames++;}
 
