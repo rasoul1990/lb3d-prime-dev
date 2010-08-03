@@ -1540,7 +1540,7 @@ void compute_max_rho( lattice_ptr lattice, double *max_rho, int subs)
     }
   }
 
-  process_reduce_double_max( lattice, max_rho);
+  process_allreduce_double_max( lattice, max_rho);
 
 } /* void compute_max_rho( lattice_ptr lattice, double *max_rho, int subs) */
 
@@ -1561,7 +1561,7 @@ void compute_min_rho( lattice_ptr lattice, double *min_rho, int subs)
     }
   }
 
-  process_reduce_double_min( lattice, min_rho);
+  process_allreduce_double_min( lattice, min_rho);
 
 } /* void compute_min_rho( lattice_ptr lattice, double *min_rho, int subs) */
 
@@ -1581,8 +1581,8 @@ void compute_ave_rho( lattice_ptr lattice, double *ave_rho, int subs)
     }
   }
 
-  process_reduce_double_sum( lattice, ave_rho);
-  process_reduce_int_sum( lattice, &nn);
+  process_allreduce_double_sum( lattice, ave_rho);
+  process_allreduce_int_sum( lattice, &nn);
 
   if( nn != 0) { *ave_rho = (*ave_rho) / nn;}
 
@@ -1614,9 +1614,9 @@ void compute_max_u( lattice_ptr lattice, double *max_u, int subs)
     }
   }
 
-  process_reduce_double_max( lattice, max_ux);
-  process_reduce_double_max( lattice, max_uy);
-  process_reduce_double_max( lattice, max_uz);
+  process_allreduce_double_max( lattice, max_ux);
+  process_allreduce_double_max( lattice, max_uy);
+  process_allreduce_double_max( lattice, max_uz);
 
 } /* void compute_max_u( lattice_ptr lattice, double *max_u, int subs) */
 
@@ -1646,9 +1646,9 @@ void compute_min_u( lattice_ptr lattice, double *min_u, int subs)
     }
   }
 
-  process_reduce_double_min( lattice, min_ux);
-  process_reduce_double_min( lattice, min_uy);
-  process_reduce_double_min( lattice, min_uz);
+  process_allreduce_double_min( lattice, min_ux);
+  process_allreduce_double_min( lattice, min_uy);
+  process_allreduce_double_min( lattice, min_uz);
 
 } /* void compute_min_u( lattice_ptr lattice, double *min_u) */
 
@@ -1675,10 +1675,10 @@ void compute_ave_u( lattice_ptr lattice, double *ave_u, int subs)
     }
   }
 
-  process_reduce_double_sum( lattice, ave_ux);
-  process_reduce_double_sum( lattice, ave_uy);
-  process_reduce_double_sum( lattice, ave_uz);
-  process_reduce_int_sum( lattice, &nn);
+  process_allreduce_double_sum( lattice, ave_ux);
+  process_allreduce_double_sum( lattice, ave_uy);
+  process_allreduce_double_sum( lattice, ave_uz);
+  process_allreduce_int_sum( lattice, &nn);
 
   if( nn != 0)
   {
@@ -1722,6 +1722,16 @@ void compute_flux( lattice_ptr lattice, double *flux, int subs)
     *(flux+3) = (*(flux+3))/nn;
   }
 
+  process_allreduce_double_sum( lattice, flux+0);
+  process_allreduce_double_sum( lattice, flux+1);
+  process_allreduce_double_sum( lattice, flux+2);
+  process_allreduce_double_sum( lattice, flux+3);
+
+  flux[0] /= get_num_procs(lattice);
+  flux[1] /= get_num_procs(lattice);
+  flux[2] /= get_num_procs(lattice);
+  flux[3] /= get_num_procs(lattice);
+
 } /* void compute_flux( lattice_ptr lattice, double *flux, int subs) */
 
 #if STORE_UEQ
@@ -1750,6 +1760,11 @@ void compute_max_ueq( lattice_ptr lattice, double *max_u)
       }
     }
   }
+
+  process_allreduce_double_max( lattice, max_u+0);
+  process_allreduce_double_max( lattice, max_u+1);
+  process_allreduce_double_max( lattice, max_u+2);
+
 } /* void compute_max_ueq( lattice_ptr lattice, double *max_u) */
 
 //void compute_min_ueq( lattice_ptr lattice, double *min_u)
@@ -1775,6 +1790,11 @@ void compute_min_ueq( lattice_ptr lattice, double *min_u)
       }
     }
   }
+
+  process_allreduce_double_min( lattice, min_u+0);
+  process_allreduce_double_min( lattice, min_u+1);
+  process_allreduce_double_min( lattice, min_u+2);
+
 } /* void compute_min_ueq( lattice_ptr lattice, double *min_u) */
 
 //void compute_ave_ueq( lattice_ptr lattice, double *ave_u)
@@ -1795,6 +1815,12 @@ void compute_ave_ueq( lattice_ptr lattice, double *ave_u)
       nn++;
     }
   }
+
+  process_allreduce_double_sum( lattice, ave_u+0);
+  process_allreduce_double_sum( lattice, ave_u+1);
+  process_allreduce_double_sum( lattice, ave_u+2);
+  process_allreduce_int_sum( lattice, &nn);
+
   if( nn != 0)
   {
     *ave_u     = (*ave_u)/nn;

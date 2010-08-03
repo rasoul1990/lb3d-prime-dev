@@ -824,6 +824,48 @@ void process_reduce_double_sum( lattice_ptr lattice, double *arg_x)
 #endif
 } /* void process_reduce_double_sum( lattice_ptr lattice, double &arg_x) */
 
+void process_allreduce_double_sum( lattice_ptr lattice, double *arg_x)
+{
+#if PARALLEL
+  double sum_x;
+  int mpierr;
+
+  //
+  // INPUT PARAMETERS
+  //        sbuf   - address of send buffer (choice)
+  //        count  - number of elements in send buffer (integer)
+  //        dtype  - data type of elements of send buffer (handle)
+  //        op     - reduce operation (handle)
+  //        root   - rank of root process (integer)
+  //        comm   - communicator (handle)
+  //
+  // OUTPUT PARAMETER
+  //        rbuf   - address of receive buffer (choice, sig't only at root )
+  //
+  mpierr =
+    MPI_Allreduce(
+    /*void *sbuf*/         arg_x,
+    /*void* rbuf*/        &sum_x,
+    /*int count*/          1,
+    /*MPI_Datatype dtype*/ MPI_DOUBLE,
+    /*MPI_Op op*/          MPI_SUM,
+    /*MPI_Comm comm*/      MPI_COMM_WORLD
+    );
+  if( mpierr != MPI_SUCCESS)
+  {
+    printf( "%s %d %04d >> "
+      "ERROR: %d <-- MPI_Reduce( ave_rho, MPI_DOUBLE, MPI_SUM)"
+      "\n",
+      __FILE__,__LINE__,get_proc_id(lattice), mpierr);
+    process_finalize();
+    exit(1);
+  }
+
+  *arg_x = sum_x;
+
+#endif
+} /* void process_reduce_double_sum( lattice_ptr lattice, double &arg_x) */
+
 void process_reduce_int_sum( lattice_ptr lattice, int *arg_n)
 {
 #if PARALLEL
@@ -865,6 +907,48 @@ void process_reduce_int_sum( lattice_ptr lattice, int *arg_n)
   {
     *arg_n = sum_n;
   }
+#endif
+} /* void process_reduce_int_sum( lattice_ptr lattice, int *arg_n) */
+
+void process_allreduce_int_sum( lattice_ptr lattice, int *arg_n)
+{
+#if PARALLEL
+  double sum_n;
+  int mpierr;
+
+  //
+  // INPUT PARAMETERS
+  //        sbuf   - address of send buffer (choice)
+  //        count  - number of elements in send buffer (integer)
+  //        dtype  - data type of elements of send buffer (handle)
+  //        op     - reduce operation (handle)
+  //        root   - rank of root process (integer)
+  //        comm   - communicator (handle)
+  //
+  // OUTPUT PARAMETER
+  //        rbuf   - address of receive buffer (choice, sig't only at root )
+  //
+  mpierr =
+    MPI_Allreduce(
+    /*void *sbuf*/         arg_n,
+    /*void* rbuf*/        &sum_n,
+    /*int count*/          1,
+    /*MPI_Datatype dtype*/ MPI_INT,
+    /*MPI_Op op*/          MPI_SUM,
+    /*MPI_Comm comm*/      MPI_COMM_WORLD
+    );
+  if( mpierr != MPI_SUCCESS)
+  {
+    printf( "%s %d %04d >> "
+      "ERROR: %d <-- MPI_Reduce( ave_rho, MPI_DOUBLE, MPI_SUM)"
+      "\n",
+      __FILE__,__LINE__,get_proc_id(lattice), mpierr);
+    process_finalize();
+    exit(1);
+  }
+
+  *arg_n = sum_n;
+
 #endif
 } /* void process_reduce_int_sum( lattice_ptr lattice, int *arg_n) */
 
@@ -912,6 +996,47 @@ void process_reduce_double_max( lattice_ptr lattice, double *arg_x)
 #endif
 } /* void process_reduce_double_sum( lattice_ptr lattice, double &arg_x) */
 
+void process_allreduce_double_max( lattice_ptr lattice, double *arg_x)
+{
+#if PARALLEL
+  double max_x;
+  int mpierr;
+
+  //
+  // INPUT PARAMETERS
+  //        sbuf   - address of send buffer (choice)
+  //        count  - number of elements in send buffer (integer)
+  //        dtype  - data type of elements of send buffer (handle)
+  //        op     - reduce operation (handle)
+  //        comm   - communicator (handle)
+  //
+  // OUTPUT PARAMETER
+  //        rbuf   - address of receive buffer (choice, sig't only at root )
+  //
+  mpierr =
+    MPI_Allreduce(
+    /*void *sbuf*/         arg_x,
+    /*void* rbuf*/        &max_x,
+    /*int count*/          1,
+    /*MPI_Datatype dtype*/ MPI_DOUBLE,
+    /*MPI_Op op*/          MPI_MAX,
+    /*MPI_Comm comm*/      MPI_COMM_WORLD
+    );
+  if( mpierr != MPI_SUCCESS)
+  {
+    printf( "%s %d %04d >> "
+      "ERROR: %d <-- MPI_Allreduce( ave_rho, MPI_DOUBLE, MPI_SUM)"
+      "\n",
+      __FILE__,__LINE__,get_proc_id(lattice), mpierr);
+    process_finalize();
+    exit(1);
+  }
+
+  *arg_x = max_x;
+
+#endif
+} /* void process_reduce_double_sum( lattice_ptr lattice, double &arg_x) */
+
 void process_reduce_double_min( lattice_ptr lattice, double *arg_x)
 {
 #if PARALLEL
@@ -953,6 +1078,47 @@ void process_reduce_double_min( lattice_ptr lattice, double *arg_x)
   {
     *arg_x = min_x;
   }
+#endif
+} /* void process_reduce_double_sum( lattice_ptr lattice, double &arg_x) */
+
+void process_allreduce_double_min( lattice_ptr lattice, double *arg_x)
+{
+#if PARALLEL
+  double min_x;
+  int mpierr;
+
+  //
+  // INPUT PARAMETERS
+  //        sbuf   - address of send buffer (choice)
+  //        count  - number of elements in send buffer (integer)
+  //        dtype  - data type of elements of send buffer (handle)
+  //        op     - reduce operation (handle)
+  //        comm   - communicator (handle)
+  //
+  // OUTPUT PARAMETER
+  //        rbuf   - address of receive buffer (choice, sig't only at root )
+  //
+  mpierr =
+    MPI_Allreduce(
+    /*void *sbuf*/         arg_x,
+    /*void* rbuf*/        &min_x,
+    /*int count*/          1,
+    /*MPI_Datatype dtype*/ MPI_DOUBLE,
+    /*MPI_Op op*/          MPI_MIN,
+    /*MPI_Comm comm*/      MPI_COMM_WORLD
+    );
+  if( mpierr != MPI_SUCCESS)
+  {
+    printf( "%s %d %04d >> "
+      "ERROR: %d <-- MPI_Allreduce( ave_rho, MPI_DOUBLE, MPI_SUM)"
+      "\n",
+      __FILE__,__LINE__,get_proc_id(lattice), mpierr);
+    process_finalize();
+    exit(1);
+  }
+
+  *arg_x = min_x;
+
 #endif
 } /* void process_reduce_double_sum( lattice_ptr lattice, double &arg_x) */
 

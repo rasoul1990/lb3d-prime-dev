@@ -739,6 +739,78 @@ void read_solids( lattice_ptr lattice, char *filename)
 
 } /* read_solids( lattice_ptr lattice, char *filename) */
 
+void read_raw(
+       lattice_ptr lattice,
+       double *a,
+       int     stride,
+       double  a_max,
+       double  a_min,
+       char   *filename )
+{
+  int size, size_read;
+  unsigned char *raw;
+  int n;
+  int g_n;
+  int subs;
+  FILE *fd;
+#if 1
+  int i, j, k, p;
+#endif
+
+  for( n=0; n<lattice->NumNodes; n++)
+  {
+    lattice->solids[0][n].is_solid = 0;
+  }
+
+  fd = fopen( filename, "r+");
+  if( !fd)
+  {
+    printf("%s %d %04d >> ERROR: Can't open file \"%s\". (Exiting!)\n",
+      __FILE__,__LINE__, get_proc_id(lattice), filename);
+    process_exit(1);
+  }
+
+  size = get_g_NumNodes( lattice)*sizeof(unsigned char);
+  if( !( raw = (unsigned char *)malloc(size)))
+  {
+    printf("%s %d %04d >> read_solids() -- "
+        "ERROR: Can't malloc image buffer. (Exiting!)\n", __FILE__, __LINE__, get_proc_id(lattice));
+    process_exit(1);
+  }
+
+  printf("%s %d %04d >> Reading %d bytes from file \"%s\".\n",
+      __FILE__, __LINE__, get_proc_id(lattice), size, filename);
+
+  //size_read = read( fd, raw, size);
+  size_read = fread( raw, 1, size, fd);
+
+  if( size_read != size)
+  {
+    printf("%s %d %04d >> read_solids() -- "
+        "ERROR: Can't read image data: read = %d. (Exiting!)\n",
+          __FILE__, __LINE__, get_proc_id(lattice), size_read);
+    process_exit(1);
+  }
+
+  fclose( fd);
+
+  g_n = get_g_StartNode( lattice); // Global node index.
+  for( n=0; n<lattice->NumNodes; n++)
+  {
+    //printf("%s %d >> raw[%d] = %d\n",__FILE__,__LINE__,g_n,raw[g_n]);
+    for( subs=0; subs<(NUM_FLUID_COMPONENTS); subs++)
+    {
+      lattice->solids[subs][n].is_solid = raw[g_n];
+    }
+    //printf("%s %d %04d >> solids[%d] = %d.\n",
+    //    __FILE__, __LINE__, get_proc_id(lattice), n, (int)lattice->solids[0][n].is_solid);
+    g_n++;
+  }
+
+  free(raw);
+
+} /* read_solids( lattice_ptr lattice, char *filename) */
+
 #if POROUS_MEDIA
 void read_ns( lattice_ptr lattice, char *filename)
 {
@@ -1034,7 +1106,6 @@ void write_raw(
       __FILE__, __LINE__, get_proc_id(lattice), filename);
 } /* void write_raw( lattice_ptr lattice, double *a,  ... */
 
-
 void write_raw_u(
        lattice_ptr lattice,
        double *ux,
@@ -1100,7 +1171,6 @@ void write_raw_u(
   printf("%s %d %04d >> write_raw() -- Wrote to file \"%s\".\n",
       __FILE__, __LINE__, get_proc_id(lattice), filename);
 } /* void write_raw( lattice_ptr lattice, double *a,  ... */
-
 
 /*void write_raw1(
        lattice_ptr lattice,
