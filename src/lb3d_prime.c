@@ -25,9 +25,15 @@ int main( int argc, char **argv)
 
   construct_lattice( &lattice, argc, argv);
 
+  process_tic( lattice);
+
   init_problem( lattice);
 
   output_frame( lattice);
+
+  process_toc( lattice);
+  display_etime( lattice);
+  process_tic( lattice);
 
   for( frames = 0, time=1; time<=lattice->NumTimeSteps; time++)
   {
@@ -51,9 +57,18 @@ int main( int argc, char **argv)
 
     //compute_feq( lattice);
 
-    if( !(time%lattice->param.FrameRate)) { output_frame( lattice); frames++;}
+    if( !(time%lattice->param.FrameRate))
+    {
+      output_frame( lattice); frames++;
+      process_toc( lattice);
+      display_etime( lattice);
+    }
 
   } /* for( time=1; time<=lattice->NumTimeSteps; time++) */
+
+  process_barrier();
+  process_toc( lattice);
+  display_etime( lattice);
 
   destruct_lattice( lattice);
 

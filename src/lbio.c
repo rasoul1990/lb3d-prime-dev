@@ -14,7 +14,7 @@
 // Some compilers, e.g., VC++, don't have the usual round() function
 // in their math library.  Alternatively, ROUND can be defined as
 // ceil or floor or some other rounding function.  It is used in
-// the below routines for converting the real number valued of
+// the below routines for converting the real number value of
 // quantities at a lattice node into integer RGB values for writing
 // to BMP files.
 #define ROUND floor
@@ -642,6 +642,7 @@ void read_solids( lattice_ptr lattice, char *filename)
     lattice->solids[0][n].is_solid = 0;
   }
 
+#if 1
   fd = fopen( filename, "r+");
   if( !fd)
   {
@@ -688,6 +689,26 @@ void read_solids( lattice_ptr lattice, char *filename)
   }
 
   free(raw);
+#else
+  int *a;
+  a = (int*)malloc( (lattice->NumNodes)*sizeof(int));
+  if( !a)
+  {
+    printf("%s %d %04d >> read_solids() -- "
+           "ERROR: Can't malloc array of length %d. (Exiting!)\n",
+           __FILE__, __LINE__, get_proc_id(lattice), get_NumNodes(lattice));
+    process_exit(1);
+  }
+  read_raw( lattice, a, lattice->NumNodes, /*stride*/1, filename);
+  for( n=0; n<get_NumNodes(lattice); n++)
+  {
+    for( subs=0; subs<(NUM_FLUID_COMPONENTS); subs++)
+    {
+      lattice->solids[subs][n].is_solid = a[n];
+    }
+  }
+  free(a);
+#endif
 
 #if 1
   if( /* Domain not too big. (Tweak to suit.) */
@@ -741,10 +762,8 @@ void read_solids( lattice_ptr lattice, char *filename)
 
 void read_raw(
        lattice_ptr lattice,
-       double *a,
+       int    *a,
        int     stride,
-       double  a_max,
-       double  a_min,
        char   *filename )
 {
   int size, size_read;
@@ -753,14 +772,6 @@ void read_raw(
   int g_n;
   int subs;
   FILE *fd;
-#if 1
-  int i, j, k, p;
-#endif
-
-  for( n=0; n<lattice->NumNodes; n++)
-  {
-    lattice->solids[0][n].is_solid = 0;
-  }
 
   fd = fopen( filename, "r+");
   if( !fd)
@@ -774,14 +785,14 @@ void read_raw(
   if( !( raw = (unsigned char *)malloc(size)))
   {
     printf("%s %d %04d >> read_solids() -- "
-        "ERROR: Can't malloc image buffer. (Exiting!)\n", __FILE__, __LINE__, get_proc_id(lattice));
+           "ERROR: Can't malloc image buffer. (Exiting!)\n",
+           __FILE__, __LINE__, get_proc_id(lattice));
     process_exit(1);
   }
 
   printf("%s %d %04d >> Reading %d bytes from file \"%s\".\n",
-      __FILE__, __LINE__, get_proc_id(lattice), size, filename);
+         __FILE__, __LINE__, get_proc_id(lattice), size, filename);
 
-  //size_read = read( fd, raw, size);
   size_read = fread( raw, 1, size, fd);
 
   if( size_read != size)
@@ -800,7 +811,7 @@ void read_raw(
     //printf("%s %d >> raw[%d] = %d\n",__FILE__,__LINE__,g_n,raw[g_n]);
     for( subs=0; subs<(NUM_FLUID_COMPONENTS); subs++)
     {
-      lattice->solids[subs][n].is_solid = raw[g_n];
+      a[n] = raw[g_n];
     }
     //printf("%s %d %04d >> solids[%d] = %d.\n",
     //    __FILE__, __LINE__, get_proc_id(lattice), n, (int)lattice->solids[0][n].is_solid);

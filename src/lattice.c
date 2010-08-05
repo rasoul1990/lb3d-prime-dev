@@ -72,3 +72,27 @@ int do_post_collision_bcs( lattice_ptr lattice)
       && !lattice->param.AllBoundaryPeriodic;
 }
 
+void set_tic( lattice_ptr lattice, double t)
+{
+  lattice->tic =  t;
+}
+
+void set_toc( lattice_ptr lattice, double t)
+{
+  lattice->toc =  t;
+}
+
+double display_etime( lattice_ptr lattice)
+{
+  if( is_on_root_proc(lattice))
+  {
+    double t = lattice->toc - lattice->tic;
+    printf("%s %d %04d >> elapsed time = "
+      "%f seconds (%f minutes, %f hours, %f days)\n",
+      __FILE__,__LINE__,get_proc_id(lattice)
+    , t
+    , t / 60.0
+    , t / 60.0 / 60.0
+    , t / 60.0 / 60.0 / 24.0);
+  }
+}

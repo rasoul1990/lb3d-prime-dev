@@ -15,6 +15,11 @@
 #include <string.h>
 #include <time.h>
 
+#ifndef CLK_TCK
+// Old versions of gcc use CLK_TCK.
+#define CLK_TCK CLOCKS_PER_SEC
+#endif
+
 #include "flags.h"
 #include "bc_flags.h"
 #include "ic_flags.h"

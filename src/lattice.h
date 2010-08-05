@@ -585,6 +585,8 @@ struct lattice_struct
   int    NumNodes;
   int    NumTimeSteps;
   int    time;
+  double tic;
+  double toc;
   int    periodic_x[ NUM_FLUID_COMPONENTS];
   int    periodic_y[ NUM_FLUID_COMPONENTS];
 

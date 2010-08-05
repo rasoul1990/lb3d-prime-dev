@@ -33,7 +33,7 @@
 
 
 all:
-	gcc -w -o lb3d ./src/lb3d_prime.c -lm
+	gcc -g -w -o lb3d ./src/lb3d_prime.c -lm
 
 mpi:
 	mpicc -w -DPARALLEL=1 -o lb3d ./src/lb3d_prime.c -lm

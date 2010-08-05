@@ -3,7 +3,7 @@ LY                     130
 LZ                     100
 characteristic_length  40
 NumFrames              10
-FrameRate              100
+FrameRate              10
 tau[0]                 1.
 gforce_x[0]            0.0000
 gforce_y[0]            0.000

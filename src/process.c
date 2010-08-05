@@ -1131,6 +1131,26 @@ void process_barrier()
 }
 
 //##############################################################################
+void process_tic( lattice_ptr lattice)
+{
+#if PARALLEL
+  set_tic( lattice, MPI_Wtime());
+#else
+  set_tic( lattice, ((double)clock())/(double)CLK_TCK);
+#endif
+}
+
+//##############################################################################
+void process_toc( lattice_ptr lattice)
+{
+#if PARALLEL
+  set_toc( lattice, MPI_Wtime());
+#else
+  set_toc( lattice, ((double)clock())/(double)CLK_TCK);
+#endif
+}
+
+//##############################################################################
 void process_finalize()
 {
 #if PARALLEL
