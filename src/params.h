@@ -358,13 +358,6 @@ void read_params( lattice_ptr lattice, const char *infile)
   lattice->NumTimeSteps =
     lattice->param.NumFrames * lattice->param.FrameRate;
 
-  for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
-  {
-    lattice->param.gforce[subs][0] *= lattice->param.tau[subs];
-    lattice->param.gforce[subs][1] *= lattice->param.tau[subs];
-    lattice->param.gforce[subs][2] *= lattice->param.tau[subs];
-  }
-
   if( NUM_FLUID_COMPONENTS==2)
   {
     lattice->param.rho_A[1] = lattice->param.rho_B[0];
