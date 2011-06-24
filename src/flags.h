@@ -60,7 +60,7 @@
 // flow through heterogeneous media, COMPUTERS & GEOSCIENCES, 2009,
 // 35, 6, 1186-1193, JUN, ISI:000266544700013
 // Flag: POROUS_MEDIA
-#define POROUS_MEDIA 1
+#define POROUS_MEDIA 0
 
 // When there are two (or more) fluid components, a single velocity is
 // sometimes (always?) used to compute the equilibrium distribution
