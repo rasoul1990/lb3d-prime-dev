@@ -512,7 +512,7 @@ void dump_params( struct lattice_struct *lattice)
   fprintf( o, "tau[1]               %f\n", lattice->param.tau[1]         );
   fprintf( o, "gforce[1][0]         %f\n", lattice->param.gforce[1][0]   );
   fprintf( o, "gforce[1][1]         %f\n", lattice->param.gforce[1][1]   );
-  fprintf( o, "gforce[1][1]         %f\n", lattice->param.gforce[1][2]   );
+  fprintf( o, "gforce[1][2]         %f\n", lattice->param.gforce[1][2]   );
 
   fprintf( o, "end_grav[1]          %d\n", lattice->param.end_grav[1]    );
   }

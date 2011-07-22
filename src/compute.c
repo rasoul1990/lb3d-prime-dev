@@ -45,9 +45,9 @@ void rho_send_recv_begin( lattice_ptr lattice, const int subs)
 #else
 
       lattice->process.z_pos_rho_to_send[n] =
-        lattice->macro_vars[subs][ XYZ2N( i , j , k, ni, nj)].rho;
+        lattice->macro_vars[a][ XYZ2N( i , j , k, ni, nj)].rho;
       lattice->process.z_neg_rho_to_send[n] =
-        lattice->macro_vars[subs][ XYZ2N( i , j , 0, ni, nj)].rho;
+        lattice->macro_vars[a][ XYZ2N( i , j , 0, ni, nj)].rho;
       n++;
 #endif
     } /* if( i=0; i<ni; i++) */
@@ -612,10 +612,10 @@ void compute_macro_vars( struct lattice_struct *lattice)
   //&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 #if PARALLEL
 
-  rho_send_recv_begin(  lattice, 0);
+  rho_send_recv_begin(  lattice, 0);		//these calls deal with BOTH subs 0 and 1
   rho_send_recv_end(  lattice, 0);
 
-  solid_send_recv_begin(  lattice, 0);
+  solid_send_recv_begin(  lattice, 0);		//these calls deal with subs 0, which is all that is required
   solid_send_recv_end(  lattice, 0);
 
 #endif
@@ -737,21 +737,21 @@ void compute_single_feq( struct lattice_struct *lattice, int n, int subs, double
           +tau*lattice->force[ subs][n].force[0]
           +tau*lattice->force[ subs][n].sforce[0]
 #endif /* NON_LOCAL_FORCES */
-          +tau*lattice->param.gforce[ subs][0]/rho
+          +tau*lattice->param.gforce[ subs][0]
           ;
         u_y       = u_y
 #if NON_LOCAL_FORCES
           +tau*lattice->force[ subs][n].force[1]
           +tau*lattice->force[ subs][n].sforce[1]
 #endif /* NON_LOCAL_FORCES */
-          +tau*lattice->param.gforce[ subs][1]/rho
+          +tau*lattice->param.gforce[ subs][1]
           ;
         u_z       = u_z
 #if NON_LOCAL_FORCES
           +tau*lattice->force[ subs][n].force[2]
           +tau*lattice->force[ subs][n].sforce[2]
-#endif /* NONhLOCAL_FORCES */
-          + tau*lattice->param.gforce[ subs][2]/rho
+#endif /* NON_LOCAL_FORCES */
+          + tau*lattice->param.gforce[ subs][2]
           ;
 
         usq = u_x*u_x + u_y*u_y + u_z*u_z;
