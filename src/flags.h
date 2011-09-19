@@ -28,9 +28,15 @@
 // Flag: SAY_HI
 #define SAY_HI 0
 
+// INTEGER_IC_BOUND forces x0, y0, z0, r0 and x1, x2, y1, y2, z1, z2 to be
+// integer values.  Since the lattice can't resolve shapes with non-integer
+// dimensions, using integers makes sense.  This flag is particularly
+// important when setting LX or LY to unity for a 2D simulation
+#define INTEGER_IC_BOUND 1
+
 // NUM_FLUID_COMPONENTS specifies the number of fluid components.
 // Flag: NUM_FLUID_COMPONENTS
-#define NUM_FLUID_COMPONENTS 1
+#define NUM_FLUID_COMPONENTS 2
 
 //if it is SPONGE, the total computational domain firstly initiallized
 //as randomly distributed fluid1 and fluid2 , however, the upper and
@@ -83,7 +89,7 @@
 // NON_LOCAL_FORCES toggles any mechanisms for computing and storing
 // non-local (interaction) forces.
 // Flag: NON_LOCAL_FORCES
-#define NON_LOCAL_FORCES ( 0 && !(INAMURO_SIGMA_COMPONENT&&!ZHANG_AND_CHEN_ENERGY_TRANSPORT))
+#define NON_LOCAL_FORCES ( 1 && !(INAMURO_SIGMA_COMPONENT&&!ZHANG_AND_CHEN_ENERGY_TRANSPORT))
 
 // The phase force weighting factors:
 //   WM = weights in the direction of major axes

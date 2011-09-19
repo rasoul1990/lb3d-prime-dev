@@ -330,17 +330,33 @@ void read_params( lattice_ptr lattice, const char *infile)
   skip_label( in); fscanf( in, "%d", &( lattice->param.plot_scale_dynamic)   );
   skip_label( in); fscanf( in, "%d", &( lattice->param.use_colormap      )   );
   skip_label( in); fscanf( in, "%d", &( lattice->param.initial_condition )   );
+#if INTEGER_IC_BOUND
+  skip_label( in); fscanf( in, "%d",&( lattice->param.x0                )   );
+  skip_label( in); fscanf( in, "%d",&( lattice->param.y0                )   );
+  skip_label( in); fscanf( in, "%d",&( lattice->param.z0                )   );
+  skip_label( in); fscanf( in, "%d",&( lattice->param.r0                )   );
+#else
   skip_label( in); fscanf( in, "%lf",&( lattice->param.x0                )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.y0                )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.z0                )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.r0                )   );
+#endif
   skip_label( in); fscanf( in, "%lf",&( lattice->param.cut               )   );
+#if INTEGER_IC_BOUND
+  skip_label( in); fscanf( in, "%d",&( lattice->param.x1                )   );
+  skip_label( in); fscanf( in, "%d",&( lattice->param.x2                )   );
+  skip_label( in); fscanf( in, "%d",&( lattice->param.y1                )   );
+  skip_label( in); fscanf( in, "%d",&( lattice->param.y2                )   );
+  skip_label( in); fscanf( in, "%d",&( lattice->param.z1                )   );
+  skip_label( in); fscanf( in, "%d",&( lattice->param.z2                )   );
+#else
   skip_label( in); fscanf( in, "%lf",&( lattice->param.x1                )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.x2                )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.y1                )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.y2                )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.z1                )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.z2                )   );
+#endif
   skip_label( in); fscanf( in, "%lf",&( lattice->param.rel_x1            )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.rel_x2            )   );
   skip_label( in); fscanf( in, "%lf",&( lattice->param.rel_y1            )   );
@@ -364,6 +380,46 @@ void read_params( lattice_ptr lattice, const char *infile)
     lattice->param.rho_B[1] = lattice->param.rho_A[0];
   }
  // Set default values for x0, y0 and r0 if they are negative.
+#if INTEGER_IC_BOUND
+  if( lattice->param.x0 < 0)
+  {
+    lattice->param.x0 = lattice->param.LX/2;
+  }
+  if( lattice->param.y0 < 0)
+  {
+    lattice->param.y0 = lattice->param.LY/2;
+  }
+  if( lattice->param.z0 < 0)
+  {
+    lattice->param.z0 = lattice->param.LZ/2;
+  }
+
+  if( lattice->param.r0 < 0)
+  {
+	if( lattice->param.LX < lattice->param.LY)
+	{
+		if( lattice->param.LX < lattice->param.LZ)
+		{
+		    lattice->param.r0 = lattice->param.LX;
+		}
+		else
+		{
+		    lattice->param.r0 = lattice->param.LZ;
+		}
+	}
+	else
+	{
+		if( lattice->param.LY < lattice->param.LZ)
+		{
+		    lattice->param.r0 = lattice->param.LY;		
+		}
+		else
+		{
+		    lattice->param.r0 = lattice->param.LZ;
+		}
+	}
+  }
+#else
   if( lattice->param.x0 < 0.)
   {
     lattice->param.x0 = lattice->param.LX/2.;
@@ -381,6 +437,7 @@ void read_params( lattice_ptr lattice, const char *infile)
   {
     lattice->param.r0 = (lattice->param.LX+lattice->param.LY+lattice->param.LZ)/12.;
   }
+#endif
 
   // Set default value for cut if it is negative.
   if( lattice->param.cut < 0.)
@@ -389,6 +446,74 @@ void read_params( lattice_ptr lattice, const char *infile)
   }
 
   // Set default values for x1, x2, y1, y2, z1, z2 if they are negative.
+#if INTEGER_IC_BOUND
+  if( lattice->param.x1 < 0)
+  {
+    if( lattice->param.rel_x1 < 0.)
+    {
+      lattice->param.x1 = lattice->param.LX/4;
+    }
+    else
+    {
+      lattice->param.x1 = (int) llround(lattice->param.rel_x1*(double)lattice->param.LX);
+    }
+  }
+  if( lattice->param.x2 < 0)
+  {
+    if( lattice->param.rel_x2 < 0.)
+    {
+      lattice->param.x2 = lattice->param.LX/2;
+    }
+    else
+    {
+      lattice->param.x2 = (int) llround(lattice->param.rel_x2*(double)lattice->param.LX);
+    }
+  }
+  if( lattice->param.y1 < 0)
+  {
+    if( lattice->param.rel_y1 < 0.)
+    {
+      lattice->param.y1 = lattice->param.LY/4;
+    }
+    else
+    {
+      lattice->param.y1 = (int) llround(lattice->param.rel_y1*(double)lattice->param.LY);
+    }
+  }
+  if( lattice->param.y2 < 0)
+  {
+    if( lattice->param.rel_y2 < 0.)
+    {
+      lattice->param.y2 = lattice->param.LY/2;
+    }
+    else
+    {
+      lattice->param.y2 = (int) llround(lattice->param.rel_y2*(double)lattice->param.LY);
+    }
+  }
+  if( lattice->param.z1 < 0)
+  {
+    if( lattice->param.rel_z1 < 0.)
+    {
+      lattice->param.z1 = lattice->param.LZ/4;
+    }
+    else
+    {
+      lattice->param.z1 = (int) llround(lattice->param.rel_z1*(double)lattice->param.LZ);
+    }
+  }
+  if( lattice->param.z2 < 0)
+  {
+    if( lattice->param.rel_z2 < 0.)
+    {
+      lattice->param.z2 = lattice->param.LZ/2;
+    }
+    else
+    {
+      lattice->param.z2 = (int) llround(lattice->param.rel_z2*(double)lattice->param.LZ);
+    }
+  }
+#else
   if( lattice->param.x1 < 0.)
   {
     if( lattice->param.rel_x1 < 0.)
@@ -455,6 +580,8 @@ void read_params( lattice_ptr lattice, const char *infile)
       lattice->param.z2 = lattice->param.rel_z2*lattice->param.LZ-1;
     }
   }
+#endif
+
 
   fclose(in);
 

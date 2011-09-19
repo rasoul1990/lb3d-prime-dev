@@ -243,11 +243,7 @@ void bcs( lattice_ptr lattice)
   nj = lattice->param.LY;
   nk = lattice->param.LZ;
 
-#if PARALLEL
   id = get_proc_id(lattice);
-#else
-  id = get_num_procs(lattice)-1;
-#endif
 
   // for( subs=0; subs<(NUM_FLUID_COMPONENTS)-(INAMURO_SIGMA_COMPONENT); subs++)
   for( subs=0; subs<NUM_FLUID_COMPONENTS; subs++)
@@ -337,11 +333,7 @@ void bcs( lattice_ptr lattice)
 
 
     //********************************************************************************
-#if PARALLEL
-    id = get_proc_id(lattice);
-#else
-    id = 0;
-#endif
+
 
     // P R E S S U R E   B O T T O M   O U T F L O W   B C  (peter's attempt?)
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -433,9 +425,11 @@ void bcs( lattice_ptr lattice)
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // velocity top inflow
     //  -- Velocity boundary on top side using inflow velocity condition.
-    if( !lattice->param.GZL && lattice->param.velocity_t_in[subs])
+    if( id == get_num_procs( lattice) - 1 && !lattice->param.GZL && 
+												lattice->param.velocity_t_in[subs])
     {
-printf("%s %d >> BOOM!",__FILE__,__LINE__);
+
+		//printf("%s %d >> BOOM!",__FILE__,__LINE__);
       if(subs==0) u = lattice->param.uz_in;    //lattice->param.uz_in; Non-wetting
       if(subs==1) u = lattice->param.uz_in;    //lattice->param.uz_in;
 
@@ -480,9 +474,9 @@ printf("%s %d >> BOOM!",__FILE__,__LINE__);
     //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
     // velocity bottom inflow
     //  -- Velocity boundary on bottom side using outflow velocity condition.
-    if( !lattice->param.GZL && lattice->param.velocity_b_in[subs])
+    if( id == 0 && !lattice->param.GZL && lattice->param.velocity_b_out[subs])
     {
-printf("%s %d >> BOOM!",__FILE__,__LINE__);
+//printf("%s %d >> BOOM!",__FILE__,__LINE__);
       if(subs==0) u = lattice->param.uz_out;    //lattice->param.uz_out;  Non-wetting
       if(subs==1) u = lattice->param.uz_out;    //lattice->param.uz_out;
 
