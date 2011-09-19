@@ -525,10 +525,18 @@ struct param_struct
 
   // Center and radius of a circle. Used in the initial conditions for
   // initializing a bubble in the domain, for instance.
+
+#if INTEGER_IC_BOUND
+  int x0;
+  int y0;
+  int z0;
+  int r0;
+#else
   double x0;
   double y0;
   double z0;
   double r0;
+#endif
 
   // Param: cut;
   // Type: double cut;
@@ -538,8 +546,14 @@ struct param_struct
 
   // Corner coordinates for a rectangle. Used by initial conditions for
   // initializing a square-shaped region in the domain.
+
+#if INTEGER_IC_BOUND
+  int x1, x2, z1;
+  int y1, y2, z2;
+#else
   double x1, x2, z1;
   double y1, y2, z2;
+#endif
 
   // Factors for setting coordinates relative to the domain size. If
   // the absolute coordinates are negative, use these values to set

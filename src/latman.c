@@ -530,13 +530,13 @@ void init_problem( struct lattice_struct *lattice)
                   if(get_proc_id(lattice) >id1 && get_proc_id(lattice) <id2 ) {k1=0; k2 = nk;}
 #endif
 #endif
-                  if( i > lattice->param.x1 && i < lattice->param.x2 &&
-                      j > lattice->param.y1 && j < lattice->param.y2 &&
+                  if( i >= lattice->param.x1 && i <= lattice->param.x2 &&
+                      j >= lattice->param.y1 && j <= lattice->param.y2 &&
 #if PARALLEL
-                      k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2 )
+                      k+ get_proc_id(lattice)*nk >= lattice->param.z1 && k+ get_proc_id(lattice)*nk <= lattice->param.z2 )
                     //if 0      k >=k1 && k<=k2 )
 #else
-                    k > lattice->param.z1 && k < lattice->param.z2  )
+                    k >= lattice->param.z1 && k <= lattice->param.z2  )
 #endif
                     {
                       *rho = lattice->param.rho_A[0];
@@ -560,10 +560,10 @@ void init_problem( struct lattice_struct *lattice)
                     if( i >= lattice->param.x1 && i <= lattice->param.x2 &&
                         j >= lattice->param.y1 && j <= lattice->param.y2 &&
 #if PARALLEL
-                        k+ get_proc_id(lattice)*nk > lattice->param.z1 && k+ get_proc_id(lattice)*nk < lattice->param.z2)
+                        k+ get_proc_id(lattice)*nk >= lattice->param.z1 && k+ get_proc_id(lattice)*nk <= lattice->param.z2)
                       //      k >=k1 && k<=k2 )
 #else
-                      k > lattice->param.z1 && k < lattice->param.z2  )
+                      k >= lattice->param.z1 && k <= lattice->param.z2  )
 #endif
                       {
                         *rho = lattice->param.rho_A[subs];
@@ -592,10 +592,24 @@ void init_problem( struct lattice_struct *lattice)
             {
               switch( NUM_FLUID_COMPONENTS)
               {
+
+//#if PARALLEL
+//                      k+ get_proc_id(lattice)*nk >= lattice->param.z1 && k+ get_proc_id(lattice)*nk <= lattice->param.z2 )
+//                    //if 0      k >=k1 && k<=k2 )
+//#else
+//                    k >= lattice->param.z1 && k <= lattice->param.z2  )
+//#endif
+
                 case 1:
                   {
+#if PARALLEL
+                    if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
+                        (j-lattice->param.y0)+(k+ get_proc_id(lattice)*nk-lattice->param.z0)
+						*(k+ get_proc_id(lattice)*nk-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+#else
                     if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
                         (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+#endif
                     {
                       *rho = lattice->param.rho_A[0];
                     }
@@ -607,8 +621,14 @@ void init_problem( struct lattice_struct *lattice)
                   }
                 case 2:
                   {
+#if PARALLEL
+                    if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
+                        (j-lattice->param.y0)+(k+ get_proc_id(lattice)*nk-lattice->param.z0)
+						*(k+ get_proc_id(lattice)*nk-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+#else
                     if( (i-lattice->param.x0)*(i-lattice->param.x0)+(j-lattice->param.y0)*
                         (j-lattice->param.y0)+(k-lattice->param.z0)*(k-lattice->param.z0)<= lattice->param.r0*lattice->param.r0 )
+#endif
                     {
                       *rho = lattice->param.rho_A[subs];
                     }
